@@ -1,0 +1,1 @@
+{"name":"vykor-plugins","private":true,"type":"module","engines":{"node":">=24.0.0"},"scripts":{"test":"node --test","build":"node scripts/build.mjs","verify":"node scripts/verify.mjs"},"dependencies":{"jszip":"3.10.1"}}
