@@ -30,4 +30,4 @@
 }
 ```
 
-可选字段：displayName、description、author（name/url/email）、license、keywords；requires 还可包含 node 和 platforms。componentTypes 只能为 skills、agents、tools、mcp、apps、workflows。artifact.size 是实际 ZIP 字节数。版本 URL 必须固定 tag，不能使用 latest。
+可选字段：displayName、description、icon、introduction、prompts、homepage、author（name/url/email）、license、keywords；requires 还可包含 node 和 platforms。icon 为图片 data URI 或 HTTPS 地址，introduction 为最多 65536 字符的 Markdown 介绍，prompts 为最多 16 项的使用示例（title 最多 100 字符，prompt 最多 16384 字符，均不能为空），homepage 为 HTTPS 网站地址；这些展示信息不授予执行权限。componentTypes 只能为 skills、agents、tools、mcp、apps、workflows。artifact.size 是实际 ZIP 字节数。版本 URL 必须固定 tag，不能使用 latest。
