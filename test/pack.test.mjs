@@ -10,6 +10,30 @@ test('identical payload has identical zip and digest',()=>fixture(async dir=>{co
 for (const [label,file,value] of [['manifest','.vykor-plugin/plugin.json',null],['license','LICENSE',null],['entrypoint','main.mjs',null],['version','.vykor-plugin/plugin.json','{"schemaVersion":1,"id":"test","name":"test","version":"1.0.0-beta","license":"MIT","components":{}}']]) test(`rejects invalid ${label}`,()=>fixture(async dir=>{if(value===null)await rm(join(dir,file));else await writeFile(join(dir,file),value);await assert.rejects(pack(dir));}));
 test('rejects duplicate plugin IDs',()=>assert.throws(()=>validateInventory({plugins:[{id:'same'},{id:'same'}]}),/duplicate/i));
 
+const inventoryWithSource=source=>({plugins:[{id:'test.plugin',source:{repository:'https://github.com/rzx007/Vykor',commit:'a'.repeat(40),path:'.',...source}}]});
+for(const repository of ['https://github.com/rzx007/Vykor','https://github.com/rzx007/vykor-plugin-github','https://github.com/another-owner/plugin.repo_1'])test(`accepts fixed source in ${repository}`,()=>{
+ assert.doesNotThrow(()=>validateInventory(inventoryWithSource({repository})));
+});
+for(const repository of [
+ 'http://github.com/owner/repo','git://github.com/owner/repo','ssh://git@github.com/owner/repo','git@github.com:owner/repo',
+ '/tmp/plugin','C:/plugins/repo','--upload-pack=command','https://github.com.evil.example/owner/repo','https://evil.example/github.com/owner/repo',
+ 'https://user@github.com/owner/repo','https://user:password@github.com/owner/repo','https://github.com:443/owner/repo',
+ 'https://github.com/owner/repo?ref=main','https://github.com/owner/repo?','https://github.com/owner/repo#main','https://github.com/owner/repo#',
+ 'https://github.com/owner','https://github.com/owner/repo/','https://github.com/owner/repo.git','https://github.com/owner/repo/tree/main',
+ 'https://github.com/owner/../repo','https://github.com/owner/.','https://github.com/owner/..','https://github.com/owner/%2e%2e',
+ 'https://github.com/owner\\repo','https://github.com/owner/repo\n',' https://github.com/owner/repo','https://github.com/-owner/repo',
+ 'https://github.com/owner-/repo','https://github.com/owner--name/repo','https://github.com/owner/repo;command',
+ `https://github.com/${'a'.repeat(40)}/repo`,`https://github.com/owner/${'a'.repeat(101)}`
+])test(`rejects unsafe or noncanonical source repository ${JSON.stringify(repository)}`,()=>{
+ assert.throws(()=>validateInventory(inventoryWithSource({repository})),/repository/i);
+});
+for(const commit of ['main','a'.repeat(39),'A'.repeat(40),'a'.repeat(40)+'\n'])test(`rejects unfixed source commit ${JSON.stringify(commit)}`,()=>{
+ assert.throws(()=>validateInventory(inventoryWithSource({commit})),/commit/i);
+});
+for(const path of ['../plugin','plugins/../../outside','/tmp/plugin','C:/plugin','plugins\\plugin'])test(`rejects unsafe source path ${JSON.stringify(path)}`,()=>{
+ assert.throws(()=>validateInventory(inventoryWithSource({path})),/path/i);
+});
+
 test('rejects relative icons that the host manifest cannot install',()=>fixture(async dir=>{
   const path=join(dir,'.vykor-plugin/plugin.json');
   const manifest=JSON.parse(await readFile(path));manifest.icon='./icon.svg';
