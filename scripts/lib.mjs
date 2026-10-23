@@ -5,7 +5,20 @@ import JSZip from 'jszip';
 export const digest=b=>createHash('sha256').update(b).digest('hex');
 export const version=/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 export function safePath(p){if(typeof p!=='string'||!p||p.includes('\\')||p.startsWith('/')||/^[a-z]:/i.test(p)||p.split('/').includes('..'))throw Error(`Unsafe path: ${p}`);return p.replace(/^\.\//,'');}
-export function validateInventory(inventory){const ids=new Set();for(const p of inventory.plugins){if(ids.has(p.id))throw Error(`Duplicate ID ${p.id}`);ids.add(p.id);if(p.source){if(!/^[a-f0-9]{40}$/.test(p.source.commit))throw Error('Fixed commit required');safePath(p.source.path);if(p.source.repository!=='https://github.com/rzx007/Vykor')throw Error('Unsupported repository');}}}
+export function validateInventory(inventory){
+ const ids=new Set();
+ for(const p of inventory.plugins){
+  if(ids.has(p.id))throw Error(`Duplicate ID ${p.id}`);ids.add(p.id);
+  if(p.source){
+   if(!/^[a-f0-9]{40}$/.test(p.source.commit))throw Error('Fixed commit required');
+   safePath(p.source.path);
+   const repository=p.source.repository;
+   // Match the original string so URL normalization cannot hide ports, traversal or credentials.
+   const match=typeof repository==='string'&&/^https:\/\/github\.com\/([A-Za-z0-9-]{1,39})\/([A-Za-z0-9._-]{1,100})$/.exec(repository);
+   if(!match||match[0]!==repository||!/^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/.test(match[1])||['.','..'].includes(match[2])||/\.git$/i.test(match[2]))throw Error('Unsupported repository: use https://github.com/OWNER/REPO');
+  }
+ }
+}
 
 function catalogPresentation(manifest) {
   const result = {};
