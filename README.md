@@ -44,8 +44,8 @@ npm run verify
 
 ## 正式插件与目录入口
 
-本次市场保留原有五项：本仓 [plugins/](plugins/README.md) 中的 Excalidraw（`plugins/excalidraw`）、研究与写作（`plugins/knowledge-work`）、办公文档（`plugins/office-work`），以及 Vykor `examples/plugins/` 中的两个固定提交示例。插件 ID 保持不变。新增第三方插件可在自己的公开 GitHub 仓库的真实子目录维护，通过 `source` 收录；新增本仓官方插件使用 `localPath`，无需在自身清单里写尚未产生的提交号。
+市场包含：本仓 [plugins/](plugins/README.md) 中的 Excalidraw（`plugins/excalidraw`）、研究与写作（`plugins/knowledge-work`）、办公文档（`plugins/office-work`），独立 GitHub 工作流插件，以及 Vykor `examples/plugins/` 中的两个固定提交示例。插件 ID 保持不变。新增第三方插件可在自己的公开 GitHub 仓库的真实子目录维护，通过 `source` 收录；新增本仓官方插件使用 `localPath`，无需在自身清单里写尚未产生的提交号。
 
-独立 GitHub 插件暂未收录：它当前位于仓库根目录，而已发布宿主会拒绝 `source.path: "."` 并使整份市场目录解析失败，`requires.host` 不能隔离这个问题。该插件须先在真实源码提交中拥有插件子目录，或另行完成兼容的宿主及目录发布，再纳入市场；不能伪造路径、提交号或只提高宿主版本要求。
+[独立 GitHub 插件](https://github.com/rzx007/vykor-plugin-github/tree/main/plugins/github)以真实子目录 `plugins/github` 收录，稳定 ID 为 `dev.vykor.github`。根路径 `.` 仍被拒绝：已发布宿主在最低版本判断前解析整份目录，提高 `requires.host` 不能绕过路径要求。
 
 Skill 与 Agent 组件支持宿主已有的目录入口：分别检查其中存在 `SKILL.md` 或 Markdown 文件；工具、MCP 和应用配置仍要求真实文件。办公插件由自己的构建准备固定版本并验证摘要的多平台引擎，归档不依赖桌面注入文件；100 MiB 压缩、250 MiB 解压限制保持不变。

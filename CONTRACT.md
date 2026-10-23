@@ -34,7 +34,7 @@
 
 `source.repository` 支持独立的公开 GitHub 仓库，格式严格为 `https://github.com/OWNER/REPO`。仅接受 `github.com` 的 HTTPS 地址，不接受 `.git` 后缀、尾斜线、认证信息、显式端口、查询参数、片段、其他 Git 协议或本地路径。`source.commit` 为实际检出的完整 40 位小写十六进制提交号。`source.path` 必须是所选提交内真实存在的规范子目录，最长 1024 字符；不接受仓库根目录 `.`、`./` 前缀、空路径、空分段、`.` 或 `..` 分段、冒号、反斜线和绝对路径，不允许通过目录链接跳出检出目录。构建缓存按仓库与提交共同区分，每次构建重新创建临时检出并核对提交。
 
-已发布宿主在判断 `requires.host` 前解析全部来源字段，任一无效 `source.path` 会导致整份目录失效。因此输入清单与生成的公开索引均遵守相同路径规则，`verify` 也拒绝不兼容路径。当前活动清单保持三个本仓官方插件与两个 Vykor 示例。独立 GitHub 插件位于仓库根目录，暂不收录，须先有包含真实插件子目录的源码提交，或另行完成兼容的宿主与目录发布；不得伪造路径或提交号来绕过校验。
+已发布宿主在判断 `requires.host` 前解析全部来源字段，任一无效 `source.path` 会导致整份目录失效。因此输入清单与生成的公开索引均遵守相同路径规则，`verify` 也拒绝不兼容路径。当前活动清单包含三个本仓官方插件、两个 Vykor 示例和独立 GitHub 插件。GitHub 的来源路径为其独立仓库中的真实子目录 `plugins/github`，插件 ID 仍为 `dev.vykor.github`；不得使用根路径或伪造目录、提交号来绕过校验。
 
 上述是公开索引格式，不含 `localPath` 或预览字段。根目录的收录清单另允许本仓官方条目写 `{ "id": "dev.vykor.excalidraw", "category": "productivity", "localPath": "plugins/excalidraw" }`；每项必须在 `localPath` 和 `source` 中二选一。`localPath` 仅接受 `plugins/<name>` 直接子目录，真实路径位于本仓 `plugins/` 中，拒绝链接和路径回溯。构建后该条目的公开来源为 `{ "repository": "https://github.com/rzx007/vykor-plugins", "commit": "<实际市场 checkout HEAD>", "path": "plugins/excalidraw" }`，既有插件 ID 不变。
 
