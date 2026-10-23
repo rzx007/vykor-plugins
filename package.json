@@ -1,1 +1,1 @@
-{"name":"vykor-plugins","private":true,"type":"module","engines":{"node":">=24.0.0"},"scripts":{"test":"node --test","build":"node scripts/build.mjs","verify":"node scripts/verify.mjs"},"dependencies":{"jszip":"3.10.1"}}
+{"name":"vykor-plugins","private":true,"type":"module","engines":{"node":">=24.0.0"},"scripts":{"test":"node --test test/*.test.mjs","build":"node scripts/build.mjs","verify":"node scripts/verify.mjs","check:publish":"node scripts/check-publish.mjs","publish:market":"node scripts/publish.mjs"},"dependencies":{"jszip":"3.10.1"}}

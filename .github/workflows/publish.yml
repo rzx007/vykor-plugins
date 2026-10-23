@@ -16,6 +16,9 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -23,6 +26,8 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm test
       - run: npm run build
+        env:
+          MARKET_BUILD_COMMIT: ${{ github.sha }}
       - run: npm run verify
       - uses: actions/upload-artifact@v4
         with:
@@ -30,13 +35,16 @@ jobs:
           path: dist/
           include-hidden-files: true
   publish:
-    if: github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -46,7 +54,8 @@ jobs:
           name: verified-marketplace
           path: dist
       - run: npm run verify
-      - run: node scripts/publish.mjs
+      - run: npm run check:publish
+      - run: npm run publish:market
         env:
           GH_TOKEN: ${{ github.token }}
       - run: mkdir public && cp dist/marketplace.json dist/index.html dist/.nojekyll public/
@@ -54,6 +63,7 @@ jobs:
         with:
           path: public
   pages:
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     needs: publish
     runs-on: ubuntu-latest
     permissions:

@@ -3,11 +3,7 @@
     {
       "id": "dev.vykor.excalidraw",
       "category": "productivity",
-      "source": {
-        "repository": "https://github.com/rzx007/Vykor",
-        "commit": "5a7cb1032eb8cf7a0430257c3c9932981ae56473",
-        "path": "plugins/excalidraw"
-      }
+      "localPath": "plugins/excalidraw"
     },
     {
       "id": "example.text-inspector",
@@ -30,20 +26,12 @@
     {
       "id": "vykor.knowledge-work",
       "category": "productivity",
-      "source": {
-        "repository": "https://github.com/rzx007/Vykor",
-        "commit": "5a7cb1032eb8cf7a0430257c3c9932981ae56473",
-        "path": "plugins/knowledge-work"
-      }
+      "localPath": "plugins/knowledge-work"
     },
     {
       "id": "vykor.office-work",
       "category": "productivity",
-      "source": {
-        "repository": "https://github.com/rzx007/Vykor",
-        "commit": "5a7cb1032eb8cf7a0430257c3c9932981ae56473",
-        "path": "plugins/office-work"
-      }
+      "localPath": "plugins/office-work"
     }
   ]
 }

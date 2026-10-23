@@ -1,8 +1,10 @@
 import {readFile,mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
-import {join,basename} from 'node:path';
+import {join,basename,resolve} from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {digest} from './lib.mjs';
+import {assertPublishable} from './provenance.mjs';
+await assertPublishable(resolve('.'));
 function gh(args){return execFileSync('gh',args,{encoding:'utf8',stdio:['ignore','pipe','inherit']}).trim();}
 const repo='rzx007/vykor-plugins';const index=JSON.parse(await readFile('dist/marketplace.json'));
 // Only verified files from the build artifact are uploaded. This script never runs upstream code.
