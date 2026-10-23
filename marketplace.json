@@ -1,6 +1,15 @@
 {
   "plugins": [
     {
+      "id": "dev.vykor.github",
+      "category": "development",
+      "source": {
+        "repository": "https://github.com/rzx007/vykor-plugin-github",
+        "commit": "49a3da416fa8bbbdb25e075ac9c6ac0045485e79",
+        "path": "plugins/github"
+      }
+    },
+    {
       "id": "dev.vykor.excalidraw",
       "category": "productivity",
       "localPath": "plugins/excalidraw"
