@@ -29,3 +29,27 @@ test('publishes author icons and introductions without rewriting the plugin arch
   assert.equal(JSON.parse(await archive.file('test/.vykor-plugin/plugin.json').async('string')).icon,manifest.icon);
 }));
 test('rejects missing MCP server script',()=>fixture(async dir=>{const m=JSON.parse(await (await import('node:fs/promises')).readFile(join(dir,'.vykor-plugin/plugin.json')));m.components={mcpServers:['./mcp.json']};await writeFile(join(dir,'.vykor-plugin/plugin.json'),JSON.stringify(m));await writeFile(join(dir,'mcp.json'),JSON.stringify({servers:{demo:{command:'node',args:['missing.mjs']}}}));await assert.rejects(pack(dir),/Missing/);}));
+
+test('packages directory components used by research and office plugins',()=>fixture(async dir=>{
+  const path=join(dir,'.vykor-plugin/plugin.json');
+  const manifest=JSON.parse(await readFile(path));
+  manifest.components={agents:['./agents'],skills:['./skills','./vendor/officecli/skills']};
+  await writeFile(path,JSON.stringify(manifest));
+  for(const [folder,file] of [['agents','writer.md'],['skills/research','SKILL.md'],['vendor/officecli/skills/pptx','SKILL.md']]){
+    await mkdir(join(dir,folder),{recursive:true});
+    await writeFile(join(dir,folder,file),'---\nname: example\ndescription: Example\n---\nInstructions.');
+  }
+  const result=await pack(dir);
+  assert.deepEqual(result.componentTypes,['agents','skills']);
+  const zip=await JSZip.loadAsync(result.bytes);
+  assert.ok(zip.file('test/vendor/officecli/skills/pptx/SKILL.md'));
+}));
+
+for(const kind of ['agents','skills','tools'])test(`rejects missing or invalid ${kind} directory entry`,()=>fixture(async dir=>{
+  const path=join(dir,'.vykor-plugin/plugin.json');
+  const manifest=JSON.parse(await readFile(path));manifest.components={[kind]:['./empty']};
+  await writeFile(path,JSON.stringify(manifest));
+  await mkdir(join(dir,'empty'));
+  await writeFile(join(dir,'empty','README.txt'),'Not a component.');
+  await assert.rejects(pack(dir),/Missing|Invalid/);
+}));

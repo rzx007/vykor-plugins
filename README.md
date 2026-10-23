@@ -32,3 +32,9 @@ npm run verify
 插件清单中的 `displayName`、`icon`、`description`、`introduction`、`prompts` 和 `homepage` 用于桌面市场及详情页。构建从固定源码的实际清单读取，不另维护展示信息副本。`prompts` 沿用插件详情的使用示例格式（最多 16 项，每项标题不超过 100 字符、正文不超过 16384 字符）；显示示例不授予执行权限。
 
 `icon` 使用图片 base64 data URI 或 HTTPS 地址，原 ZIP 清单和文件保持原样。包内图片应在作者构建时转成 data URI 写入清单，不把相对路径交给宿主。图片数据字符串上限为 1 MiB，整个市场目录保持 2 MiB 上限。未声明图标的插件使用宿主默认图标。展示信息不声明或授予任何工具权限。
+
+## 正式插件与目录入口
+
+正式插件的权威源码统一位于 Vykor 仓库的 `plugins/`：Excalidraw 为 `plugins/excalidraw`，研究与写作为 `plugins/knowledge-work`，办公文档为 `plugins/office-work`。示例插件仍位于 `examples/plugins/`。更新根清单时必须同时固定包含该目录的真实源码提交，不把旧提交与新目录拼接。
+
+Skill 与 Agent 组件支持宿主已有的目录入口：分别检查其中存在 `SKILL.md` 或 Markdown 文件；工具、MCP 和应用配置仍要求真实文件。办公插件由自己的构建准备固定版本并验证摘要的多平台引擎，归档不依赖桌面注入文件；100 MiB 压缩、250 MiB 解压限制保持不变。

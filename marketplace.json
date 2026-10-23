@@ -1,1 +1,49 @@
-{"plugins":[{"id":"dev.vykor.excalidraw","category":"productivity","source":{"repository":"https://github.com/rzx007/Vykor","commit":"4f89771d4d578ba8412d736d346a1a0f454cdaac","path":"examples/plugins/excalidraw"}},{"id":"example.text-inspector","category":"development","source":{"repository":"https://github.com/rzx007/Vykor","commit":"31698bb39a176b26848ab963688e8ff25d61f8fe","path":"examples/plugins/text-inspector"}},{"id":"example.notes-app","category":"productivity","source":{"repository":"https://github.com/rzx007/Vykor","commit":"4f89771d4d578ba8412d736d346a1a0f454cdaac","path":"examples/plugins/notes-app"}}]}
+{
+  "plugins": [
+    {
+      "id": "dev.vykor.excalidraw",
+      "category": "productivity",
+      "source": {
+        "repository": "https://github.com/rzx007/Vykor",
+        "commit": "5a7cb1032eb8cf7a0430257c3c9932981ae56473",
+        "path": "plugins/excalidraw"
+      }
+    },
+    {
+      "id": "example.text-inspector",
+      "category": "development",
+      "source": {
+        "repository": "https://github.com/rzx007/Vykor",
+        "commit": "31698bb39a176b26848ab963688e8ff25d61f8fe",
+        "path": "examples/plugins/text-inspector"
+      }
+    },
+    {
+      "id": "example.notes-app",
+      "category": "productivity",
+      "source": {
+        "repository": "https://github.com/rzx007/Vykor",
+        "commit": "4f89771d4d578ba8412d736d346a1a0f454cdaac",
+        "path": "examples/plugins/notes-app"
+      }
+    },
+    {
+      "id": "vykor.knowledge-work",
+      "category": "productivity",
+      "source": {
+        "repository": "https://github.com/rzx007/Vykor",
+        "commit": "5a7cb1032eb8cf7a0430257c3c9932981ae56473",
+        "path": "plugins/knowledge-work"
+      }
+    },
+    {
+      "id": "vykor.office-work",
+      "category": "productivity",
+      "source": {
+        "repository": "https://github.com/rzx007/Vykor",
+        "commit": "5a7cb1032eb8cf7a0430257c3c9932981ae56473",
+        "path": "plugins/office-work"
+      }
+    }
+  ]
+}
