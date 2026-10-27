@@ -1,6 +1,11 @@
 {
   "plugins": [
     {
+      "id": "dev.vykor.xerj-search",
+      "category": "development",
+      "localPath": "plugins/xerj-search"
+    },
+    {
       "id": "dev.vykor.github",
       "category": "development",
       "source": {

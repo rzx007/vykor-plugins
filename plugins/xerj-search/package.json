@@ -1,0 +1,31 @@
+{
+  "name": "@vykor/plugin-xerj-search",
+  "version": "0.2.1",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "Optional project-scoped local XERJ retrieval with built-in Grep fallback guidance.",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test __test__/*.test.mjs evaluation/__test__/*.test.mjs",
+    "evaluate": "node evaluation/evaluate.mjs"
+  },
+  "files": [
+    ".vykor-plugin",
+    "tools",
+    "skills",
+    "scripts",
+    "evaluation",
+    "__test__",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rzx007/vykor-plugins.git",
+    "directory": "plugins/xerj-search"
+  }
+}

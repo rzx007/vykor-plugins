@@ -1,0 +1,569 @@
+{
+  "level": "native-batch-control-no-model",
+  "startedAt": "2026-10-27T07:54:02.973Z",
+  "taskSetSha256": "eb61b3d0cab800b4ff6ba5a66f62f7f476cfcf7fe2f8f03f5804d0073c5fb1d9",
+  "pluginConfigurationSha256": "c8e4f9821776cab7d25950158b7e4fc050bfe685689bbd028ce44417dc3790ce",
+  "sameGold": true,
+  "configuration": {
+    "groupSize": 4,
+    "perItemLimit": 5,
+    "nativeWordBudget": 2000,
+    "pluginOutputBudgetBytes": 16384,
+    "timeoutMs": 5000
+  },
+  "map": {
+    "status": "fallback",
+    "indexCount": 0,
+    "elapsedMs": 3.4265999999999934,
+    "response": {
+      "status": "fallback",
+      "backend": "grep",
+      "reason": "invalid_config",
+      "hits": [],
+      "fallback": {
+        "tool": "Grep",
+        "input": {
+          "pattern": "project",
+          "limit": 40
+        },
+        "note": "继续调用内置 Grep 和 Read；自然语言问题先提取关键词。本插件未执行 Grep。"
+      }
+    }
+  },
+  "summary": {
+    "questions": 16,
+    "batchCalls": 4,
+    "explicitMapCalls": 1,
+    "totalSearchMs": 1.6540999999999997,
+    "fileHits": 0,
+    "evidenceHits": 0,
+    "errors": 16,
+    "locatorOnlyHits": 0,
+    "unknownLineHits": 0,
+    "modelTokens": null
+  },
+  "batches": [
+    {
+      "taskIds": [
+        "symbol-grep",
+        "symbol-next-time",
+        "symbol-plugin-activation",
+        "symbol-continuity"
+      ],
+      "elapsedMs": 0.6405999999999921,
+      "responseBytes": 810,
+      "response": {
+        "status": "fallback",
+        "backend": "grep",
+        "reason": "invalid_config",
+        "hits": [],
+        "fallback": {
+          "tool": "Grep",
+          "note": "按原输入位置逐项使用 results 中的 Grep 参数；本插件没有执行 Grep。"
+        },
+        "results": [
+          {
+            "position": 0,
+            "status": "error",
+            "hits": [],
+            "reason": "invalid_config",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "createGrepTool",
+                "limit": 40
+              }
+            }
+          },
+          {
+            "position": 1,
+            "status": "error",
+            "hits": [],
+            "reason": "invalid_config",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "computeNextScheduledTime",
+                "limit": 40
+              }
+            }
+          },
+          {
+            "position": 2,
+            "status": "error",
+            "hits": [],
+            "reason": "invalid_config",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "activateNativePlugin",
+                "limit": 40
+              }
+            }
+          },
+          {
+            "position": 3,
+            "status": "error",
+            "hits": [],
+            "reason": "invalid_config",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "appendContinuityExcerpts",
+                "limit": 40
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "taskIds": [
+        "english-shell-logs",
+        "english-cancel-host",
+        "english-image-route",
+        "english-timezone"
+      ],
+      "elapsedMs": 0.27200000000000557,
+      "responseBytes": 1055,
+      "response": {
+        "status": "fallback",
+        "backend": "grep",
+        "reason": "invalid_config",
+        "hits": [],
+        "fallback": {
+          "tool": "Grep",
+          "note": "按原输入位置逐项使用 results 中的 Grep 参数；本插件没有执行 Grep。"
+        },
+        "results": [
+          {
+            "position": 0,
+            "status": "error",
+            "hits": [],
+            "reason": "invalid_config",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "Search retained shell output logs with a regular expression and open the matching byte offset",
+                "limit": 40
+              }
+            }
+          },
+          {
+            "position": 1,
+            "status": "error",
+            "hits": [],
+            "reason": "invalid_config",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "Kill an unresponsive native plugin process after the cancellation grace period",
+                "limit": 40
+              }
+            }
+          },
+          {
+            "position": 2,
+            "status": "error",
+            "hits": [],
+            "reason": "invalid_config",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "Choose native image input or the image to text tool based on model and provider capabilities",
+                "limit": 40
+              }
+            }
+          },
+          {
+            "position": 3,
+            "status": "error",
+            "hits": [],
+            "reason": "invalid_config",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "Calculate the next RRULE occurrence using the requested timezone",
+                "limit": 40
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "taskIds": [
+        "chinese-tool-outcome",
+        "chinese-plugin-guard",
+        "chinese-plugin-data",
+        "chinese-schedule-history"
+      ],
+      "elapsedMs": 0.3387000000000029,
+      "responseBytes": 1121,
+      "response": {
+        "status": "fallback",
+        "backend": "grep",
+        "reason": "invalid_config",
+        "hits": [],
+        "fallback": {
+          "tool": "Grep",
+          "note": "按原输入位置逐项使用 results 中的 Grep 参数；本插件没有执行 Grep。"
+        },
+        "results": [
+          {
+            "position": 0,
+            "status": "error",
+            "hits": [],
+            "reason": "invalid_config",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "对话压缩后，如何保留工具执行状态、错误标记和完整结果引用，避免把未知执行当成成功？",
+                "limit": 40
+              }
+            }
+          },
+          {
+            "position": 1,
+            "status": "error",
+            "hits": [],
+            "reason": "invalid_config",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "原生插件工具调用前在哪里校验参数，并限制同时进行的调用数量？",
+                "limit": 40
+              }
+            }
+          },
+          {
+            "position": 2,
+            "status": "error",
+            "hits": [],
+            "reason": "invalid_config",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "插件保存的数据目录是怎么按插件标识分配，并传给工具进程的？",
+                "limit": 40
+              }
+            }
+          },
+          {
+            "position": 3,
+            "status": "error",
+            "hits": [],
+            "reason": "invalid_config",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "定时计划和每次执行的历史记录保存在哪里，创建记录的代码在哪里？",
+                "limit": 40
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "taskIds": [
+        "docs-plugin-process",
+        "docs-attachment-routing",
+        "docs-compaction",
+        "docs-token-estimate"
+      ],
+      "elapsedMs": 0.40279999999999916,
+      "responseBytes": 1057,
+      "response": {
+        "status": "fallback",
+        "backend": "grep",
+        "reason": "invalid_config",
+        "hits": [],
+        "fallback": {
+          "tool": "Grep",
+          "note": "按原输入位置逐项使用 results 中的 Grep 参数；本插件没有执行 Grep。"
+        },
+        "results": [
+          {
+            "position": 0,
+            "status": "error",
+            "hits": [],
+            "reason": "invalid_config",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "查找介绍本地插件工具进程入口、请求取消和状态归属的文档",
+                "limit": 40
+              }
+            }
+          },
+          {
+            "position": 1,
+            "status": "error",
+            "hits": [],
+            "reason": "invalid_config",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "Find the documentation for attachment input capability routing and where its state lives",
+                "limit": 40
+              }
+            }
+          },
+          {
+            "position": 2,
+            "status": "error",
+            "hits": [],
+            "reason": "invalid_config",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "查找历史消息压缩的处理顺序，以及摘要失败时的后备处理说明",
+                "limit": 40
+              }
+            }
+          },
+          {
+            "position": 3,
+            "status": "error",
+            "hits": [],
+            "reason": "invalid_config",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "查找解释文本 Token 估算与供应商实际计费用量区别的文档",
+                "limit": 40
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "rows": [
+    {
+      "taskId": "symbol-grep",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    },
+    {
+      "taskId": "symbol-next-time",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    },
+    {
+      "taskId": "symbol-plugin-activation",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    },
+    {
+      "taskId": "symbol-continuity",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    },
+    {
+      "taskId": "english-shell-logs",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    },
+    {
+      "taskId": "english-cancel-host",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    },
+    {
+      "taskId": "english-image-route",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    },
+    {
+      "taskId": "english-timezone",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    },
+    {
+      "taskId": "chinese-tool-outcome",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 2,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    },
+    {
+      "taskId": "chinese-plugin-guard",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    },
+    {
+      "taskId": "chinese-plugin-data",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    },
+    {
+      "taskId": "chinese-schedule-history",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 2,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    },
+    {
+      "taskId": "docs-plugin-process",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    },
+    {
+      "taskId": "docs-attachment-routing",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    },
+    {
+      "taskId": "docs-compaction",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    },
+    {
+      "taskId": "docs-token-estimate",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    }
+  ]
+}

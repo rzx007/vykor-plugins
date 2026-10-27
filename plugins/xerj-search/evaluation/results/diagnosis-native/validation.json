@@ -1,0 +1,52 @@
+{
+  "checkedAt": "2026-10-27T08:33:08.474Z",
+  "sameGold": true,
+  "readReplayRows": 96,
+  "failedEvidenceTargetAnchorsIndexed": 13,
+  "originalFileMisses": [
+    "english-image-route",
+    "chinese-plugin-guard",
+    "chinese-plugin-data",
+    "chinese-schedule-history",
+    "docs-attachment-routing"
+  ],
+  "midpointReadRecovers": [
+    "english-cancel-host",
+    "english-timezone",
+    "chinese-tool-outcome",
+    "docs-plugin-process",
+    "docs-compaction"
+  ],
+  "boundedLiveControls": 6,
+  "selectedControlsAllReturnTarget": true,
+  "newModelRequests": 0,
+  "productionPluginChanged": false,
+  "serverStopped": true,
+  "sha256": {
+    "adapter-bounded.json": "38841ed53a3484c081fdad30dd76d7241837a98ebc6f698c315f519b36890b58",
+    "boundaries.json": "bbc79cce7fa56aa593fb2a7df8bd6a7c34f70a9aa850c5e0dc219179fe5dbcd4",
+    "bounded-controls-live.json": "261c42a3138d25ad0e3338d4991fcd99251ed35b7e0335c1bd36fc0d6b5db6c0",
+    "bounded-controls.json": "72437e8c45ed2be3b18c467b9850386aea5207decc4eb10976fec179310fb518",
+    "cjk.json": "d00101980514168b462cb80094567998f721978bf0d2cff1a2d9bd15701bf3ef",
+    "controls.json": "e05852559bf21a786b777ce42e5936d75b142649fc59d4b9d19491e022498b78",
+    "index.json": "65a0d25d9d809091f95df7761b402047b2392b2e292341abc88bc23c9109b2e5",
+    "oracle-keywords.json": "9e809c3838a292aa510eca5bd61b8c590bb9c85bab6abbb4e29db5b1d2edd0c6",
+    "runtime.json": "d585151f4242070c1434288d9979bc9add6f96875694608d66cbec0c20f04273",
+    "shell-span.json": "693f521313d261f78d2753fe2f28ca87360ca230ce95d4d491d930b474c32163",
+    "variants.json": "52af415ce5494ee16fb6642d0e506779dd020829c7618020fa0299d84192b090",
+    "window-policy.json": "4ae703a9c9384a0d75cd1d879daf2e645dc164f389b975d067eaf9d75de09e3f"
+  },
+  "productionFilesIdenticalToDelivered02Preview": [
+    ".vykor-plugin/plugin.json",
+    "package-lock.json",
+    "package.json",
+    "skills/README.md",
+    "skills/search/SKILL.md",
+    "tools/README.md",
+    "tools/config.mjs",
+    "tools/evidence.mjs",
+    "tools/index.mjs",
+    "tools/native-mcp.mjs",
+    "tools/search.mjs"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "pluginVersion": "0.2.1",
+  "xerjVersion": "v1.0.0-rc.99",
+  "binarySha256": "36d35107dcec302a4e6c57debb763f31b934864748a6ca86c3b17e581dedb979",
+  "sameOriginalIndex": true,
+  "newIndexing": false,
+  "semanticEnabled": false,
+  "timeoutMs": 1500,
+  "normalResponseMaxBytes": 8192,
+  "batchResponseMaxBytes": 16384,
+  "hitMaxBytes": 1500,
+  "nativeWordBudget": 2000,
+  "newModelApiCalls": 0,
+  "serverSample": {
+    "pid": 49712,
+    "path": "C:\\Users\\ruanz\\AppData\\Local\\Temp\\openharness-xerj-rc99-20261027\\bin\\xerj-1.0.0-rc.99-x86_64-pc-windows-msvc\\xerj.exe",
+    "workingSetBytes": 260055040,
+    "peakWorkingSetBytes": 281485312
+  },
+  "serverStopped": true,
+  "stoppedAt": "2026-10-27T08:57:01.2215697Z",
+  "feedbackDisabled": true,
+  "tests": {
+    "passed": 51,
+    "failed": 0
+  },
+  "build": "passed",
+  "hostSmoke": "host-smoke-021.json",
+  "userInstallationChanged": false,
+  "priorResultsPreserved": true
+}

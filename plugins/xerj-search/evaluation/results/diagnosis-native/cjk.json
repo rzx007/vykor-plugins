@@ -1,0 +1,203 @@
+{
+  "status": 200,
+  "response": {
+    "tokens": [
+      {
+        "token": "原生",
+        "start_offset": 0,
+        "end_offset": 6,
+        "type": "word",
+        "position": 0
+      },
+      {
+        "token": "生插",
+        "start_offset": 3,
+        "end_offset": 9,
+        "type": "word",
+        "position": 1
+      },
+      {
+        "token": "插件",
+        "start_offset": 6,
+        "end_offset": 12,
+        "type": "word",
+        "position": 2
+      },
+      {
+        "token": "件工",
+        "start_offset": 9,
+        "end_offset": 15,
+        "type": "word",
+        "position": 3
+      },
+      {
+        "token": "工具",
+        "start_offset": 12,
+        "end_offset": 18,
+        "type": "word",
+        "position": 4
+      },
+      {
+        "token": "具调",
+        "start_offset": 15,
+        "end_offset": 21,
+        "type": "word",
+        "position": 5
+      },
+      {
+        "token": "调用",
+        "start_offset": 18,
+        "end_offset": 24,
+        "type": "word",
+        "position": 6
+      },
+      {
+        "token": "用前",
+        "start_offset": 21,
+        "end_offset": 27,
+        "type": "word",
+        "position": 7
+      },
+      {
+        "token": "前在",
+        "start_offset": 24,
+        "end_offset": 30,
+        "type": "word",
+        "position": 8
+      },
+      {
+        "token": "在哪",
+        "start_offset": 27,
+        "end_offset": 33,
+        "type": "word",
+        "position": 9
+      },
+      {
+        "token": "哪里",
+        "start_offset": 30,
+        "end_offset": 36,
+        "type": "word",
+        "position": 10
+      },
+      {
+        "token": "里校",
+        "start_offset": 33,
+        "end_offset": 39,
+        "type": "word",
+        "position": 11
+      },
+      {
+        "token": "校验",
+        "start_offset": 36,
+        "end_offset": 42,
+        "type": "word",
+        "position": 12
+      },
+      {
+        "token": "验参",
+        "start_offset": 39,
+        "end_offset": 45,
+        "type": "word",
+        "position": 13
+      },
+      {
+        "token": "参数",
+        "start_offset": 42,
+        "end_offset": 48,
+        "type": "word",
+        "position": 14
+      },
+      {
+        "token": "，",
+        "start_offset": 48,
+        "end_offset": 51,
+        "type": "word",
+        "position": 15
+      },
+      {
+        "token": "并限",
+        "start_offset": 51,
+        "end_offset": 57,
+        "type": "word",
+        "position": 16
+      },
+      {
+        "token": "限制",
+        "start_offset": 54,
+        "end_offset": 60,
+        "type": "word",
+        "position": 17
+      },
+      {
+        "token": "制同",
+        "start_offset": 57,
+        "end_offset": 63,
+        "type": "word",
+        "position": 18
+      },
+      {
+        "token": "同时",
+        "start_offset": 60,
+        "end_offset": 66,
+        "type": "word",
+        "position": 19
+      },
+      {
+        "token": "时进",
+        "start_offset": 63,
+        "end_offset": 69,
+        "type": "word",
+        "position": 20
+      },
+      {
+        "token": "进行",
+        "start_offset": 66,
+        "end_offset": 72,
+        "type": "word",
+        "position": 21
+      },
+      {
+        "token": "行的",
+        "start_offset": 69,
+        "end_offset": 75,
+        "type": "word",
+        "position": 22
+      },
+      {
+        "token": "的调",
+        "start_offset": 72,
+        "end_offset": 78,
+        "type": "word",
+        "position": 23
+      },
+      {
+        "token": "调用",
+        "start_offset": 75,
+        "end_offset": 81,
+        "type": "word",
+        "position": 24
+      },
+      {
+        "token": "用数",
+        "start_offset": 78,
+        "end_offset": 84,
+        "type": "word",
+        "position": 25
+      },
+      {
+        "token": "数量",
+        "start_offset": 81,
+        "end_offset": 87,
+        "type": "word",
+        "position": 26
+      },
+      {
+        "token": "？",
+        "start_offset": 87,
+        "end_offset": 90,
+        "type": "word",
+        "position": 27
+      }
+    ]
+  }
+}

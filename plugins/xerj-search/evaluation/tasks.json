@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "id": "openharness-retrieval-2026-10-27-v1",
+  "fixedAt": "2026-10-27",
+  "reference": {
+    "repository": "OpenHarness-ts",
+    "commit": "2ae6a425d72b70bc6229ac77c96ff350e7f91c3e",
+    "selection": "先人工阅读当前仓库实现及说明，再固定全部题目、rg 模式和证据；未运行两组检索后挑选题目。"
+  },
+  "budget": {
+    "topFiles": 5,
+    "maxSearchCalls": 2,
+    "searchMaxBytes": 32768,
+    "readMaxBytesPerFile": 4096,
+    "readContextLines": 12,
+    "timeoutMs": 5000
+  },
+  "tasks": [
+    {
+      "id": "symbol-grep", "category": "exact-symbol", "query": "createGrepTool",
+      "baselinePatterns": ["createGrepTool"],
+      "relevant": [{"path": "packages/tools/src/search/grep.ts", "line": 8, "contains": "export function createGrepTool", "reason": "Grep 工具的实际工厂入口。"}]
+    },
+    {
+      "id": "symbol-next-time", "category": "exact-symbol", "query": "computeNextScheduledTime",
+      "baselinePatterns": ["computeNextScheduledTime"],
+      "relevant": [{"path": "packages/services/src/schedules/recurrence.ts", "line": 46, "contains": "export function computeNextScheduledTime", "reason": "下一次定时执行时间的计算入口。"}]
+    },
+    {
+      "id": "symbol-plugin-activation", "category": "exact-symbol", "query": "activateNativePlugin",
+      "baselinePatterns": ["activateNativePlugin"],
+      "relevant": [{"path": "packages/plugins/src/activation/activate.ts", "line": 16, "contains": "export async function activateNativePlugin", "reason": "注册已加载插件能力的入口。"}]
+    },
+    {
+      "id": "symbol-continuity", "category": "exact-symbol", "query": "appendContinuityExcerpts",
+      "baselinePatterns": ["appendContinuityExcerpts"],
+      "relevant": [{"path": "packages/core/src/engine/compaction/compact-continuity.ts", "line": 67, "contains": "export function appendContinuityExcerpts", "reason": "将原始历史片段附加到压缩摘要。"}]
+    },
+    {
+      "id": "english-shell-logs", "category": "english-feature", "query": "Search retained shell output logs with a regular expression and open the matching byte offset",
+      "baselinePatterns": ["shell-output://|byteOffset", "shellOutputLogs\\.search"],
+      "relevant": [{"path": "packages/tools/src/search/grep.ts", "line": 56, "contains": "host.shellOutputLogs.search", "reason": "日志引用分支调用日志搜索，并在后续返回 byteOffset。"}]
+    },
+    {
+      "id": "english-cancel-host", "category": "english-feature", "query": "Kill an unresponsive native plugin process after the cancellation grace period",
+      "baselinePatterns": ["cancellationGraceMs|cancellation grace period", "cancelPendingCall"],
+      "relevant": [{"path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts", "line": 276, "contains": "child.kill()", "reason": "取消宽限期结束时强制停止子进程。"}]
+    },
+    {
+      "id": "english-image-route", "category": "english-feature", "query": "Choose native image input or the image to text tool based on model and provider capabilities",
+      "baselinePatterns": ["nativeImageAvailable|image_to_text_tool", "providerAcceptsMedia"],
+      "relevant": [{"path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts", "line": 56, "contains": "const nativeImageAvailable", "reason": "合并模型与供应商能力，并选择图片路由。"}]
+    },
+    {
+      "id": "english-timezone", "category": "english-feature", "query": "Calculate the next RRULE occurrence using the requested timezone",
+      "baselinePatterns": ["RRULE.*timezone|timezone.*RRULE", "assertTimezone|wallClockParts"],
+      "relevant": [{"path": "packages/services/src/schedules/recurrence.ts", "line": 61, "contains": "assertTimezone(options.timezone)", "reason": "校验时区并把该时区交给规则匹配。"}]
+    },
+    {
+      "id": "chinese-tool-outcome", "category": "chinese-requirement", "query": "对话压缩后，如何保留工具执行状态、错误标记和完整结果引用，避免把未知执行当成成功？",
+      "baselinePatterns": ["executionState.*isError.*resultRef|执行状态.*结果引用", "outcomeFields"],
+      "relevant": [
+        {"path": "packages/core/src/engine/compaction/compact-continuity.ts", "line": 27, "contains": "function outcomeFields", "reason": "提取并保留执行状态、错误与结果引用。"},
+        {"path": "packages/core/src/engine/compaction/README.md", "line": 19, "contains": "旧摘要没有执行字段时不推断成功", "reason": "说明压缩前后状态的保留约束。"}
+      ]
+    },
+    {
+      "id": "chinese-plugin-guard", "category": "chinese-requirement", "query": "原生插件工具调用前在哪里校验参数，并限制同时进行的调用数量？",
+      "baselinePatterns": ["validateJsonSchemaInput|maxConcurrentCalls", "tool_concurrency_limit|tool_input_invalid"],
+      "relevant": [{"path": "packages/agent-runtime/src/node/plugins/native-tools/guard.ts", "line": 47, "contains": "const validation = validateJsonSchemaInput", "reason": "调用前执行并发限制和参数校验。"}]
+    },
+    {
+      "id": "chinese-plugin-data", "category": "chinese-requirement", "query": "插件保存的数据目录是怎么按插件标识分配，并传给工具进程的？",
+      "baselinePatterns": ["dataDir.*getPluginDataDir|dataDir.*manifest\\.id", "plugin.*dataDir|dataDir"],
+      "relevant": [{"path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts", "line": 97, "contains": "dataDir: join(this.options.dataRoot ?? getPluginDataDir(), this.plugin.manifest.id)", "reason": "按插件 id 分配数据目录并放入注册负载。"}]
+    },
+    {
+      "id": "chinese-schedule-history", "category": "chinese-requirement", "query": "定时计划和每次执行的历史记录保存在哪里，创建记录的代码在哪里？",
+      "baselinePatterns": ["class ScheduleRepository|createRun\\(input: CreateScheduledRunInput", "计划与执行历史保存在"],
+      "relevant": [
+        {"path": "packages/services/src/schedules/schedule-repository.ts", "line": 132, "contains": "createRun(input: CreateScheduledRunInput)", "reason": "创建计划执行记录并写入 scheduledRuns。"},
+        {"path": "packages/services/src/schedules/README.md", "line": 11, "contains": "计划与执行历史保存在 SQLite", "reason": "说明持久状态的归属。"}
+      ]
+    },
+    {
+      "id": "docs-plugin-process", "category": "documentation", "query": "查找介绍本地插件工具进程入口、请求取消和状态归属的文档",
+      "baselinePatterns": ["本地插件工具进程|独立的 Node 进程", "待处理请求由宿主持有"],
+      "relevant": [{"path": "packages/agent-runtime/src/node/plugins/native-tools/README.md", "line": 15, "contains": "进程和待处理请求由宿主持有", "reason": "同时交代调用流程及状态归属。"}]
+    },
+    {
+      "id": "docs-attachment-routing", "category": "documentation", "query": "Find the documentation for attachment input capability routing and where its state lives",
+      "baselinePatterns": ["附件输入方式选择|AttachmentCapabilityRouter", "不维护长期缓存"],
+      "relevant": [{"path": "packages/server/src/application/attachments/routing/README.md", "line": 11, "contains": "结果属于当前输入，不维护长期缓存", "reason": "附件路由目录说明入口和状态归属。"}]
+    },
+    {
+      "id": "docs-compaction", "category": "documentation", "query": "查找历史消息压缩的处理顺序，以及摘要失败时的后备处理说明",
+      "baselinePatterns": ["历史消息压缩|摘要失败时", "简单压缩作为后备处理"],
+      "relevant": [{"path": "packages/core/src/engine/compaction/README.md", "line": 15, "contains": "没有摘要客户端或摘要失败时，使用简单压缩作为后备处理", "reason": "介绍清理、截短、摘要和后备顺序。"}]
+    },
+    {
+      "id": "docs-token-estimate", "category": "documentation", "query": "查找解释文本 Token 估算与供应商实际计费用量区别的文档",
+      "baselinePatterns": ["不代表供应商实际计费用量|文本 Token 估算", "不依赖模型请求的文本"],
+      "relevant": [{"path": "packages/services/src/token-estimation/README.md", "line": 11, "contains": "不代表供应商实际计费用量", "reason": "明确估算不代表真实计费。"}]
+    }
+  ]
+}

@@ -4,6 +4,7 @@
 
 | 目录 | 用途 | 构建入口 |
 | --- | --- | --- |
+| [xerj-search](./xerj-search/README.md) | 可关闭的本机代码与文本资料检索，保留 Grep 回退 | `npm run build` |
 | [excalidraw](./excalidraw/README.md) | 对话侧栏画板、自动保存、引用选区和导出 | `npm run build` |
 | [knowledge-work](./knowledge-work/README.md) | 研究、资料整理和写作 | `npm run build` |
 | [office-work](./office-work/README.md) | Word、Excel、PPT 文档操作 | `npm run build` |

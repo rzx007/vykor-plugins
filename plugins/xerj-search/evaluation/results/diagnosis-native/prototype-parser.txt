@@ -1,0 +1,30 @@
+Diagnostic prototype only. Not production code or a tool entry point.
+
+The live confirmation used the unchanged projectContext, callMcp,
+verifyCandidates(candidates, scope, 5) and per-hit 1500-byte cap.
+Only rendered text parsing was changed before verification, as below.
+The final response used the production 8192-byte cap (drop trailing hits).
+All six confirmations remained below that cap without dropping hits.
+
+function parse(text) {
+  const trimmed = text
+    .replace(/\r?\n[0-9]+ passages from[\s\S]*$/, '')
+    .replace(/\r?\nCite file:line for anything you rely on\.[\s\S]*$/, '');
+  const candidates = codeCandidates(trimmed);
+  const headers = [...trimmed.matchAll(
+    /^─── .+?  \([^\n]*\)\r?\n(?:    \[[^\n]*?@ line (\d+)[^\n]*\](?:\r?\n|$))?/gm
+  )];
+  return candidates.map((candidate, index) => ({
+    ...candidate,
+    line: headers[index]?.[1] ? Number(headers[index][1]) : candidate.line,
+    text: candidate.text
+      .replace(/^    \[[^\n]*\]\s*$/, '')
+      .replace(/\n    \.\.\. \[[^\n]* truncated at \d+ chars\]\s*$/, '')
+      .trimEnd(),
+  }));
+}
+
+The early variants used a less complete prototype. Keep their failures;
+use bounded-controls-live.json for the final selected-query confirmation.
+This prototype is not a ready patch: generic bracketed source text and
+future native marker formats still need regression tests and review.

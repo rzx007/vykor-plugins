@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "selectedAt": "2026-10-27T07:37:45.685Z",
+  "source": {
+    "path": "D:\\code\\personal-project\\vykor-plugins\\plugins\\xerj-search\\evaluation\\tasks.json",
+    "sha256": "eb61b3d0cab800b4ff6ba5a66f62f7f476cfcf7fe2f8f03f5804d0073c5fb1d9",
+    "id": "openharness-retrieval-2026-10-27-v1"
+  },
+  "selectionRule": "First task in each predeclared category, fixed before any model request",
+  "provider": "deepseek",
+  "model": "deepseek-flash",
+  "corpus": "C:\\Users\\ruanz\\AppData\\Local\\Temp\\openharness-xerj-rc99-20261027\\corpus",
+  "serviceUrl": "http://127.0.0.1:19271",
+  "prefix": "oh-rc99-20261027",
+  "pluginConfiguration": {
+    "version": "0.2.0",
+    "sha256": "d358fea3bb0dfbc0fdfc1a8e7253f11e490e65b6a83f2f038f46f97cd2b8dc7c",
+    "tools": [
+      "XerjSearch",
+      "XerjDefinition",
+      "XerjMap",
+      "XerjBatchSearch"
+    ]
+  },
+  "nativePermissionPolicy": [
+    "XerjSearch",
+    "XerjDefinition",
+    "XerjMap",
+    "XerjBatchSearch"
+  ],
+  "budget": {
+    "agentRuns": 8,
+    "maxModelRequestsPerRun": 6,
+    "maxModelRequestsTotal": 48,
+    "maxOutputTokensPerRequest": 1024,
+    "automaticRetries": 0
+  },
+  "systemPrompt": "你是仓库代码定位助手。只用当前工作目录内的代码与资料回答，不修改文件。\n有 XerjSearch 时先尝试一次，否则 Grep；fallback 立即 Grep；返回文件和行号。\n检索结果不足时可提取关键词并调用 Grep，用 Read 核对当前原文。不要从记忆猜测路径。\n回答简洁，说明找到的入口、关键步骤和证据。最多使用六轮模型请求。",
+  "tasks": [
+    {
+      "id": "symbol-grep",
+      "category": "exact-symbol",
+      "query": "createGrepTool",
+      "baselinePatterns": [
+        "createGrepTool"
+      ],
+      "relevant": [
+        {
+          "path": "packages/tools/src/search/grep.ts",
+          "line": 8,
+          "contains": "export function createGrepTool",
+          "reason": "Grep 工具的实际工厂入口。"
+        }
+      ],
+      "userPrompt": "createGrepTool\n请说明定位依据，返回文件与行号。"
+    },
+    {
+      "id": "english-shell-logs",
+      "category": "english-feature",
+      "query": "Search retained shell output logs with a regular expression and open the matching byte offset",
+      "baselinePatterns": [
+        "shell-output://|byteOffset",
+        "shellOutputLogs\\.search"
+      ],
+      "relevant": [
+        {
+          "path": "packages/tools/src/search/grep.ts",
+          "line": 56,
+          "contains": "host.shellOutputLogs.search",
+          "reason": "日志引用分支调用日志搜索，并在后续返回 byteOffset。"
+        }
+      ],
+      "userPrompt": "Search retained shell output logs with a regular expression and open the matching byte offset\n请说明定位依据，返回文件与行号。"
+    },
+    {
+      "id": "chinese-tool-outcome",
+      "category": "chinese-requirement",
+      "query": "对话压缩后，如何保留工具执行状态、错误标记和完整结果引用，避免把未知执行当成成功？",
+      "baselinePatterns": [
+        "executionState.*isError.*resultRef|执行状态.*结果引用",
+        "outcomeFields"
+      ],
+      "relevant": [
+        {
+          "path": "packages/core/src/engine/compaction/compact-continuity.ts",
+          "line": 27,
+          "contains": "function outcomeFields",
+          "reason": "提取并保留执行状态、错误与结果引用。"
+        },
+        {
+          "path": "packages/core/src/engine/compaction/README.md",
+          "line": 19,
+          "contains": "旧摘要没有执行字段时不推断成功",
+          "reason": "说明压缩前后状态的保留约束。"
+        }
+      ],
+      "userPrompt": "对话压缩后，如何保留工具执行状态、错误标记和完整结果引用，避免把未知执行当成成功？\n请说明定位依据，返回文件与行号。"
+    },
+    {
+      "id": "docs-plugin-process",
+      "category": "documentation",
+      "query": "查找介绍本地插件工具进程入口、请求取消和状态归属的文档",
+      "baselinePatterns": [
+        "本地插件工具进程|独立的 Node 进程",
+        "待处理请求由宿主持有"
+      ],
+      "relevant": [
+        {
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/README.md",
+          "line": 15,
+          "contains": "进程和待处理请求由宿主持有",
+          "reason": "同时交代调用流程及状态归属。"
+        }
+      ],
+      "userPrompt": "查找介绍本地插件工具进程入口、请求取消和状态归属的文档\n请说明定位依据，返回文件与行号。"
+    }
+  ]
+}

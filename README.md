@@ -8,7 +8,7 @@
 
 根目录 `marketplace.json` 是唯一的收录清单，不是公开下载索引。每项记录插件 ID、分类，以及以下两种来源之一，不能同时声明：
 
-- 本仓官方插件使用 `localPath: "plugins/<name>"`。Excalidraw、研究与写作、办公文档的源码在本仓维护；真实目录必须留在 `plugins/` 下，不接受目录或文件链接。
+- 本仓官方插件使用 `localPath: "plugins/<name>"`。Excalidraw、研究与写作、办公文档及 XERJ 检索的源码在本仓维护；真实目录必须留在 `plugins/` 下，不接受目录或文件链接。
 - 外部插件使用 `source: {repository, commit, path}`，固定完整的 40 位提交。独立仓库和 Vykor 教学示例可使用这种方式，但插件必须位于真实子目录。仓库地址为 `https://github.com/OWNER/REPO`，不带 `.git`、尾斜线、认证信息、端口或查询参数；`path` 如 `plugins/example`，不能写仓库根目录 `.`、`./...`、空路径或包含空分段、`.`、`..`、冒号、反斜线的路径，真实路径必须留在检出目录内。
 
 每次构建都创建干净的临时目录。官方插件从当前工作区复制 Git 已跟踪及未忽略的新文件，忽略的 `dist`、依赖和下载缓存不参与复制；外部插件获取固定提交，并核对实际 HEAD。一次构建内，相同仓库和提交可复用检出，不同仓库分别验证。随后在临时插件目录执行 `npm ci --ignore-scripts`、构建、已有测试和类型检查；声明了 `test:stdio` 的插件还会启动实际构建产物检查 MCP 服务，失败即停止打包。全部通过后生成确定性 ZIP，最后清理临时目录，不修改官方插件的工作区产物。
@@ -44,7 +44,7 @@ npm run verify
 
 ## 正式插件与目录入口
 
-市场包含：本仓 [plugins/](plugins/README.md) 中的 Excalidraw（`plugins/excalidraw`）、研究与写作（`plugins/knowledge-work`）、办公文档（`plugins/office-work`），独立 GitHub 工作流插件，以及 Vykor `examples/plugins/` 中的两个固定提交示例。插件 ID 保持不变。新增第三方插件可在自己的公开 GitHub 仓库的真实子目录维护，通过 `source` 收录；新增本仓官方插件使用 `localPath`，无需在自身清单里写尚未产生的提交号。
+市场包含：本仓 [plugins/](plugins/README.md) 中的 Excalidraw、研究与写作、办公文档及 [XERJ 代码与资料搜索](plugins/xerj-search/README.md)，独立 GitHub 工作流插件，以及 Vykor `examples/plugins/` 中的两个固定提交示例。插件 ID 保持不变。新增第三方插件可在自己的公开 GitHub 仓库的真实子目录维护，通过 `source` 收录；新增本仓官方插件使用 `localPath`，无需在自身清单里写尚未产生的提交号。
 
 [独立 GitHub 插件](https://github.com/rzx007/vykor-plugin-github/tree/main/plugins/github)以真实子目录 `plugins/github` 收录，稳定 ID 为 `dev.vykor.github`。根路径 `.` 仍被拒绝：已发布宿主在最低版本判断前解析整份目录，提高 `requires.host` 不能绕过路径要求。
 

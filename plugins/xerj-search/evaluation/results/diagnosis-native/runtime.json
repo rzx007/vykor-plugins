@@ -1,0 +1,21 @@
+{
+  "release": "v1.0.0-rc.99",
+  "upstreamTagCommit": "e3c14a28dfb9fd677f650e310630db51cea431b0",
+  "upstreamMainCompared": "d435fb9c780c26d312e7cddae2b7ac5ec0f28f07",
+  "binarySha256": "36d35107dcec302a4e6c57debb763f31b934864748a6ca86c3b17e581dedb979",
+  "sameOriginalIndex": true,
+  "newIndexing": false,
+  "productionPluginChanged": false,
+  "modelApiRequests": 0,
+  "feedbackDisabled": true,
+  "serverSample": {
+    "pid": 45112,
+    "path": "C:\\Users\\ruanz\\AppData\\Local\\Temp\\openharness-xerj-rc99-20261027\\bin\\xerj-1.0.0-rc.99-x86_64-pc-windows-msvc\\xerj.exe",
+    "workingSetBytes": 338403328,
+    "peakWorkingSetBytes": 360759296,
+    "started": "2026-10-27T08:06:38.8009857Z"
+  },
+  "serverStopped": true,
+  "stoppedAt": "2026-10-27T08:28:36.6872441Z",
+  "originalResultsOverwritten": false
+}

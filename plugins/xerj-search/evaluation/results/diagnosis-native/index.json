@@ -1,0 +1,4283 @@
+{
+  "mapping": {
+    "status": 200,
+    "body": {
+      "oh-rc99-20261027-apps-desktop": {
+        "mappings": {
+          "properties": {
+            "col_1": {
+              "type": "keyword"
+            },
+            "ax_path": {
+              "type": "keyword"
+            },
+            "ax_paths": {
+              "type": "keyword"
+            },
+            "ax_file": {
+              "type": "keyword"
+            },
+            "ax_locator": {
+              "type": "keyword"
+            },
+            "ax_dataset": {
+              "type": "keyword"
+            },
+            "ax_run": {
+              "type": "keyword"
+            },
+            "ax_format": {
+              "type": "keyword"
+            }
+          }
+        }
+      },
+      "oh-rc99-20261027-docs-2": {
+        "mappings": {
+          "properties": {
+            "field": {
+              "type": "keyword"
+            },
+            "field2": {
+              "type": "keyword"
+            },
+            "ax_path": {
+              "type": "keyword"
+            },
+            "ax_paths": {
+              "type": "keyword"
+            },
+            "ax_file": {
+              "type": "keyword"
+            },
+            "ax_locator": {
+              "type": "keyword"
+            },
+            "ax_dataset": {
+              "type": "keyword"
+            },
+            "ax_run": {
+              "type": "keyword"
+            },
+            "ax_format": {
+              "type": "keyword"
+            }
+          }
+        }
+      },
+      "oh-rc99-20261027-docs": {
+        "mappings": {
+          "properties": {
+            "body": {
+              "type": "text"
+            },
+            "code": {
+              "type": "text"
+            },
+            "defs": {
+              "type": "text"
+            },
+            "end_line": {
+              "type": "long"
+            },
+            "headings": {
+              "type": "keyword"
+            },
+            "impl": {
+              "type": "text"
+            },
+            "kind": {
+              "type": "keyword"
+            },
+            "language": {
+              "type": "keyword"
+            },
+            "line": {
+              "type": "long"
+            },
+            "name": {
+              "type": "keyword"
+            },
+            "path": {
+              "type": "keyword"
+            },
+            "section": {
+              "type": "long"
+            },
+            "start_line": {
+              "type": "long"
+            },
+            "symbol_count": {
+              "type": "long"
+            },
+            "text": {
+              "type": "text"
+            },
+            "title": {
+              "type": "keyword"
+            },
+            "ax_path": {
+              "type": "keyword"
+            },
+            "ax_paths": {
+              "type": "keyword"
+            },
+            "ax_file": {
+              "type": "keyword"
+            },
+            "ax_locator": {
+              "type": "keyword"
+            },
+            "ax_dataset": {
+              "type": "keyword"
+            },
+            "ax_run": {
+              "type": "keyword"
+            },
+            "ax_format": {
+              "type": "keyword"
+            },
+            "symbols": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "text",
+                  "fields": {
+                    "keyword": {
+                      "type": "keyword",
+                      "ignore_above": 256
+                    }
+                  }
+                },
+                "kind": {
+                  "type": "text",
+                  "fields": {
+                    "keyword": {
+                      "type": "keyword",
+                      "ignore_above": 256
+                    }
+                  }
+                },
+                "line": {
+                  "type": "long"
+                },
+                "end_line": {
+                  "type": "long"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "settings": {
+    "status": 200,
+    "body": {
+      "oh-rc99-20261027-docs": {
+        "settings": {
+          "index": {
+            "number_of_shards": "1",
+            "number_of_replicas": "0",
+            "xerj_ingest_shards": "1",
+            "creation_date": "1793081183555",
+            "uuid": "35b011d4-1bd0-c43f-1152-2dcba635486e",
+            "version": {
+              "created": "8130099"
+            },
+            "provided_name": "oh-rc99-20261027-docs",
+            "analysis": {
+              "analyzer": {
+                "default": {
+                  "type": "code"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "analyses": {
+    "原生插件工具调用前在哪里校验参数，并限制同时进行的调用数量？": {
+      "status": 200,
+      "body": {
+        "tokens": [
+          {
+            "token": "原",
+            "start_offset": 0,
+            "end_offset": 3,
+            "type": "word",
+            "position": 0
+          },
+          {
+            "token": "生",
+            "start_offset": 3,
+            "end_offset": 6,
+            "type": "word",
+            "position": 1
+          },
+          {
+            "token": "插",
+            "start_offset": 6,
+            "end_offset": 9,
+            "type": "word",
+            "position": 2
+          },
+          {
+            "token": "件",
+            "start_offset": 9,
+            "end_offset": 12,
+            "type": "word",
+            "position": 3
+          },
+          {
+            "token": "工",
+            "start_offset": 12,
+            "end_offset": 15,
+            "type": "word",
+            "position": 4
+          },
+          {
+            "token": "具",
+            "start_offset": 15,
+            "end_offset": 18,
+            "type": "word",
+            "position": 5
+          },
+          {
+            "token": "调",
+            "start_offset": 18,
+            "end_offset": 21,
+            "type": "word",
+            "position": 6
+          },
+          {
+            "token": "用",
+            "start_offset": 21,
+            "end_offset": 24,
+            "type": "word",
+            "position": 7
+          },
+          {
+            "token": "前",
+            "start_offset": 24,
+            "end_offset": 27,
+            "type": "word",
+            "position": 8
+          },
+          {
+            "token": "在",
+            "start_offset": 27,
+            "end_offset": 30,
+            "type": "word",
+            "position": 9
+          },
+          {
+            "token": "哪",
+            "start_offset": 30,
+            "end_offset": 33,
+            "type": "word",
+            "position": 10
+          },
+          {
+            "token": "里",
+            "start_offset": 33,
+            "end_offset": 36,
+            "type": "word",
+            "position": 11
+          },
+          {
+            "token": "校",
+            "start_offset": 36,
+            "end_offset": 39,
+            "type": "word",
+            "position": 12
+          },
+          {
+            "token": "验",
+            "start_offset": 39,
+            "end_offset": 42,
+            "type": "word",
+            "position": 13
+          },
+          {
+            "token": "参",
+            "start_offset": 42,
+            "end_offset": 45,
+            "type": "word",
+            "position": 14
+          },
+          {
+            "token": "数",
+            "start_offset": 45,
+            "end_offset": 48,
+            "type": "word",
+            "position": 15
+          },
+          {
+            "token": "并",
+            "start_offset": 51,
+            "end_offset": 54,
+            "type": "word",
+            "position": 16
+          },
+          {
+            "token": "限",
+            "start_offset": 54,
+            "end_offset": 57,
+            "type": "word",
+            "position": 17
+          },
+          {
+            "token": "制",
+            "start_offset": 57,
+            "end_offset": 60,
+            "type": "word",
+            "position": 18
+          },
+          {
+            "token": "同",
+            "start_offset": 60,
+            "end_offset": 63,
+            "type": "word",
+            "position": 19
+          },
+          {
+            "token": "时",
+            "start_offset": 63,
+            "end_offset": 66,
+            "type": "word",
+            "position": 20
+          },
+          {
+            "token": "进",
+            "start_offset": 66,
+            "end_offset": 69,
+            "type": "word",
+            "position": 21
+          },
+          {
+            "token": "行",
+            "start_offset": 69,
+            "end_offset": 72,
+            "type": "word",
+            "position": 22
+          },
+          {
+            "token": "的",
+            "start_offset": 72,
+            "end_offset": 75,
+            "type": "word",
+            "position": 23
+          },
+          {
+            "token": "调",
+            "start_offset": 75,
+            "end_offset": 78,
+            "type": "word",
+            "position": 24
+          },
+          {
+            "token": "用",
+            "start_offset": 78,
+            "end_offset": 81,
+            "type": "word",
+            "position": 25
+          },
+          {
+            "token": "数",
+            "start_offset": 81,
+            "end_offset": 84,
+            "type": "word",
+            "position": 26
+          },
+          {
+            "token": "量",
+            "start_offset": 84,
+            "end_offset": 87,
+            "type": "word",
+            "position": 27
+          }
+        ]
+      }
+    },
+    "定时计划和每次执行的历史记录保存在哪里，创建记录的代码在哪里？": {
+      "status": 200,
+      "body": {
+        "tokens": [
+          {
+            "token": "定",
+            "start_offset": 0,
+            "end_offset": 3,
+            "type": "word",
+            "position": 0
+          },
+          {
+            "token": "时",
+            "start_offset": 3,
+            "end_offset": 6,
+            "type": "word",
+            "position": 1
+          },
+          {
+            "token": "计",
+            "start_offset": 6,
+            "end_offset": 9,
+            "type": "word",
+            "position": 2
+          },
+          {
+            "token": "划",
+            "start_offset": 9,
+            "end_offset": 12,
+            "type": "word",
+            "position": 3
+          },
+          {
+            "token": "和",
+            "start_offset": 12,
+            "end_offset": 15,
+            "type": "word",
+            "position": 4
+          },
+          {
+            "token": "每",
+            "start_offset": 15,
+            "end_offset": 18,
+            "type": "word",
+            "position": 5
+          },
+          {
+            "token": "次",
+            "start_offset": 18,
+            "end_offset": 21,
+            "type": "word",
+            "position": 6
+          },
+          {
+            "token": "执",
+            "start_offset": 21,
+            "end_offset": 24,
+            "type": "word",
+            "position": 7
+          },
+          {
+            "token": "行",
+            "start_offset": 24,
+            "end_offset": 27,
+            "type": "word",
+            "position": 8
+          },
+          {
+            "token": "的",
+            "start_offset": 27,
+            "end_offset": 30,
+            "type": "word",
+            "position": 9
+          },
+          {
+            "token": "历",
+            "start_offset": 30,
+            "end_offset": 33,
+            "type": "word",
+            "position": 10
+          },
+          {
+            "token": "史",
+            "start_offset": 33,
+            "end_offset": 36,
+            "type": "word",
+            "position": 11
+          },
+          {
+            "token": "记",
+            "start_offset": 36,
+            "end_offset": 39,
+            "type": "word",
+            "position": 12
+          },
+          {
+            "token": "录",
+            "start_offset": 39,
+            "end_offset": 42,
+            "type": "word",
+            "position": 13
+          },
+          {
+            "token": "保",
+            "start_offset": 42,
+            "end_offset": 45,
+            "type": "word",
+            "position": 14
+          },
+          {
+            "token": "存",
+            "start_offset": 45,
+            "end_offset": 48,
+            "type": "word",
+            "position": 15
+          },
+          {
+            "token": "在",
+            "start_offset": 48,
+            "end_offset": 51,
+            "type": "word",
+            "position": 16
+          },
+          {
+            "token": "哪",
+            "start_offset": 51,
+            "end_offset": 54,
+            "type": "word",
+            "position": 17
+          },
+          {
+            "token": "里",
+            "start_offset": 54,
+            "end_offset": 57,
+            "type": "word",
+            "position": 18
+          },
+          {
+            "token": "创",
+            "start_offset": 60,
+            "end_offset": 63,
+            "type": "word",
+            "position": 19
+          },
+          {
+            "token": "建",
+            "start_offset": 63,
+            "end_offset": 66,
+            "type": "word",
+            "position": 20
+          },
+          {
+            "token": "记",
+            "start_offset": 66,
+            "end_offset": 69,
+            "type": "word",
+            "position": 21
+          },
+          {
+            "token": "录",
+            "start_offset": 69,
+            "end_offset": 72,
+            "type": "word",
+            "position": 22
+          },
+          {
+            "token": "的",
+            "start_offset": 72,
+            "end_offset": 75,
+            "type": "word",
+            "position": 23
+          },
+          {
+            "token": "代",
+            "start_offset": 75,
+            "end_offset": 78,
+            "type": "word",
+            "position": 24
+          },
+          {
+            "token": "码",
+            "start_offset": 78,
+            "end_offset": 81,
+            "type": "word",
+            "position": 25
+          },
+          {
+            "token": "在",
+            "start_offset": 81,
+            "end_offset": 84,
+            "type": "word",
+            "position": 26
+          },
+          {
+            "token": "哪",
+            "start_offset": 84,
+            "end_offset": 87,
+            "type": "word",
+            "position": 27
+          },
+          {
+            "token": "里",
+            "start_offset": 87,
+            "end_offset": 90,
+            "type": "word",
+            "position": 28
+          }
+        ]
+      }
+    },
+    "validateJsonSchemaInput maxConcurrentCalls": {
+      "status": 200,
+      "body": {
+        "tokens": [
+          {
+            "token": "validate",
+            "start_offset": 0,
+            "end_offset": 23,
+            "type": "word",
+            "position": 0
+          },
+          {
+            "token": "json",
+            "start_offset": 0,
+            "end_offset": 23,
+            "type": "word",
+            "position": 0
+          },
+          {
+            "token": "schema",
+            "start_offset": 0,
+            "end_offset": 23,
+            "type": "word",
+            "position": 0
+          },
+          {
+            "token": "input",
+            "start_offset": 0,
+            "end_offset": 23,
+            "type": "word",
+            "position": 0
+          },
+          {
+            "token": "validatejsonschemainput",
+            "start_offset": 0,
+            "end_offset": 23,
+            "type": "word",
+            "position": 0
+          },
+          {
+            "token": "max",
+            "start_offset": 24,
+            "end_offset": 42,
+            "type": "word",
+            "position": 1
+          },
+          {
+            "token": "concurrent",
+            "start_offset": 24,
+            "end_offset": 42,
+            "type": "word",
+            "position": 1
+          },
+          {
+            "token": "calls",
+            "start_offset": 24,
+            "end_offset": 42,
+            "type": "word",
+            "position": 1
+          },
+          {
+            "token": "maxconcurrentcalls",
+            "start_offset": 24,
+            "end_offset": 42,
+            "type": "word",
+            "position": 1
+          }
+        ]
+      }
+    },
+    "计划与执行历史保存在 SQLite": {
+      "status": 200,
+      "body": {
+        "tokens": [
+          {
+            "token": "计",
+            "start_offset": 0,
+            "end_offset": 3,
+            "type": "word",
+            "position": 0
+          },
+          {
+            "token": "划",
+            "start_offset": 3,
+            "end_offset": 6,
+            "type": "word",
+            "position": 1
+          },
+          {
+            "token": "与",
+            "start_offset": 6,
+            "end_offset": 9,
+            "type": "word",
+            "position": 2
+          },
+          {
+            "token": "执",
+            "start_offset": 9,
+            "end_offset": 12,
+            "type": "word",
+            "position": 3
+          },
+          {
+            "token": "行",
+            "start_offset": 12,
+            "end_offset": 15,
+            "type": "word",
+            "position": 4
+          },
+          {
+            "token": "历",
+            "start_offset": 15,
+            "end_offset": 18,
+            "type": "word",
+            "position": 5
+          },
+          {
+            "token": "史",
+            "start_offset": 18,
+            "end_offset": 21,
+            "type": "word",
+            "position": 6
+          },
+          {
+            "token": "保",
+            "start_offset": 21,
+            "end_offset": 24,
+            "type": "word",
+            "position": 7
+          },
+          {
+            "token": "存",
+            "start_offset": 24,
+            "end_offset": 27,
+            "type": "word",
+            "position": 8
+          },
+          {
+            "token": "在",
+            "start_offset": 27,
+            "end_offset": 30,
+            "type": "word",
+            "position": 9
+          },
+          {
+            "token": "sq",
+            "start_offset": 31,
+            "end_offset": 37,
+            "type": "word",
+            "position": 10
+          },
+          {
+            "token": "lite",
+            "start_offset": 31,
+            "end_offset": 37,
+            "type": "word",
+            "position": 10
+          },
+          {
+            "token": "sqlite",
+            "start_offset": 31,
+            "end_offset": 37,
+            "type": "word",
+            "position": 10
+          }
+        ]
+      }
+    }
+  },
+  "gold": [
+    {
+      "taskId": "english-shell-logs",
+      "path": "packages/tools/src/search/grep.ts",
+      "line": 56,
+      "contains": "host.shellOutputLogs.search",
+      "reason": "日志引用分支调用日志搜索，并在后续返回 byteOffset。",
+      "status": 200,
+      "total": {
+        "value": 5,
+        "relation": "eq"
+      },
+      "fileRecord": {
+        "index": "oh-rc99-20261027-docs",
+        "id": "5f7bba6b13a469a1d4124020c85205e8",
+        "keys": [
+          "title",
+          "body",
+          "ax_path",
+          "ax_paths",
+          "ax_file",
+          "ax_locator",
+          "ax_dataset",
+          "ax_run",
+          "ax_format",
+          "language",
+          "defs",
+          "symbols",
+          "symbol_count"
+        ],
+        "chars": 7701,
+        "hasAnchor": true,
+        "symbols": 4
+      },
+      "allRecords": [
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "5f7bba6b13a469a1d4124020c85205e8",
+          "language": "typescript",
+          "path": "packages/tools/src/search/grep.ts",
+          "keys": [
+            "title",
+            "body",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "defs",
+            "symbols",
+            "symbol_count"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "a526ebf22761e111b45175a9956db7cc",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/tools/src/search/grep.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "8ace0be71520d0b1229980eb1197b305",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/tools/src/search/grep.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "7c725798a2a80f71123b9b1ea8d39043",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/tools/src/search/grep.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "4d14fc30a101a713e6c9be65d652be52",
+          "kind": "const",
+          "language": "typescript",
+          "path": "packages/tools/src/search/grep.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code"
+          ]
+        }
+      ]
+    },
+    {
+      "taskId": "english-cancel-host",
+      "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+      "line": 276,
+      "contains": "child.kill()",
+      "reason": "取消宽限期结束时强制停止子进程。",
+      "status": 200,
+      "total": {
+        "value": 24,
+        "relation": "eq"
+      },
+      "fileRecord": {
+        "index": "oh-rc99-20261027-docs",
+        "id": "bb32fcb0064303b1b3471e2b1f95a866",
+        "keys": [
+          "title",
+          "body",
+          "ax_path",
+          "ax_paths",
+          "ax_file",
+          "ax_locator",
+          "ax_dataset",
+          "ax_run",
+          "ax_format",
+          "language",
+          "defs",
+          "symbols",
+          "symbol_count"
+        ],
+        "chars": 13417,
+        "hasAnchor": true,
+        "symbols": 23
+      },
+      "allRecords": [
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "bb32fcb0064303b1b3471e2b1f95a866",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "body",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "defs",
+            "symbols",
+            "symbol_count"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "5097915f20d94192a83295ec5f294786",
+          "kind": "type",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "a5882899d932d67ff119a47fb0c1650d",
+          "kind": "class",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "0958604521c0828d003d109a5a4b767b",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "a50aa9ed6fc764c561ae054714f6da0d",
+          "kind": "interface",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "a9b44d9fcd6e5e85faf7ee577dd37c14",
+          "kind": "interface",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "d7a596a575bde8427da0e91a077546eb",
+          "kind": "class",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "8971a137405391d865662c2c9ac688c8",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "ea1c35447b1d03d9ba3e9bb79e3a8d56",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "39c785e669c575baf5157e56df4a3789",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "d61be7530a4f90fb5f3edce2e9151ec7",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "7ec62a61e2029557581c610b7d608943",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "d66a04b9d2dcf2d40010f4afbc9cf89f",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "02458084ab1653ea7b6fdcf6deace31a",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "53cfedc4872677c66515028890261c92",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "8a251e2792542de0dbe9ec78daf890a3",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "922e7052ce15fd7d9ee6da1d88915854",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "65fbf3fcae9b0c06254f9712f0099d44",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "d631b11cda0d3816bf491e0d4f3a5dc4",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "1f60fd2e751daf076358e5c2b43e2ac3",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "a54383f2f07efa6a41dbc0048e0b7255",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "6f2c4aae88de67dd0d9f0f3ca62111df",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "01f87c90cdda20a6217a3ed37d324236",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "997b8ff7713f51157a3ed1b07b2df1c2",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        }
+      ]
+    },
+    {
+      "taskId": "english-image-route",
+      "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+      "line": 56,
+      "contains": "const nativeImageAvailable",
+      "reason": "合并模型与供应商能力，并选择图片路由。",
+      "status": 200,
+      "total": {
+        "value": 15,
+        "relation": "eq"
+      },
+      "fileRecord": {
+        "index": "oh-rc99-20261027-docs",
+        "id": "681c8f39b9f844ed863f319e23e59ddc",
+        "keys": [
+          "title",
+          "body",
+          "ax_path",
+          "ax_paths",
+          "ax_file",
+          "ax_locator",
+          "ax_dataset",
+          "ax_run",
+          "ax_format",
+          "language",
+          "defs",
+          "symbols",
+          "symbol_count"
+        ],
+        "chars": 11872,
+        "hasAnchor": true,
+        "symbols": 14
+      },
+      "allRecords": [
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "681c8f39b9f844ed863f319e23e59ddc",
+          "language": "typescript",
+          "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "keys": [
+            "title",
+            "body",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "defs",
+            "symbols",
+            "symbol_count"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "fc0596168ee48e3c335bea34ae28592a",
+          "kind": "interface",
+          "language": "typescript",
+          "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "c837b36c485acc79b7bc12b20bc09467",
+          "kind": "interface",
+          "language": "typescript",
+          "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "a8ad5304c986989d3c5c9ee10d32d627",
+          "kind": "class",
+          "language": "typescript",
+          "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "3243229d02b663060a8becc1d356045d",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "131623ba3601da9f4d03ca651203c84d",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "11c69a3b26a0c4df39e86964d0b288c1",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "a17f2db88e301e7c6d44eae7b983a74d",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "b683638b934f2fd4401ccc3239ee00ff",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "15c9e156a9c24bae332762bc4de71909",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "36cdb25a5e64478c4d158b747e0f85b8",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "5f0f89653a2f50fe2a9d45bf0482d223",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "209723089cc52329a1e0f932e3b8dcc5",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "8e91996f5fc4ddd23916239ead8c3c9f",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "26787220e84bb3b547bb7c2692a41822",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        }
+      ]
+    },
+    {
+      "taskId": "english-timezone",
+      "path": "packages/services/src/schedules/recurrence.ts",
+      "line": 61,
+      "contains": "assertTimezone(options.timezone)",
+      "reason": "校验时区并把该时区交给规则匹配。",
+      "status": 200,
+      "total": {
+        "value": 17,
+        "relation": "eq"
+      },
+      "fileRecord": {
+        "index": "oh-rc99-20261027-docs",
+        "id": "98dd59c3e326b5f919d3e58bc9e70123",
+        "keys": [
+          "title",
+          "body",
+          "ax_path",
+          "ax_paths",
+          "ax_file",
+          "ax_locator",
+          "ax_dataset",
+          "ax_run",
+          "ax_format",
+          "language",
+          "defs",
+          "symbols",
+          "symbol_count"
+        ],
+        "chars": 8848,
+        "hasAnchor": true,
+        "symbols": 16
+      },
+      "allRecords": [
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "98dd59c3e326b5f919d3e58bc9e70123",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/recurrence.ts",
+          "keys": [
+            "title",
+            "body",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "defs",
+            "symbols",
+            "symbol_count"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "1807b8e86e951a3c50c71d562fd020c8",
+          "kind": "type",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/recurrence.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "7d2d1a2a73df8966df43f3f78f4a1b7f",
+          "kind": "interface",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/recurrence.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "efc3f436c62d76b4de059abb2e1edb9c",
+          "kind": "type",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/recurrence.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "c6e18c380cc3c3e14bf5c9ce752019a2",
+          "kind": "interface",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/recurrence.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "18114a3f245cd0b47d26c7b7ebbca6c5",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/recurrence.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "591f6fd8ef49d43a4a4f55d2aac7110c",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/recurrence.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "c1b362d627809c1b9026efd732d0379a",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/recurrence.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "97a1847680f18180eb27cdc0f0ffbc15",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/recurrence.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "cec8c00b592c59dbee675d158b8ddeca",
+          "kind": "interface",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/recurrence.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "d8bd4e67d44a49d1351c1757c0b52ca3",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/recurrence.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "1e238023f76f28ada27970f947c43a06",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/recurrence.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "9620f8517d959e41a107dc1dddfc80cd",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/recurrence.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "7d9ada08e0c258e24d8092f4ac17f78a",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/recurrence.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "e3363498e29dc55558df0a9e6a5e5acc",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/recurrence.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "2544c71aef6edcc2dc8acb11a1ce0df7",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/recurrence.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "99b4cb5dbe6106ffb56b02121f4666da",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/recurrence.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        }
+      ]
+    },
+    {
+      "taskId": "chinese-tool-outcome",
+      "path": "packages/core/src/engine/compaction/compact-continuity.ts",
+      "line": 27,
+      "contains": "function outcomeFields",
+      "reason": "提取并保留执行状态、错误与结果引用。",
+      "status": 200,
+      "total": {
+        "value": 7,
+        "relation": "eq"
+      },
+      "fileRecord": {
+        "index": "oh-rc99-20261027-docs",
+        "id": "a8c49bdddf33a02b4ca5e7fb9dd87265",
+        "keys": [
+          "title",
+          "body",
+          "ax_path",
+          "ax_paths",
+          "ax_file",
+          "ax_locator",
+          "ax_dataset",
+          "ax_run",
+          "ax_format",
+          "language",
+          "defs",
+          "symbols",
+          "symbol_count"
+        ],
+        "chars": 6434,
+        "hasAnchor": true,
+        "symbols": 6
+      },
+      "allRecords": [
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "a8c49bdddf33a02b4ca5e7fb9dd87265",
+          "language": "typescript",
+          "path": "packages/core/src/engine/compaction/compact-continuity.ts",
+          "keys": [
+            "title",
+            "body",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "defs",
+            "symbols",
+            "symbol_count"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "00da2771e958c2a720229a2358443ea8",
+          "kind": "interface",
+          "language": "typescript",
+          "path": "packages/core/src/engine/compaction/compact-continuity.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "ea0857fa61be8d912d124100273bef3b",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/core/src/engine/compaction/compact-continuity.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "617817a04be2c07fff6c7fff399a71f3",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/core/src/engine/compaction/compact-continuity.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "abb4636c48702e5501e2346483fb6386",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/core/src/engine/compaction/compact-continuity.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "34764ed698f3f4cdf59c6d67a82b223c",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/core/src/engine/compaction/compact-continuity.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "fddd3ca7d4930b603eaa47a405c79ab5",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/core/src/engine/compaction/compact-continuity.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        }
+      ]
+    },
+    {
+      "taskId": "chinese-tool-outcome",
+      "path": "packages/core/src/engine/compaction/README.md",
+      "line": 19,
+      "contains": "旧摘要没有执行字段时不推断成功",
+      "reason": "说明压缩前后状态的保留约束。",
+      "status": 200,
+      "total": {
+        "value": 1,
+        "relation": "eq"
+      },
+      "fileRecord": {
+        "index": "oh-rc99-20261027-docs",
+        "id": "42d9b3416fa00933f649c0ccc0803a2c",
+        "keys": [
+          "title",
+          "start_line",
+          "body",
+          "ax_path",
+          "ax_paths",
+          "ax_file",
+          "ax_locator",
+          "ax_dataset",
+          "ax_run",
+          "ax_format"
+        ],
+        "chars": 1042,
+        "hasAnchor": true
+      },
+      "allRecords": [
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "42d9b3416fa00933f649c0ccc0803a2c",
+          "path": "packages/core/src/engine/compaction/README.md",
+          "keys": [
+            "title",
+            "start_line",
+            "body",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format"
+          ]
+        }
+      ]
+    },
+    {
+      "taskId": "chinese-plugin-guard",
+      "path": "packages/agent-runtime/src/node/plugins/native-tools/guard.ts",
+      "line": 47,
+      "contains": "const validation = validateJsonSchemaInput",
+      "reason": "调用前执行并发限制和参数校验。",
+      "status": 200,
+      "total": {
+        "value": 13,
+        "relation": "eq"
+      },
+      "fileRecord": {
+        "index": "oh-rc99-20261027-docs",
+        "id": "d35ff1834816affac509cb26d580c5af",
+        "keys": [
+          "title",
+          "body",
+          "ax_path",
+          "ax_paths",
+          "ax_file",
+          "ax_locator",
+          "ax_dataset",
+          "ax_run",
+          "ax_format",
+          "language",
+          "defs",
+          "symbols",
+          "symbol_count"
+        ],
+        "chars": 7700,
+        "hasAnchor": true,
+        "symbols": 12
+      },
+      "allRecords": [
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "d35ff1834816affac509cb26d580c5af",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/guard.ts",
+          "keys": [
+            "title",
+            "body",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "defs",
+            "symbols",
+            "symbol_count"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "8096f3d347e403431a28b91cb78d7304",
+          "kind": "interface",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/guard.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "627377bc31165ed479563d20e5877f45",
+          "kind": "interface",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/guard.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "6c4e2eb61b2e2788973adf1779dbc435",
+          "kind": "class",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/guard.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "8581266cb11aa25742e55ad7bd7c8f26",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/guard.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "42ab81aac097179f084f80b05938b867",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/guard.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "a1cf5d2402b511b597c08ec16c2a06b3",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/guard.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "267fd4fdbd58d3641167781a230b4cf9",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/guard.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "cea237860d8a79ed1364407101424613",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/guard.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "a9b14c314754d2f65aa3afce276cf816",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/guard.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "d2b6d63b87035f28363a52f0bfcce60f",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/guard.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "cad91537593e24371821d2e424da9b60",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/guard.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "3839e98c1bed89752fb1998c45373973",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/guard.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        }
+      ]
+    },
+    {
+      "taskId": "chinese-plugin-data",
+      "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+      "line": 97,
+      "contains": "dataDir: join(this.options.dataRoot ?? getPluginDataDir(), this.plugin.manifest.id)",
+      "reason": "按插件 id 分配数据目录并放入注册负载。",
+      "status": 200,
+      "total": {
+        "value": 24,
+        "relation": "eq"
+      },
+      "fileRecord": {
+        "index": "oh-rc99-20261027-docs",
+        "id": "bb32fcb0064303b1b3471e2b1f95a866",
+        "keys": [
+          "title",
+          "body",
+          "ax_path",
+          "ax_paths",
+          "ax_file",
+          "ax_locator",
+          "ax_dataset",
+          "ax_run",
+          "ax_format",
+          "language",
+          "defs",
+          "symbols",
+          "symbol_count"
+        ],
+        "chars": 13417,
+        "hasAnchor": true,
+        "symbols": 23
+      },
+      "allRecords": [
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "bb32fcb0064303b1b3471e2b1f95a866",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "body",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "defs",
+            "symbols",
+            "symbol_count"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "5097915f20d94192a83295ec5f294786",
+          "kind": "type",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "a5882899d932d67ff119a47fb0c1650d",
+          "kind": "class",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "0958604521c0828d003d109a5a4b767b",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "a50aa9ed6fc764c561ae054714f6da0d",
+          "kind": "interface",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "a9b44d9fcd6e5e85faf7ee577dd37c14",
+          "kind": "interface",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "d7a596a575bde8427da0e91a077546eb",
+          "kind": "class",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "8971a137405391d865662c2c9ac688c8",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "ea1c35447b1d03d9ba3e9bb79e3a8d56",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "39c785e669c575baf5157e56df4a3789",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "d61be7530a4f90fb5f3edce2e9151ec7",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "7ec62a61e2029557581c610b7d608943",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "d66a04b9d2dcf2d40010f4afbc9cf89f",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "02458084ab1653ea7b6fdcf6deace31a",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "53cfedc4872677c66515028890261c92",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "8a251e2792542de0dbe9ec78daf890a3",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "922e7052ce15fd7d9ee6da1d88915854",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "65fbf3fcae9b0c06254f9712f0099d44",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "d631b11cda0d3816bf491e0d4f3a5dc4",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "1f60fd2e751daf076358e5c2b43e2ac3",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "a54383f2f07efa6a41dbc0048e0b7255",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "6f2c4aae88de67dd0d9f0f3ca62111df",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "01f87c90cdda20a6217a3ed37d324236",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "997b8ff7713f51157a3ed1b07b2df1c2",
+          "kind": "function",
+          "language": "typescript",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        }
+      ]
+    },
+    {
+      "taskId": "chinese-schedule-history",
+      "path": "packages/services/src/schedules/schedule-repository.ts",
+      "line": 132,
+      "contains": "createRun(input: CreateScheduledRunInput)",
+      "reason": "创建计划执行记录并写入 scheduledRuns。",
+      "status": 200,
+      "total": {
+        "value": 15,
+        "relation": "eq"
+      },
+      "fileRecord": {
+        "index": "oh-rc99-20261027-docs",
+        "id": "b4a6656eb7967164294afd2d63a577d2",
+        "keys": [
+          "title",
+          "body",
+          "ax_path",
+          "ax_paths",
+          "ax_file",
+          "ax_locator",
+          "ax_dataset",
+          "ax_run",
+          "ax_format",
+          "language",
+          "defs",
+          "symbols",
+          "symbol_count"
+        ],
+        "chars": 9906,
+        "hasAnchor": true,
+        "symbols": 14
+      },
+      "allRecords": [
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "b4a6656eb7967164294afd2d63a577d2",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/schedule-repository.ts",
+          "keys": [
+            "title",
+            "body",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "defs",
+            "symbols",
+            "symbol_count"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "e949f86a2d62191a179754dc1506a4ac",
+          "kind": "class",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/schedule-repository.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "c5a367e34a91b273b7d05bc68caa6e62",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/schedule-repository.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "59e8a367bc0f6846a94d8ff36d17ba67",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/schedule-repository.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "9fb740d1015ea915927fe69b5f3c9a2d",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/schedule-repository.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "1a935307d476d9854562248cd1b3ab57",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/schedule-repository.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "4884991a24e87eb6d5d8818fb007b653",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/schedule-repository.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "356066f7893d7ea9fb2c0a8b04eba0df",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/schedule-repository.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "a5b8c2ce23049ec3d6a592e640601973",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/schedule-repository.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "1955c9e5fd459081cbb647d3a4a69b0e",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/schedule-repository.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "2bf7f2d83aded295baff45acd47f15fe",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/schedule-repository.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "a9a7e7f488847b61d089254d28ad5700",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/schedule-repository.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "e30c402cda36281446a49643a9aca3a2",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/schedule-repository.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "f0eb745632c68b0afb79dd89168e9a86",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/schedule-repository.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        },
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "552a616384c4499ae196417dea2c2954",
+          "kind": "method",
+          "language": "typescript",
+          "path": "packages/services/src/schedules/schedule-repository.ts",
+          "keys": [
+            "title",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format",
+            "language",
+            "path",
+            "name",
+            "kind",
+            "line",
+            "end_line",
+            "code",
+            "impl"
+          ]
+        }
+      ]
+    },
+    {
+      "taskId": "chinese-schedule-history",
+      "path": "packages/services/src/schedules/README.md",
+      "line": 11,
+      "contains": "计划与执行历史保存在 SQLite",
+      "reason": "说明持久状态的归属。",
+      "status": 200,
+      "total": {
+        "value": 1,
+        "relation": "eq"
+      },
+      "fileRecord": {
+        "index": "oh-rc99-20261027-docs",
+        "id": "4a8bc8e75eb4baec14108ad87c9348c2",
+        "keys": [
+          "title",
+          "start_line",
+          "body",
+          "ax_path",
+          "ax_paths",
+          "ax_file",
+          "ax_locator",
+          "ax_dataset",
+          "ax_run",
+          "ax_format"
+        ],
+        "chars": 832,
+        "hasAnchor": true
+      },
+      "allRecords": [
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "4a8bc8e75eb4baec14108ad87c9348c2",
+          "path": "packages/services/src/schedules/README.md",
+          "keys": [
+            "title",
+            "start_line",
+            "body",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format"
+          ]
+        }
+      ]
+    },
+    {
+      "taskId": "docs-plugin-process",
+      "path": "packages/agent-runtime/src/node/plugins/native-tools/README.md",
+      "line": 15,
+      "contains": "进程和待处理请求由宿主持有",
+      "reason": "同时交代调用流程及状态归属。",
+      "status": 200,
+      "total": {
+        "value": 1,
+        "relation": "eq"
+      },
+      "fileRecord": {
+        "index": "oh-rc99-20261027-docs",
+        "id": "6f24b9d3d7f1d3fa7dfdcb741bba45bb",
+        "keys": [
+          "title",
+          "start_line",
+          "body",
+          "ax_path",
+          "ax_paths",
+          "ax_file",
+          "ax_locator",
+          "ax_dataset",
+          "ax_run",
+          "ax_format"
+        ],
+        "chars": 779,
+        "hasAnchor": true
+      },
+      "allRecords": [
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "6f24b9d3d7f1d3fa7dfdcb741bba45bb",
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/README.md",
+          "keys": [
+            "title",
+            "start_line",
+            "body",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format"
+          ]
+        }
+      ]
+    },
+    {
+      "taskId": "docs-attachment-routing",
+      "path": "packages/server/src/application/attachments/routing/README.md",
+      "line": 11,
+      "contains": "结果属于当前输入，不维护长期缓存",
+      "reason": "附件路由目录说明入口和状态归属。",
+      "status": 200,
+      "total": {
+        "value": 1,
+        "relation": "eq"
+      },
+      "fileRecord": {
+        "index": "oh-rc99-20261027-docs",
+        "id": "76e8b3df8577fecbc88c19559d21c6ba",
+        "keys": [
+          "title",
+          "start_line",
+          "body",
+          "ax_path",
+          "ax_paths",
+          "ax_file",
+          "ax_locator",
+          "ax_dataset",
+          "ax_run",
+          "ax_format"
+        ],
+        "chars": 878,
+        "hasAnchor": true
+      },
+      "allRecords": [
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "76e8b3df8577fecbc88c19559d21c6ba",
+          "path": "packages/server/src/application/attachments/routing/README.md",
+          "keys": [
+            "title",
+            "start_line",
+            "body",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format"
+          ]
+        }
+      ]
+    },
+    {
+      "taskId": "docs-compaction",
+      "path": "packages/core/src/engine/compaction/README.md",
+      "line": 15,
+      "contains": "没有摘要客户端或摘要失败时，使用简单压缩作为后备处理",
+      "reason": "介绍清理、截短、摘要和后备顺序。",
+      "status": 200,
+      "total": {
+        "value": 1,
+        "relation": "eq"
+      },
+      "fileRecord": {
+        "index": "oh-rc99-20261027-docs",
+        "id": "42d9b3416fa00933f649c0ccc0803a2c",
+        "keys": [
+          "title",
+          "start_line",
+          "body",
+          "ax_path",
+          "ax_paths",
+          "ax_file",
+          "ax_locator",
+          "ax_dataset",
+          "ax_run",
+          "ax_format"
+        ],
+        "chars": 1042,
+        "hasAnchor": true
+      },
+      "allRecords": [
+        {
+          "index": "oh-rc99-20261027-docs",
+          "id": "42d9b3416fa00933f649c0ccc0803a2c",
+          "path": "packages/core/src/engine/compaction/README.md",
+          "keys": [
+            "title",
+            "start_line",
+            "body",
+            "ax_path",
+            "ax_paths",
+            "ax_file",
+            "ax_locator",
+            "ax_dataset",
+            "ax_run",
+            "ax_format"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,399 @@
+{
+  "level": "native-v2-runtime",
+  "pluginVersion": "0.2.0",
+  "release": "v1.0.0-rc.99",
+  "binarySha256": "36d35107dcec302a4e6c57debb763f31b934864748a6ca86c3b17e581dedb979",
+  "archiveSha256": "6e3e4b89275310dcc418504494e278826331341a9105635c7543824b689dd47e",
+  "url": "http://127.0.0.1:19271",
+  "prefix": "oh-rc99-20261027",
+  "reusedOriginalIndex": true,
+  "newIndexingSeconds": 0,
+  "originalIndex": {
+    "phase": "index",
+    "command": "C:\\Users\\ruanz\\AppData\\Local\\Temp\\openharness-xerj-rc99-20261027\\bin\\xerj-1.0.0-rc.99-x86_64-pc-windows-msvc\\xerj.exe autoindex C:\\Users\\ruanz\\AppData\\Local\\Temp\\openharness-xerj-rc99-20261027\\corpus --url http://127.0.0.1:19271 --prefix oh-rc99-20261027 --state-dir C:\\Users\\ruanz\\AppData\\Local\\Temp\\openharness-xerj-rc99-20261027\\state --no-graph --no-semantic --workers 2 --bulk-mb 2 --max-file-mb 2 --code-analyzer code --max-index-size 256MB --progress plain --progress-interval 5 --disable-feedback --json",
+    "pid": 3256,
+    "exit_code": 0,
+    "elapsed_seconds": 366.197,
+    "client_peak_working_set_bytes": 221061120,
+    "server_peak_working_set_bytes": 1031102464,
+    "ended_utc": "2026-10-27T06:12:22.2764497Z"
+  },
+  "corpus": "C:\\Users\\ruanz\\AppData\\Local\\Temp\\openharness-xerj-rc99-20261027\\corpus",
+  "sourceHeadAtCorpusCopy": "2ae6a425d72b70bc6229ac77c96ff350e7f91c3e",
+  "files": {
+    "prefix": "oh-rc99-20261027",
+    "root": "\\\\?\\C:\\Users\\ruanz\\AppData\\Local\\Temp\\openharness-xerj-rc99-20261027\\corpus",
+    "url": "http://127.0.0.1:19271",
+    "generation": 1,
+    "files_total": 3820,
+    "unique_content_files": 3790,
+    "files_indexed": 3790,
+    "files_junk": 0,
+    "records_total": 23393,
+    "junk_records_total": 0,
+    "code_files": 2790,
+    "code_files_indexed": 2790,
+    "code_files_junked": 0,
+    "semantic": false
+  },
+  "corpusBinding": {
+    "origin": "existing-completed-autoindex",
+    "receiptStarted": "2026-10-27T06:11:20.464220500+00:00",
+    "receiptSha256": "8d1af56fe3baba01d0fd16192d481eeb288dfed5266b78c2e4c1b952c46f48aa",
+    "timestampRefreshed": false
+  },
+  "nativeContractChecks": {
+    "code": {
+      "status": "ok",
+      "backend": "xerj",
+      "nativeTool": "xerj_code_search",
+      "hits": [
+        {
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/protocol.ts",
+          "line": 40,
+          "startLine": 40,
+          "endLine": 46,
+          "text": "export interface RegisterToolsPayload {\n  plugin: NativeToolPluginIdentity;\n  entries: Array<{\n    entryPath: string;\n    permissions: VykorPluginPermissions;\n  }>;\n}",
+          "truncated": false,
+          "evidence": "native_passage_verified_current",
+          "notice": "score 60.11"
+        },
+        {
+          "path": "apps/desktop/src/renderer/src/components/desktop/plugin-page/plugins/__test__/plugin-manager.test.tsx",
+          "line": 25,
+          "startLine": 25,
+          "endLine": 41,
+          "text": "const plugin = (overrides: Partial<DesktopPluginInfo> = {}): DesktopPluginInfo => ({\n  identity: { id: \"alpha\", name: \"alpha\", version: \"1.0.0\", displayName: \"Alpha\" },\n  origin: \"native\",\n  scope: \"user\",\n  enabled: true,\n  installation: \"installed\",\n  activation: \"active\",\n  runtimeStatus: {\n    state: \"pending_reload\",\n    message: \"已启用，下一次对话生效。\",\n    action: \"reload\",\n  },\n  inventory: {},\n  permissions: { requested: [], approved: [], missing: [] },\n  diagnostics: [],\n  ...overrides,\n})",
+          "truncated": false,
+          "evidence": "native_passage_verified_current",
+          "notice": "score 46.18"
+        }
+      ],
+      "truncated": true,
+      "note": "保留 XERJ 原生排序与片段，正文已与当前项目文件核对；索引仍可能遗漏新文件，证据不足时继续 Grep/Read。"
+    },
+    "definition": {
+      "status": "ok",
+      "backend": "xerj",
+      "nativeTool": "xerj_def",
+      "hits": [
+        {
+          "path": "packages/tools/src/search/grep.ts",
+          "line": 8,
+          "startLine": 8,
+          "endLine": 8,
+          "text": "export function createGrepTool(host: FileToolHost = {}): ToolDefinition",
+          "truncated": false,
+          "evidence": "native_passage_verified_current",
+          "notice": "function"
+        },
+        {
+          "path": "packages/tools/src/file/search/grep-search.ts",
+          "line": 26,
+          "startLine": 26,
+          "endLine": 29,
+          "text": "export async function withGrepDeadline(\n  options: EnvironmentGrepOptions,\n  search: (options: EnvironmentGrepOptions) => Promise<EnvironmentGrepResult>,\n): Promise<EnvironmentGrepResult>",
+          "truncated": false,
+          "evidence": "native_passage_verified_current",
+          "notice": "function"
+        },
+        {
+          "path": "packages/tools/src/file/search/host-search.ts",
+          "line": 25,
+          "startLine": 25,
+          "endLine": 25,
+          "text": "export function grepArgs(pattern: string, options: GrepOptions, target = \".\"): string[]",
+          "truncated": false,
+          "evidence": "native_passage_verified_current",
+          "notice": "function"
+        }
+      ],
+      "truncated": true,
+      "note": "保留 XERJ 原生排序与片段，正文已与当前项目文件核对；索引仍可能遗漏新文件，证据不足时继续 Grep/Read。"
+    },
+    "map": {
+      "status": "ok",
+      "backend": "xerj",
+      "nativeTool": "xerj_map",
+      "hits": [],
+      "map": {
+        "indexes": [
+          {
+            "index": "oh-rc99-20261027-docs",
+            "records": 23376,
+            "field_count": 24,
+            "fields": [
+              {
+                "name": "ax_dataset",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_file",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_format",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_locator",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_path",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_paths",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_run",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "title",
+                "es_type": "keyword",
+                "cardinality_est": 8192,
+                "cardinality_overflow": true,
+                "coverage": 0.963
+              },
+              {
+                "name": "language",
+                "es_type": "keyword",
+                "cardinality_est": 4,
+                "coverage": 0.781
+              },
+              {
+                "name": "end_line",
+                "es_type": "long",
+                "cardinality_est": 1046,
+                "coverage": 0.698,
+                "num_max": 2939,
+                "num_min": 1
+              }
+            ],
+            "fields_omitted": 14,
+            "trimmed": [
+              "examples-cut-to-1",
+              "examples-dropped",
+              "notes-dropped",
+              "fields-dropped"
+            ]
+          },
+          {
+            "index": "oh-rc99-20261027-docs-2",
+            "records": 15,
+            "field_count": 9,
+            "fields": [
+              {
+                "name": "ax_dataset",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_file",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_format",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_locator",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_path",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_paths",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_run",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "field",
+                "es_type": "keyword",
+                "cardinality_est": 15,
+                "coverage": 1
+              },
+              {
+                "name": "field2",
+                "es_type": "keyword",
+                "cardinality_est": 15,
+                "coverage": 1
+              }
+            ],
+            "trimmed": [
+              "examples-cut-to-1",
+              "examples-dropped",
+              "notes-dropped"
+            ]
+          },
+          {
+            "index": "oh-rc99-20261027-apps-desktop",
+            "records": 2,
+            "field_count": 8,
+            "fields": [
+              {
+                "name": "ax_dataset",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_file",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_format",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_locator",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_path",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_paths",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_run",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "col_1",
+                "es_type": "keyword",
+                "cardinality_est": 2,
+                "coverage": 1
+              }
+            ],
+            "trimmed": [
+              "examples-cut-to-1",
+              "examples-dropped",
+              "notes-dropped"
+            ]
+          }
+        ],
+        "matched": 3,
+        "indexesOmitted": 0
+      }
+    },
+    "batch": {
+      "status": "ok",
+      "backend": "xerj",
+      "nativeTool": "xerj_batch_search",
+      "hits": [],
+      "results": [
+        {
+          "position": 0,
+          "query": "createGrepTool",
+          "status": "hits",
+          "hits": [
+            {
+              "path": "packages/tools/src/search/grep.ts",
+              "line": 8,
+              "startLine": 8,
+              "endLine": 8,
+              "text": "export function createGrepTool(host: FileToolHost = {}): ToolDefinition",
+              "truncated": false,
+              "evidence": "native_passage_verified_current",
+              "notice": "function"
+            }
+          ]
+        },
+        {
+          "position": 1,
+          "query": "NativeToolHost",
+          "status": "hits",
+          "hits": [
+            {
+              "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+              "line": 47,
+              "startLine": 47,
+              "endLine": 47,
+              "text": "",
+              "truncated": false,
+              "evidence": "native_locator_only",
+              "notice": ""
+            }
+          ]
+        }
+      ],
+      "truncated": false
+    }
+  },
+  "serverSample": {
+    "pid": 54436,
+    "path": "C:\\Users\\ruanz\\AppData\\Local\\Temp\\openharness-xerj-rc99-20261027\\bin\\xerj-1.0.0-rc.99-x86_64-pc-windows-msvc\\xerj.exe",
+    "workingSetBytes": 202469376,
+    "peakWorkingSetBytes": 275808256,
+    "started": "2026-10-27T06:57:52.9039217Z"
+  },
+  "serverStopped": true,
+  "stoppedAt": "2026-10-27T07:56:25.5525432Z",
+  "feedbackDisabled": true,
+  "userInstallationChanged": false,
+  "temporaryFilesPreserved": true,
+  "hostSmoke": {
+    "status": "passed",
+    "nativeChildPid": 44028,
+    "httpRequests": 3,
+    "actualHostGrepRead": true,
+    "cleanup": true
+  },
+  "checks": {
+    "pluginTests": 39,
+    "pluginTestsPassed": 39,
+    "build": "passed",
+    "hostRetiredUi": "passed",
+    "hostDocs": "passed"
+  }
+}

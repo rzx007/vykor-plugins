@@ -1,0 +1,1852 @@
+{
+  "level": "native-batch-control-no-model",
+  "startedAt": "2026-10-27T08:54:55.521Z",
+  "taskSetSha256": "eb61b3d0cab800b4ff6ba5a66f62f7f476cfcf7fe2f8f03f5804d0073c5fb1d9",
+  "pluginConfigurationSha256": "d358fea3bb0dfbc0fdfc1a8e7253f11e490e65b6a83f2f038f46f97cd2b8dc7c",
+  "sameGold": true,
+  "configuration": {
+    "groupSize": 4,
+    "perItemLimit": 5,
+    "nativeWordBudget": 2000,
+    "pluginOutputBudgetBytes": 16384,
+    "timeoutMs": 1500
+  },
+  "map": {
+    "status": "ok",
+    "indexCount": 3,
+    "elapsedMs": 944.3444999999999,
+    "response": {
+      "status": "ok",
+      "backend": "xerj",
+      "nativeTool": "xerj_map",
+      "hits": [],
+      "map": {
+        "indexes": [
+          {
+            "index": "oh-rc99-20261027-docs",
+            "records": 23376,
+            "field_count": 24,
+            "fields": [
+              {
+                "name": "ax_dataset",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_file",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_format",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_locator",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_path",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_paths",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_run",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "title",
+                "es_type": "keyword",
+                "cardinality_est": 8192,
+                "cardinality_overflow": true,
+                "coverage": 0.963
+              },
+              {
+                "name": "language",
+                "es_type": "keyword",
+                "cardinality_est": 4,
+                "coverage": 0.781
+              },
+              {
+                "name": "end_line",
+                "es_type": "long",
+                "cardinality_est": 1046,
+                "coverage": 0.698,
+                "num_max": 2939,
+                "num_min": 1
+              }
+            ],
+            "fields_omitted": 14,
+            "trimmed": [
+              "examples-cut-to-1",
+              "examples-dropped",
+              "notes-dropped",
+              "fields-dropped"
+            ]
+          },
+          {
+            "index": "oh-rc99-20261027-docs-2",
+            "records": 15,
+            "field_count": 9,
+            "fields": [
+              {
+                "name": "ax_dataset",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_file",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_format",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_locator",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_path",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_paths",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_run",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "field",
+                "es_type": "keyword",
+                "cardinality_est": 15,
+                "coverage": 1
+              },
+              {
+                "name": "field2",
+                "es_type": "keyword",
+                "cardinality_est": 15,
+                "coverage": 1
+              }
+            ],
+            "trimmed": [
+              "examples-cut-to-1",
+              "examples-dropped",
+              "notes-dropped"
+            ]
+          },
+          {
+            "index": "oh-rc99-20261027-apps-desktop",
+            "records": 2,
+            "field_count": 8,
+            "fields": [
+              {
+                "name": "ax_dataset",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_file",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_format",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_locator",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_path",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_paths",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "ax_run",
+                "es_type": "keyword",
+                "cardinality_est": 0,
+                "coverage": 1
+              },
+              {
+                "name": "col_1",
+                "es_type": "keyword",
+                "cardinality_est": 2,
+                "coverage": 1
+              }
+            ],
+            "trimmed": [
+              "examples-cut-to-1",
+              "examples-dropped",
+              "notes-dropped"
+            ]
+          }
+        ],
+        "matched": 3,
+        "indexesOmitted": 0
+      }
+    }
+  },
+  "summary": {
+    "questions": 16,
+    "batchCalls": 4,
+    "explicitMapCalls": 1,
+    "totalSearchMs": 4134.2167,
+    "fileHits": 8,
+    "evidenceHits": 5,
+    "errors": 4,
+    "locatorOnlyHits": 56,
+    "unknownLineHits": 21,
+    "modelTokens": null
+  },
+  "batches": [
+    {
+      "taskIds": [
+        "symbol-grep",
+        "symbol-next-time",
+        "symbol-plugin-activation",
+        "symbol-continuity"
+      ],
+      "elapsedMs": 479.3315,
+      "responseBytes": 4349,
+      "response": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_batch_search",
+        "hits": [],
+        "results": [
+          {
+            "position": 0,
+            "status": "hits",
+            "nativeStatus": "hits",
+            "hits": [
+              {
+                "path": "packages/tools/src/search/grep.ts",
+                "line": 8,
+                "startLine": 8,
+                "endLine": 8,
+                "readLine": 8,
+                "text": "export function createGrepTool(host: FileToolHost = {}): ToolDefinition",
+                "truncated": false,
+                "evidence": "native_passage_verified_current",
+                "notice": "function"
+              },
+              {
+                "path": "packages/tools/src/search/grep.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/tools/src/search/grep.ts",
+                "line": 143,
+                "startLine": 143,
+                "endLine": 143,
+                "readLine": 143,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/tools/src/file/search/grep-search.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/agent-runtime/src/node/tools/default-tool-registry.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              }
+            ]
+          },
+          {
+            "position": 1,
+            "status": "hits",
+            "nativeStatus": "hits",
+            "hits": [
+              {
+                "path": "packages/services/src/schedules/recurrence.ts",
+                "line": 46,
+                "startLine": 46,
+                "endLine": 46,
+                "readLine": 46,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/services/src/schedules/recurrence.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/server/src/daemon/scheduled-task-service.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "apps/desktop/src/renderer/src/components/desktop/scheduled-page/utils.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/services/src/schedules/__test__/recurrence.test.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              }
+            ]
+          },
+          {
+            "position": 2,
+            "status": "hits",
+            "nativeStatus": "hits",
+            "hits": [
+              {
+                "path": "packages/plugins/src/activation/activate.ts",
+                "line": 16,
+                "startLine": 16,
+                "endLine": 16,
+                "readLine": 16,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/plugins/src/activation/activate.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/agent-runtime/src/node/plugins/native-tools/activate.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/agent-runtime/test-helpers/native-plugin-authoring.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/agent-runtime/src/node/plugins/plugin-activation.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              }
+            ]
+          },
+          {
+            "position": 3,
+            "status": "hits",
+            "nativeStatus": "hits",
+            "hits": [
+              {
+                "path": "packages/core/src/engine/compaction/compact-continuity.ts",
+                "line": 67,
+                "startLine": 67,
+                "endLine": 67,
+                "readLine": 67,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/core/src/engine/compaction/compact-continuity.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/core/src/engine/compaction/__test__/compact-continuity.test.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/core/src/engine/compaction/compact-messages.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/core/src/engine/compaction/compact-service.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              }
+            ]
+          }
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "taskIds": [
+        "english-shell-logs",
+        "english-cancel-host",
+        "english-image-route",
+        "english-timezone"
+      ],
+      "elapsedMs": 1514.0442,
+      "responseBytes": 1020,
+      "response": {
+        "status": "fallback",
+        "backend": "grep",
+        "reason": "timeout",
+        "hits": [],
+        "fallback": {
+          "tool": "Grep",
+          "note": "按原输入位置逐项使用 results 中的 Grep 参数；本插件没有执行 Grep。"
+        },
+        "results": [
+          {
+            "position": 0,
+            "status": "error",
+            "hits": [],
+            "reason": "timeout",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "Search retained shell output logs with a regular expression and open the matching byte offset",
+                "limit": 40
+              }
+            }
+          },
+          {
+            "position": 1,
+            "status": "error",
+            "hits": [],
+            "reason": "timeout",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "Kill an unresponsive native plugin process after the cancellation grace period",
+                "limit": 40
+              }
+            }
+          },
+          {
+            "position": 2,
+            "status": "error",
+            "hits": [],
+            "reason": "timeout",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "Choose native image input or the image to text tool based on model and provider capabilities",
+                "limit": 40
+              }
+            }
+          },
+          {
+            "position": 3,
+            "status": "error",
+            "hits": [],
+            "reason": "timeout",
+            "fallback": {
+              "tool": "Grep",
+              "input": {
+                "pattern": "Calculate the next RRULE occurrence using the requested timezone",
+                "limit": 40
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "taskIds": [
+        "chinese-tool-outcome",
+        "chinese-plugin-guard",
+        "chinese-plugin-data",
+        "chinese-schedule-history"
+      ],
+      "elapsedMs": 819.5530000000003,
+      "responseBytes": 5749,
+      "response": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_batch_search",
+        "hits": [],
+        "results": [
+          {
+            "position": 0,
+            "status": "hits",
+            "nativeStatus": "hits",
+            "hits": [
+              {
+                "path": "packages/core/src/engine/README.md",
+                "line": 1,
+                "startLine": 1,
+                "endLine": 22,
+                "readLine": 11,
+                "text": "# 查询执行\n\n`QueryEngine` 是模型与工具循环的入口。它接收用户消息，维护当前历史，组织压缩、模型请求、工具调用和结束处理，并通过 `submitMessage()` 的异步事件流将进度与结果交给调用方。\n\n## 文件与子目录\n\n| 位置 | 用途 |\n| --- | --- |\n| `query-engine.ts` | 查询循环、请求配置应用、历史维护、手动工具执行与压缩入口 |\n| `turn-context.ts` | 固定本轮请求的消息与工具列表，拼接系统提示和记忆提醒 |\n| `index.ts` | `@vykor/core/engine` 公开入口 |\n| [model/](./model/README.md) | 执行模型请求、处理流式响应和重试 |\n| [tools/](./tools/README.md) | 准备、授权和执行工具调用 |\n| [results/](./results/README.md) | 保存有容量上限的 SDK 结果引用，统一文本分页和字面检索 |\n| [compaction/](./compaction/README.md) | 缩减历史消息并保留继续任务所需的线索 |\n| [trajectory/](./trajectory/README.md) | 根据工具结果生成后续行动提示 |\n| [usage/](./usage/README.md) | 累计模型请求用量 |\n| `__test__/` | 查询循环、请求配置、记忆注入、目标上下文等整体流程测试 |\n\n## 状态与调用关系\n\n`QueryEngine` 实例保存消息历史、当前模型和提示词、最近工具结果以及累计用量。每轮先准备历史和请求，再调用 `model/`；出现工具调用时交给 `tools/`，将结果写入历史后继续。`compaction/` 返回缩减后的历史，由引…",
+                "truncated": true,
+                "evidence": "native_passage_verified_current",
+                "notice": ""
+              },
+              {
+                "path": "docs/model-network-retry-design.md",
+                "line": 104,
+                "startLine": 104,
+                "endLine": 104,
+                "readLine": 104,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/core/src/engine/compaction/README.md",
+                "line": 1,
+                "startLine": 1,
+                "endLine": 1,
+                "readLine": 1,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "docs/model-network-retry-design.md",
+                "line": 130,
+                "startLine": 130,
+                "endLine": 130,
+                "readLine": 130,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "docs/superpowers/specs/2026-08-29-conversation-attachments-retrospective.md",
+                "line": 23,
+                "startLine": 23,
+                "endLine": 23,
+                "readLine": 23,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              }
+            ]
+          },
+          {
+            "position": 1,
+            "status": "hits",
+            "nativeStatus": "hits",
+            "hits": [
+              {
+                "path": "apps/desktop/src/renderer/src/components/desktop/conversation-page/message/activity/task-duration.tsx",
+                "line": 36,
+                "startLine": 36,
+                "endLine": 36,
+                "readLine": 36,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/services/src/session-runtime/store.ts",
+                "line": 368,
+                "startLine": 368,
+                "endLine": 368,
+                "readLine": 368,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "docs/native-plugin-authoring.md",
+                "line": 274,
+                "startLine": 274,
+                "endLine": 274,
+                "readLine": 274,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "docs/superpowers/specs/2026-09-09-native-plugin-authoring-v1-design.md",
+                "line": 1,
+                "startLine": 1,
+                "endLine": 1,
+                "readLine": 1,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "docs/superpowers/specs/2026-10-02-file-workflow-design.md",
+                "line": 1898,
+                "startLine": 1898,
+                "endLine": 1898,
+                "readLine": 1898,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              }
+            ]
+          },
+          {
+            "position": 2,
+            "status": "hits",
+            "nativeStatus": "hits",
+            "hits": [
+              {
+                "path": "docs/plans/2026-08-22-durable-agent-application-convergence.md",
+                "line": 24,
+                "startLine": 24,
+                "endLine": 24,
+                "readLine": 24,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "docs/mcp-apps.md",
+                "line": 117,
+                "startLine": 117,
+                "endLine": 117,
+                "readLine": 117,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "apps/desktop/docs/packaging.md",
+                "line": 1,
+                "startLine": 1,
+                "endLine": 1,
+                "readLine": 1,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "docs/plugin-system.md",
+                "line": 38,
+                "startLine": 38,
+                "endLine": 38,
+                "readLine": 38,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "docs/superpowers/specs/2026-08-29-conversation-attachments-retrospective.md",
+                "line": 23,
+                "startLine": 23,
+                "endLine": 23,
+                "readLine": 23,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              }
+            ]
+          },
+          {
+            "position": 3,
+            "status": "hits",
+            "nativeStatus": "hits",
+            "hits": [
+              {
+                "path": "docs/superpowers/specs/2026-09-17-architecture-documentation-closeout-design.md",
+                "line": 185,
+                "startLine": 185,
+                "endLine": 185,
+                "readLine": 185,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "docs/superpowers/specs/2026-10-20-approval-presets-and-plan-mode-design.md",
+                "line": 23,
+                "startLine": 23,
+                "endLine": 23,
+                "readLine": 23,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "docs/superpowers/specs/2026-09-17-architecture-documentation-closeout-design.md",
+                "line": 1,
+                "startLine": 1,
+                "endLine": 1,
+                "readLine": 1,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "docs/plans/2026-08-23-documentation-architecture-and-gaps.md",
+                "line": 157,
+                "startLine": 157,
+                "endLine": 157,
+                "readLine": 157,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "docs/superpowers/specs/2026-09-17-architecture-documentation-closeout-design.md",
+                "line": 161,
+                "startLine": 161,
+                "endLine": 161,
+                "readLine": 161,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              }
+            ]
+          }
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "taskIds": [
+        "docs-plugin-process",
+        "docs-attachment-routing",
+        "docs-compaction",
+        "docs-token-estimate"
+      ],
+      "elapsedMs": 1321.2879999999996,
+      "responseBytes": 7211,
+      "response": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_batch_search",
+        "hits": [],
+        "results": [
+          {
+            "position": 0,
+            "status": "hits",
+            "nativeStatus": "hits",
+            "hits": [
+              {
+                "path": "docs/plugin-marketplace.md",
+                "line": 1,
+                "startLine": 1,
+                "endLine": 17,
+                "readLine": 9,
+                "text": "# 插件市场\n\n> 状态：当前实现与使用说明。\n\n插件页的“浏览市场”从登记的 HTTPS 来源读取目录，用户选择插件后，宿主下载固定版本的 ZIP、校验内容，再进入现有 Native Plugin 安装流程。\n\n## 官方来源\n\n- [源码与发布规则](https://github.com/rzx007/vykor-plugins)。\n- [市场目录](https://rzx007.github.io/vykor-plugins/marketplace.json)。\n- [版本安装包](https://github.com/rzx007/vykor-plugins/releases)。\n\n首批插件为 Excalidraw 1.0.0、Text Inspector 1.2.2、Notes 1.0.2。普通用户不需要 GitHub 登录、Git 或 npm；Excalidraw 运行服务需要 Node.js 24 或更新版本。\n\n在插件页搜索、查看详情后点击安装。已有本地或其他来源的同 ID 插件会显示关联或更换来源入口，并明确确认替换。安装完成后可新建对话使用；不会自动向聊天发送消息。\n\n市场和已安装列表共用现有的图标、列表行与间距，描述只显示一行，超出部分省略，鼠标悬停可查看完整描述；宽窗口双列、窄窗口单列。点击名称进入共用的插件详情页，返回保留搜索；版本、来源、兼容要求与许可证放在详情中。没有详细介绍时不重复简介，也不显示占位内容。安装成功使用轻量提示，原安装回执仍可在对应插件详情中查看，不把其他来源同 ID 插件的回执混在一起。",
+                "truncated": false,
+                "evidence": "native_passage_verified_current",
+                "notice": ""
+              },
+              {
+                "path": "docs/superpowers/specs/2026-10-02-native-plugin-ui-design.md",
+                "line": 435,
+                "startLine": 435,
+                "endLine": 447,
+                "readLine": 441,
+                "text": "\n\nactiveActionRunId 只表示有一项执行中的操作，不是新的业务状态。最后一次 Run 的状态决定成功、失败或结果不确定。\n\n### 12.2 业务状态与可用性分离\n\n可用性由当前插件和 Session 事实计算，不写成永久业务终态：\n\n返回值为 `{ code, canRender, canInvoke }`。canInvoke 为 true 必须同时满足 canRender、实例 open、会话可变、Runtime 准备成功和没有未知结果保护。plugin-disabled、permission-missing、snapshot-missing、snapshot-changed、invalid-definition 的 canRender / canInvoke 都为 false。Session 归档或 Tool Host 暂不可用但快照仍有效时，可以 canRender=true、canInvoke=false，以只读方式查看既有数据。\n\n后台读取设置、安装记录、文档与准备 Runtime 的整段流程使用现有 operation gate（运行与维护互斥入口）。reload、卸载或全局维护持有维护入口时，UI 读取不能重新创建 Runtime；daemon 尚未就绪或已开始关闭时也不准备 Runtime，不返回可显示的 HTML。已进入的读取在关闭时排空并清理，Host 真正启动失败的精确快照只读回退仅适用于 daemon 正常运行期间。关闭流程先封住新入口、取消并等待活动 Run 结算，再等待既有读取与执行租约释放；动作执行租约仍覆盖权限等待、工具调用和原子结算。\n\n实例查找只在请求所属会话的 Parts 内进行，不扫描其他会话。缺少组件、工具归属…",
+                "truncated": true,
+                "evidence": "native_passage_verified_current",
+                "notice": ""
+              },
+              {
+                "path": "packages/agent-runtime/src/node/plugins/native-tools/README.md",
+                "line": 1,
+                "startLine": 1,
+                "endLine": 1,
+                "readLine": 1,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/server/src/application/visual-tools/README.md",
+                "line": 1,
+                "startLine": 1,
+                "endLine": 1,
+                "readLine": 1,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "docs/plugin-system.md",
+                "line": 1,
+                "startLine": 1,
+                "endLine": 1,
+                "readLine": 1,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              }
+            ]
+          },
+          {
+            "position": 1,
+            "status": "hits",
+            "nativeStatus": "hits",
+            "hits": [
+              {
+                "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/server/src/application/session/execution/session-run-executor.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/server/src/application/session/execution/__test__/session-run-executor.test.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/services/src/session-runtime/__test__/store.test.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/server/src/application/attachments/routing/attachment-routing-types.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              }
+            ]
+          },
+          {
+            "position": 2,
+            "status": "hits",
+            "nativeStatus": "hits",
+            "hits": [
+              {
+                "path": "packages/core/src/engine/compaction/README.md",
+                "line": 1,
+                "startLine": 1,
+                "endLine": 1,
+                "readLine": 1,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "docs/native-vision-image-preprocessing.md",
+                "line": 1,
+                "startLine": 1,
+                "endLine": 1,
+                "readLine": 1,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/core/src/engine/README.md",
+                "line": 1,
+                "startLine": 1,
+                "endLine": 1,
+                "readLine": 1,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "docs/superpowers/specs/2026-08-29-conversation-attachments-stage-7-design.md",
+                "line": 25,
+                "startLine": 25,
+                "endLine": 25,
+                "readLine": 25,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "packages/core/src/engine/compaction/compact-service.ts",
+                "line": null,
+                "startLine": null,
+                "endLine": null,
+                "readLine": null,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              }
+            ]
+          },
+          {
+            "position": 3,
+            "status": "hits",
+            "nativeStatus": "hits",
+            "hits": [
+              {
+                "path": "packages/services/src/token-estimation/README.md",
+                "line": 1,
+                "startLine": 1,
+                "endLine": 1,
+                "readLine": 1,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "docs/session-goals-retrospective.md",
+                "line": 74,
+                "startLine": 74,
+                "endLine": 74,
+                "readLine": 74,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "docs/desktop-settings-requirements.md",
+                "line": 447,
+                "startLine": 447,
+                "endLine": 447,
+                "readLine": 447,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "apps/desktop/src/renderer/src/components/desktop/settings-page/usage/README.md",
+                "line": 17,
+                "startLine": 17,
+                "endLine": 17,
+                "readLine": 17,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              },
+              {
+                "path": "docs/superpowers/specs/2026-10-02-file-workflow-design.md",
+                "line": 1149,
+                "startLine": 1149,
+                "endLine": 1149,
+                "readLine": 1149,
+                "text": "",
+                "truncated": false,
+                "evidence": "native_locator_only",
+                "notice": ""
+              }
+            ]
+          }
+        ],
+        "truncated": false
+      }
+    }
+  ],
+  "rows": [
+    {
+      "taskId": "symbol-grep",
+      "status": "hits",
+      "score": {
+        "fileHit": true,
+        "evidenceHit": true,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/tools/src/search/grep.ts",
+          "packages/tools/src/file/search/grep-search.ts",
+          "packages/agent-runtime/src/node/tools/default-tool-registry.ts"
+        ],
+        "evidenceFiles": [
+          "packages/tools/src/search/grep.ts"
+        ]
+      },
+      "evidence": [
+        {
+          "path": "packages/tools/src/search/grep.ts",
+          "startLine": 1,
+          "endLine": 20,
+          "text": "import type { FileToolHost } from \"../ports/policy.js\";\nimport type { ToolDefinition } from \"@vykor/agent-contracts\";\nimport { fileOperationsFor } from \"../file/operations.js\";\nimport { resolveToolPathInContext } from \"../file/access/environment-path.js\";\nimport { sandboxPathError } from \"../file/access/sandbox-guard.js\";\nimport { GREP_LIMIT_HINT, GREP_OUTPUT_BYTES, GrepSearchError } from \"../file/search/grep-search.js\";\n\nexport function createGrepTool(host: FileToolHost = {}): ToolDefinition {\n  return {\n    name: \"Grep\",\n    description:\n      \"Search file contents using regular expressions. For Shell logs use path=shell-output://UUID; byte positions can be opened with Read cursor.\",\n    inputSchema: {\n      type: \"object\",\n      properties: {\n        pattern: { type: \"string\", description: \"Regex pattern to search for.\" },\n        path: { type: \"string\", description: \"Directory, file, or shell-output://UUID from Shell.\" },\n        include: {\n          type: \"string\",\n          description: 'File glob pattern to include (e.g. \"*.ts\").',",
+          "bytes": 1054,
+          "truncated": false
+        },
+        {
+          "path": "packages/tools/src/file/search/grep-search.ts",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "import { StringDecoder } from \"node:string_decoder\";\nimport type { EnvironmentGrepOptions, EnvironmentGrepResult, EnvironmentProcess } from \"@vykor/environment\";\nimport { matchesGlob, MAX_LINE_BYTES } from \"./host-search.js\";\n\nexport const GREP_OUTPUT_BYTES = 8192;\nexport const GREP_LIMIT_HINT = \"Results limited. Narrow path, include, or pattern; use Read for context.\";\n\nexport class GrepSearchError extends Error {\n  constructor(readonly kind: \"invalid_input\" | \"interrupted\" | \"timeout\" | \"unknown_outcome\", message: string) {\n    super(message);\n    this.name = \"GrepSearchError\";\n  }\n}",
+          "bytes": 592,
+          "truncated": false
+        },
+        {
+          "path": "packages/agent-runtime/src/node/tools/default-tool-registry.ts",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "import { type ToolExecutionSpec } from \"@vykor/agent-contracts\";\nimport type { AgentScheduleEffects } from \"@vykor/host-config\";\nimport {\n  createApplyPatchTool,\n  askUserTool,\n  briefTool,\n  createAgentTool,\n  createBackgroundShellTool,\n  createConfigTool,\n  createFeishuPushTool,\n  createJobTools,\n  createLspTool,\n  createMcpTools,",
+          "bytes": 334,
+          "truncated": false
+        }
+      ]
+    },
+    {
+      "taskId": "symbol-next-time",
+      "status": "hits",
+      "score": {
+        "fileHit": true,
+        "evidenceHit": true,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/services/src/schedules/recurrence.ts",
+          "packages/server/src/daemon/scheduled-task-service.ts",
+          "apps/desktop/src/renderer/src/components/desktop/scheduled-page/utils.ts",
+          "packages/services/src/schedules/__test__/recurrence.test.ts"
+        ],
+        "evidenceFiles": [
+          "packages/services/src/schedules/recurrence.ts"
+        ]
+      },
+      "evidence": [
+        {
+          "path": "packages/services/src/schedules/recurrence.ts",
+          "startLine": 34,
+          "endLine": 58,
+          "text": "): boolean {\n  try {\n    computeNextScheduledTime(recurrence, {\n      after: new Date(0),\n      anchor: new Date(0),\n    });\n    return true;\n  } catch {\n    return false;\n  }\n}\n\nexport function computeNextScheduledTime(\n  recurrence: ScheduledRecurrence,\n  options: NextOccurrenceOptions = {},\n): number {\n  const after = options.after ?? new Date();\n  if (recurrence.format === \"once\") {\n    const timestamp = Date.parse(recurrence.value);\n    if (!Number.isFinite(timestamp))\n      throw new Error(`Invalid one-time schedule: ${recurrence.value}`);\n    if (timestamp <= after.getTime())\n      throw new Error(\"One-time schedule is not in the future\");\n    return timestamp;\n  }",
+          "bytes": 680,
+          "truncated": false
+        },
+        {
+          "path": "packages/server/src/daemon/scheduled-task-service.ts",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "import {\n  computeNextScheduledTime,\n  validateScheduledRecurrence,\n} from \"@vykor/services\";\nimport type { CreateScheduledRunInput, UpdateScheduledRunInput, CreateScheduledTaskInput as CreateScheduledTaskCommand, UpdateScheduledTaskInput as UpdateScheduledTaskCommand } from \"@vykor/services\";\nimport type { CreateScheduledTaskInput, UpdateScheduledTaskInput } from \"../application/schedule/inputs.js\";\nimport type { ScheduledRunRecord, ScheduledTaskRecord } from \"@vykor/domain-contracts/schedules\";\n\nconst MAX_TIMER_DELAY_MS = 2_147_000_000;\nconst DAEMON_RESTART_REASON =\n  \"Daemon restarted while the scheduled task was running\";\n\nexport interface ScheduledTaskExecutionResult {",
+          "bytes": 682,
+          "truncated": false
+        },
+        {
+          "path": "apps/desktop/src/renderer/src/components/desktop/scheduled-page/utils.ts",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "import type { DesktopScheduledRun, DesktopScheduledTask } from \"@shared/schedule-types\"\n\nimport type { ScheduledFilter } from \"./types\"\n\nconst dateTimeFormatter = new Intl.DateTimeFormat(\"zh-CN\", {\n  month: \"2-digit\",\n  day: \"2-digit\",\n  hour: \"2-digit\",\n  minute: \"2-digit\",\n})\n\nexport function filterTabLabel(value: ScheduledFilter): string {\n  return { all: \"全部\", active: \"活跃\", paused: \"已暂停\", completed: \"已完成\" }[value]",
+          "bytes": 441,
+          "truncated": false
+        },
+        {
+          "path": "packages/services/src/schedules/__test__/recurrence.test.ts",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "import { describe, expect, it } from \"vitest\";\n\nimport { computeNextScheduledTime, parseRRule } from \"../recurrence.js\";\n\ndescribe(\"scheduled recurrence\", () => {\n  it(\"returns a future one-time occurrence\", () => {\n    expect(\n      computeNextScheduledTime(\n        { format: \"once\", value: \"2026-08-19T09:00:00+08:00\" },\n        { after: new Date(\"2026-08-18T00:00:00Z\") },\n      ),\n    ).toBe(Date.parse(\"2026-08-19T09:00:00+08:00\"));\n  });",
+          "bytes": 444,
+          "truncated": false
+        }
+      ]
+    },
+    {
+      "taskId": "symbol-plugin-activation",
+      "status": "hits",
+      "score": {
+        "fileHit": true,
+        "evidenceHit": true,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/plugins/src/activation/activate.ts",
+          "packages/agent-runtime/src/node/plugins/native-tools/activate.ts",
+          "packages/agent-runtime/test-helpers/native-plugin-authoring.ts",
+          "packages/agent-runtime/src/node/plugins/plugin-activation.ts"
+        ],
+        "evidenceFiles": [
+          "packages/plugins/src/activation/activate.ts"
+        ]
+      },
+      "evidence": [
+        {
+          "path": "packages/plugins/src/activation/activate.ts",
+          "startLine": 4,
+          "endLine": 28,
+          "text": "\nexport interface NativePluginActivationContext {\n  hookExecutor: IHookExecutor;\n  addCleanup?(cleanup: () => void | Promise<void>): void;\n}\nexport interface NativePluginActivationResult {\n  pluginId: string;\n  status: \"active\" | \"partial\" | \"failed\";\n  activatedComponents: NativePluginComponentKind[];\n  diagnostics: PluginDiagnostic[];\n}\n\nexport async function activateNativePlugin(plugin: LoadedNativePlugin, context: NativePluginActivationContext): Promise<NativePluginActivationResult> {\n  const activatedComponents: NativePluginComponentKind[] = [];\n  const registeredHookIds: string[] = [];\n  for (const hook of plugin.components.hooks?.value ?? []) {\n    context.hookExecutor.register(hook);\n    registeredHookIds.push(hook.id);\n  }\n  if (plugin.components.hooks?.status === \"loaded\") activatedComponents.push(\"hooks\");\n  if (plugin.components.skills?.status === \"loaded\") activatedComponents.push(\"skills\");\n  if (plugin.components.agents?.status === \"loaded\") activatedComponents.push(\"agents\");\n  if (plugin.components.mcpServers?.status === \"loaded\") activatedComponents.push(\"mcpServers\");\n  if (registeredHookIds.length && context.hookExecutor.unregister && context.addCleanup) {\n    context.addCleanup(() => { for (const id of registeredHookIds) context.hookExecutor.unregister!(id); });",
+          "bytes": 1303,
+          "truncated": false
+        },
+        {
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/activate.ts",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "import { RESERVED_SHELL_TOOL_NAMES } from \"@vykor/agent-contracts\";\nimport type { MutableToolRegistry as IToolRegistry } from \"@vykor/agent-contracts\";\nimport type { LoadedNativePlugin, PluginDiagnostic } from \"@vykor/plugins\";\nimport { formatNativeToolAuditEvent, NativeToolCallGuard, type NativeToolAuditEvent } from \"./guard.js\";\nimport { NativeToolHost, NativeToolHostError, type NativeToolHostState } from \"./tool-host.js\";\nimport { beginNativeToolRuntimeStatus } from \"./status.js\";\n\nexport interface NativeToolActivationResult {\n  pluginId: string;\n  state: NativeToolHostState;\n  toolNames: string[];\n  diagnostics: PluginDiagnostic[];\n  host?: NativeToolHost;",
+          "bytes": 668,
+          "truncated": false
+        },
+        {
+          "path": "packages/agent-runtime/test-helpers/native-plugin-authoring.ts",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from \"node:fs/promises\";\nimport { tmpdir } from \"node:os\";\nimport { join } from \"node:path\";\nimport { fileURLToPath } from \"node:url\";\nimport { ToolRegistry } from \"@vykor/core\";\nimport { type Settings } from \"@vykor/host-config\";\nimport { expect } from \"vitest\";\nimport { discoverVykorExtensions } from \"../src/node/plugins/extensions.js\";\nimport { activateNativePluginTools, type NativeToolActivationResult } from \"../src/node/plugins/native-tools/activate.js\";\n\nexport const pluginId = \"example.text-inspector\";\nexport const toolName = \"TextInspectorCheck\";\nexport const settings: Settings = {",
+          "bytes": 651,
+          "truncated": false
+        },
+        {
+          "path": "packages/agent-runtime/src/node/plugins/plugin-activation.ts",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "import type { RegisteredHookExecutor as IHookExecutor } from \"@vykor/host-config\";\nimport type { MutableToolRegistry as IToolRegistry } from \"@vykor/agent-contracts\";\nimport type { LoadedNativePlugin, PluginDiagnostic } from \"@vykor/plugins\";\nimport { activateNativePluginTools, type NativeToolActivationResult } from \"./native-tools/activate.js\";\n\nexport interface ActivateDiscoveredPluginsOptions {\n  plugins: readonly LoadedNativePlugin[];\n  cwd: string;\n  settings?: import(\"@vykor/host-config\").Settings;\n  environmentKind?: \"local\" | \"wsl\";\n  toolRegistry: IToolRegistry;\n  hookExecutor: IHookExecutor;\n  addCleanup(cleanup: () => Promise<void> | void, cleanupSync?: () => void): void;",
+          "bytes": 691,
+          "truncated": false
+        }
+      ]
+    },
+    {
+      "taskId": "symbol-continuity",
+      "status": "hits",
+      "score": {
+        "fileHit": true,
+        "evidenceHit": true,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/core/src/engine/compaction/compact-continuity.ts",
+          "packages/core/src/engine/compaction/__test__/compact-continuity.test.ts",
+          "packages/core/src/engine/compaction/compact-messages.ts",
+          "packages/core/src/engine/compaction/compact-service.ts"
+        ],
+        "evidenceFiles": [
+          "packages/core/src/engine/compaction/compact-continuity.ts"
+        ]
+      },
+      "evidence": [
+        {
+          "path": "packages/core/src/engine/compaction/compact-continuity.ts",
+          "startLine": 55,
+          "endLine": 79,
+          "text": "    return { entries, omitted: value.omitted };\n  } catch { return; }\n}\n\n/** Split only a validated host-owned suffix; generated prose remains independently collapsible. */\nexport function splitOwnedContinuity(message: Message): { text: string; container: string } | undefined {\n  if (!readOwned(message) || message.type !== \"assistant\") return;\n  const split = message.content.lastIndexOf(\"\\n\");\n  return { text: split < 0 ? \"\" : message.content.slice(0, split), container: message.content.slice(split + 1) };\n}\n\n/** Deterministic bounded source data, independent of the model's generated summary. */\nexport function appendContinuityExcerpts(summary: string, older: Message[]): string {\n  const entries: Excerpt[] = [];\n  let omitted = false;\n  let order = 0;\n  const calls = new Map<string, string>();\n  for (const message of older) {\n    const carried = readOwned(message);\n    if (carried) {\n      entries.push(...carried.entries);\n      omitted ||= carried.omitted;\n      order = Math.max(order, ...carried.entries.map((entry) => entry.order));\n      continue;\n    }",
+          "bytes": 1071,
+          "truncated": false
+        },
+        {
+          "path": "packages/core/src/engine/compaction/__test__/compact-continuity.test.ts",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "import { describe, expect, it } from \"vitest\";\nimport type { Message } from \"@vykor/agent-contracts\";\nimport { appendContinuityExcerpts, splitOwnedContinuity } from \"../compact-continuity.js\";\n\nfunction excerpts(content: string): { entries: Record<string, unknown>[]; omitted: boolean } {\n  return JSON.parse(content.split(\"\\n\").at(-1)!.slice(\"[history-excerpts-v1]\".length));\n}\n\ndescribe(\"continuation source facts\", () => {\n  it(\"keeps unknown and not-started outcomes distinct from completed observations after repeated compaction\", () => {\n    const history: Message[] = [\n      { type: \"user\", content: \"目标：生成报告；发布前先让我确认。\" },\n      { type: \"assistant\", content: \"计划发布；尚未确认完成。\", toolUses: [",
+          "bytes": 752,
+          "truncated": false
+        },
+        {
+          "path": "packages/core/src/engine/compaction/compact-messages.ts",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "import type { Message, ContentBlock } from \"@vykor/agent-contracts\";\nimport type { CompactTrigger } from \"./compact-types\";\nimport { boundaryFallsInsideToolGroup as historyBoundaryFallsInsideToolGroup } from \"../../utils/message-history\";\nimport { estimateTokens as estimateTextTokens } from \"../../utils/token-counter\";\nimport { toolFeedbackFields } from \"../tools/tool-result-feedback\";\nimport { appendContinuityExcerpts, splitOwnedContinuity } from \"./compact-continuity\";\n\n/** Token 估算的保守膨胀系数，降低低估导致超窗的风险。 */\nconst TOKEN_ESTIMATION_PADDING = 4 / 3;\n\n/** microCompact 清空工具结果后写入的占位文案。 */\nconst TIME_BASED_MC_CLEARED_MESSAGE = \"[Old tool result content cleared]\";\n/** Controlled facts describe a past observation, not instructions or current job status. */",
+          "bytes": 831,
+          "truncated": false
+        },
+        {
+          "path": "packages/core/src/engine/compaction/compact-service.ts",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "/**\n * CompactService —— 对话上下文压缩服务\n *\n * 长会话中工具输出、文件内容会迅速占满模型 context window。本服务在\n * QueryEngine 每轮调用模型前自动触发（也可由 `/compact` 手动触发），\n * 按「先便宜后昂贵」的分层策略缩小历史，同时尽量保留任务连续性信息。\n *\n * 压缩阶梯（autoCompact）：\n *   1. microCompact      —— 清空旧工具结果正文（零模型调用）\n *   2. tryContextCollapse —— 对超长文本做头尾截断（零模型调用）\n *   3. llmCompact         —— 用 LLM 把旧消息摘要成一条 summary\n *   4. simpleCompact      —— 无 client / LLM 失败时的占位兜底\n *",
+          "bytes": 711,
+          "truncated": false
+        }
+      ]
+    },
+    {
+      "taskId": "english-shell-logs",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    },
+    {
+      "taskId": "english-cancel-host",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    },
+    {
+      "taskId": "english-image-route",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    },
+    {
+      "taskId": "english-timezone",
+      "status": "error",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [],
+        "evidenceFiles": []
+      },
+      "evidence": []
+    },
+    {
+      "taskId": "chinese-tool-outcome",
+      "status": "hits",
+      "score": {
+        "fileHit": true,
+        "evidenceHit": false,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 2,
+        "fileRecall": 0.5,
+        "topFiles": [
+          "packages/core/src/engine/README.md",
+          "docs/model-network-retry-design.md",
+          "packages/core/src/engine/compaction/README.md",
+          "docs/superpowers/specs/2026-08-29-conversation-attachments-retrospective.md"
+        ],
+        "evidenceFiles": []
+      },
+      "evidence": [
+        {
+          "path": "packages/core/src/engine/README.md",
+          "startLine": 1,
+          "endLine": 23,
+          "text": "# 查询执行\n\n`QueryEngine` 是模型与工具循环的入口。它接收用户消息，维护当前历史，组织压缩、模型请求、工具调用和结束处理，并通过 `submitMessage()` 的异步事件流将进度与结果交给调用方。\n\n## 文件与子目录\n\n| 位置 | 用途 |\n| --- | --- |\n| `query-engine.ts` | 查询循环、请求配置应用、历史维护、手动工具执行与压缩入口 |\n| `turn-context.ts` | 固定本轮请求的消息与工具列表，拼接系统提示和记忆提醒 |\n| `index.ts` | `@vykor/core/engine` 公开入口 |\n| [model/](./model/README.md) | 执行模型请求、处理流式响应和重试 |\n| [tools/](./tools/README.md) | 准备、授权和执行工具调用 |\n| [results/](./results/README.md) | 保存有容量上限的 SDK 结果引用，统一文本分页和字面检索 |\n| [compaction/](./compaction/README.md) | 缩减历史消息并保留继续任务所需的线索 |\n| [trajectory/](./trajectory/README.md) | 根据工具结果生成后续行动提示 |\n| [usage/](./usage/README.md) | 累计模型请求用量 |\n| `__test__/` | 查询循环、请求配置、记忆注入、目标上下文等整体流程测试 |\n\n## 状态与调用关系\n\n`QueryEngine` 实例保存消息历史、当前模型和提示词、最近工具结果以及累计用量。每轮先准备历史和请求，再调用 `model/`；出现工具调用时交给 `tools/`，将结果写入历史后继续。`compaction/` 返回缩减后的历史，由引擎接管。\n",
+          "bytes": 1510,
+          "truncated": false
+        },
+        {
+          "path": "docs/model-network-retry-design.md",
+          "startLine": 92,
+          "endLine": 116,
+          "text": "8. 不可重试或预算耗尽时，结束运行，保留错误摘要和尝试记录。迟到事件不得把已结束或已取消任务恢复成运行中。\n\n重试协调由引擎掌握输出替换与次数预算，适配器负责识别协议完成状态和提供结构化错误；不另建客户端重连系统。\n\n## 错误与等待策略\n\n| 情况 | 当前处理 |\n|---|---|\n| 连接重置、临时 DNS 故障、连接或读取超时 | 在预算内重试，检查错误本身及 `cause` 中的原因 |\n| 429 临时限流 | 按服务端等待提示重试；余额或额度耗尽不能简单等同于临时限流 |\n| 408、500、502、503、504，以及提供商明确规定的临时过载 | 有界重试 |\n| 流未收到完成标记就结束 | 视为中断，进入当前生成的恢复流程 |\n| 用户主动取消 | 立即结束等待或请求，不重试 |\n| 401、403、无效参数、不支持的模型能力 | 直接报告需处理的问题 |\n| 完整响应中的工具参数解析失败 | 不执行工具，反馈模型纠正；不是网络重试 |\n| 未知编程错误、其他解析错误 | 不用兜底无限重试掩盖问题，保留诊断信息 |\n\n建议起点是指数增加等待时间，例如 1、2、4、8 秒，再加少量随机延迟，避免多个请求同时重试。次数、最大等待和总时限应明确；具体默认值在实施时结合产品体验确定，Codex 默认值仅供参考。\n\n`Retry-After` 应支持秒数和 HTTP 日期。若服务端要求的等待超过剩余总预算，应明确结束或提示，不能把它压短后提前重试。\n\n流空闲超时指连续没有收到数据，不是整段生成总时长。服务端心跳与有效输出需要分别考虑，避免把模型正常长思考误判为断线。\n\n## 状态保存与界面\n",
+          "bytes": 1787,
+          "truncated": false
+        },
+        {
+          "path": "packages/core/src/engine/compaction/README.md",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "# 历史消息压缩\n\n当长对话接近模型的上下文容量时，缩减旧消息，同时尽量保留最近工具调用和继续任务所需的信息。\n\n| 文件 | 用途 |\n| --- | --- |\n| `compact-service.ts` | `CompactService` 入口，选择压缩步骤、处理重试并报告进度 |\n| `compact-types.ts` | 压缩来源、进度、检查点、补充上下文和摘要客户端接口 |\n| `compact-messages.ts` | 估算消息大小，清理旧工具输出、截断长内容并保护工具调用与结果的配对 |\n| `compact-prompt.ts` | 构造摘要提示，提取近期文件与工具工作记录 |\n| `compact-summary.ts` | 收集和格式化模型摘要，识别上下文超长错误 |\n| `compact-continuity.ts` | 保留继续任务所需的原文片段，管理压缩前后的衔接信息 |\n| `__test__/` | 压缩阶段、回退、取消与上下文保留测试 |",
+          "bytes": 877,
+          "truncated": false
+        },
+        {
+          "path": "docs/superpowers/specs/2026-08-29-conversation-attachments-retrospective.md",
+          "startLine": 11,
+          "endLine": 35,
+          "text": "这轮工作已经把“对话附件”从一个上传按钮，做成了一条可持久化、可恢复、可追踪、可降级、可清理的完整运行链路。\n\n当前真正完成并适合发布的范围是：\n\n- 常见图片附件：模型和供应商都支持图片时，直接交给模型；否则由主 Agent 按需调用本地 `ImageToText` 做 OCR。\n- 安全文本和代码附件：小文件直接放进提示词，大文件通过只读资源按行读取。\n- 会话生命周期：附件跟随发送、排队、重试、编辑、分叉、重启、压缩和历史消息稳定存在。\n- 本地存储治理：支持去重、租约保护、延迟删除、安全回收、完整性扫描、备份恢复和设置页可视化。\n- 不支持的文件不会被悄悄忽略，而是在调用模型前明确阻止并说明原因。\n\n这并不等于“通用文件平台已经完成”。PDF、Word、Excel、PowerPoint、压缩包、未知二进制、文件夹上传和断点续传仍然不在当前发布范围内。这是有意收窄的产品边界，不是遗漏。\n\n## 2. 最初的问题，为什么不能只做一个上传按钮\n\n最开始的需求看起来很直接：对话框支持上传附件。但真正把附件交给 Agent 使用，需要同时回答下面的问题：\n\n1. 文件由谁保存，保存多久，重启后还能不能找到？\n2. 一条输入引用了哪些附件，顺序如何保持？\n3. 上传成功但发送失败时，附件和输入怎么恢复？\n4. 模型支持图片、供应商接口却不支持图片时，应该走哪条路？\n5. 自定义模型的图片能力无法自动判断时，如何安全配置？\n6. 模型不支持图片时，OCR 是自动执行，还是作为 Agent 工具按需调用？\n7. 文本附件多大可以直接放进上下文，多大必须按需读取？\n8. PDF、Office、压缩包和未知二进制该如何处理，能不能误当文本？\n9. 去重后的文件怎样统计空间，什么时候可以安全删除？",
+          "bytes": 1978,
+          "truncated": false
+        }
+      ]
+    },
+    {
+      "taskId": "chinese-plugin-guard",
+      "status": "hits",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [
+          "apps/desktop/src/renderer/src/components/desktop/conversation-page/message/activity/task-duration.tsx",
+          "packages/services/src/session-runtime/store.ts",
+          "docs/native-plugin-authoring.md",
+          "docs/superpowers/specs/2026-09-09-native-plugin-authoring-v1-design.md",
+          "docs/superpowers/specs/2026-10-02-file-workflow-design.md"
+        ],
+        "evidenceFiles": []
+      },
+      "evidence": [
+        {
+          "path": "apps/desktop/src/renderer/src/components/desktop/conversation-page/message/activity/task-duration.tsx",
+          "startLine": 24,
+          "endLine": 48,
+          "text": "  }, [ticking, startedAt])\n  const end = running ? now : finishedAt\n  if (!Number.isFinite(startedAt) || !Number.isFinite(end)) return null\n  if (!running && end! < startedAt!) return null\n  return (\n    <span className=\"text-ui-caption shrink-0 text-ui-muted tabular-nums\">\n      {prefix}\n      {formatElapsedTime(end! - startedAt!)}\n    </span>\n  )\n}\n\nexport function TaskDuration({\n  timing,\n  label,\n  state,\n  placement = \"footer\",\n}: {\n  timing?: TaskTiming\n  label?: string\n  /** 调用方知道当前具体在做什么时传入，否则按运行状态取默认动画 */\n  state?: OrbState\n  placement?: \"header\" | \"footer\"\n}): React.JSX.Element | null {\n  if (!timing) return null",
+          "bytes": 688,
+          "truncated": false
+        },
+        {
+          "path": "packages/services/src/session-runtime/store.ts",
+          "startLine": 356,
+          "endLine": 380,
+          "text": "    if (input.sessionId) {\n      this.conversations.appendEvent({\n        type: `workflow.${input.type}`,\n        sessionId: input.sessionId,\n        payload: {\n          event: JSON.parse(input.eventJson) as Record<string, unknown>,\n        },\n      });\n    }\n    return seq;\n  }\n\n  acquireApplicationOwner(input: {\n    ownerId: string;\n    pid: number;\n    staleAfterMs: number;\n    now?: number;\n    /** 仅在调用方已经独立确认当前 owner 不可能继续写入时返回 true。 */\n    canTakeOver?: (current: ApplicationOwnerLease) => boolean;\n  }): ApplicationOwnerLease {\n    if (this.coordinator.inTransaction || hasPendingMutations(this.storage.mutations)\n      || this.storage.deltaCheckpoint.dirtyPartIds().length > 0) {\n      throw new Error(\"Application ownership requires a settled local store\");\n    }\n    const timestamp = input.now ?? Date.now();",
+          "bytes": 872,
+          "truncated": false
+        },
+        {
+          "path": "docs/native-plugin-authoring.md",
+          "startLine": 262,
+          "endLine": 286,
+          "text": "| plugin | id、name、version、root、dataDir；root 是代码快照，dataDir 是稳定的插件持久数据目录 |\n| deadline | Unix 毫秒时间戳，表示本次调用截止时间 |\n| signal | AbortSignal，通知本次调用超时或被调用方取消 |\n\n`cwd` 是调用所属项目，不是插件根目录。运行时加载插件自己的静态资源，应使用 `context.plugin.root` 或模块相对 URL；不要依赖 `process.cwd()`。注册上下文没有 cwd，调用上下文没有独立 log 方法，可以在 registerTools 中捕获日志函数。\n\n公共接口不包含宿主内部的 settings、terminal、jobs 或工具注册表。SDK 只提供类型，不会因为声明了这些字段就注入相应能力。实际参考 `.mjs` 已作为 checkJs 输入，通过仓库的样例类型检查配置解析公共子路径。\n\n### 参数、返回值与取消\n\ninputSchema 在调用前检查常用 JSON Schema 约束，包括对象字段、required、additionalProperties、基本类型、enum、const、字符串长度及数组项。当前不是完整 JSON Schema 实现；不要依赖未实现的关键字来表达必须执行的业务校验。字符串长度按 JavaScript UTF-16 code units 计数。\n\n返回现有 `ToolResult`：`content` 内容块数组，以及可选 isError、failureKind、metadata。文本输出使用 `{ type: \"text\", text: \"...\" }`；不要直接返回字符串。异常由宿主转换成结构化错误。`safeToRetry` 只对能够安全重复调用的工具设为 true。\n\n异步工作应监听 `signal`，中止底层请求或等待并释放资源。只在长同步循环里读取 signal 不能及时接收进程间取消消息；同步任务必须有明确的工作量上限。调用超时、调用方主动取消分别返回 `tool_call_timeout`、`tool_call_cancelled`；插件长期不响应时宿主会结束进程。\n\n工具可通过注册日志接口记录调试信息；正文、凭据和完整输入不要写日志。宿主对 stdout、stderr 和插件日志消息设有大小限制，超出时截断或抑制；当前没有对 `ToolResult.content` 应用这些限额，工具应自行限制返回结果大小，不能依赖宿主自动截断。每次工具调用另有不包含完整参数正文的审计记录。\n\n## 插件持久数据与本轮工具结果\n\n宿主注入 `context.plugin.dataDir`，位置为 `~/.vykor/plugins/data/<plugin-id>`，与安装版本、代码快照和当前工作目录分开。插件按需创建目录并自行使用 Node 文件 API，保存格式、迁移及缓存清理由插件负责。普通更新与卸载不删除这些数据；此入口规范数据位置，不提供系统级文件沙箱，也不会隐式授予读写权限。\n\n原生工具可以声明 `toolResultInput: \"tool_result_id\"`，并在 inputSchema 定义该字符串字段。调用时宿主按编号取出本轮已经执行、且仍在当前可见工具范围内的实际结果，放入 `context.toolResult`；模型不能用参数正文替代它。上下文还提供可选 `runId`，用于插件记录本轮业务状态。\n\n工具结果编号在模型反馈中显示为 `Tool-Result-Id: <tool-call-id>`。此接口仅保留选中插件的本轮最近 16 项结果，单项最多 256000 字节、总量最多 1000000 字节；不截断后冒充完整结果，不跨 Run 或运行时重启读取。结果不存在、过大或已被淘汰时明确返回不可用，插件可重新取得结果或读取自己的持久数据。先执行取资料工具，再在后续调用导入；同一批并行工具未完成时不能读取其结果。",
+          "bytes": 3587,
+          "truncated": false
+        },
+        {
+          "path": "docs/superpowers/specs/2026-09-09-native-plugin-authoring-v1-design.md",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "# 原生插件第一阶段：开发规范与参考插件\n\n状态：实现、验收与独立审查已完成。\n\n## 目标与范围\n\n开发者可以从公开文档和参考代码出发，编写一个 Vykor Native Plugin，完成校验、本地开发链接、正式安装和实际工具调用，并知道错误从哪里查看、何时需要重载。\n\n本阶段落实 [插件系统交接](../../plugin-system-handoff.md) 的 Native 运行格式与安装边界。Converter 到此停止扩展，不是本阶段的开发对象。\n\n参考业务选为“文本检查助手”：检查调用者提供的文本，报告行尾空白与行首制表符。它不依赖文件读写、网络、密钥、第三方库或模型服务，因此可以在自动化测试中验证真实 Tool Host 调用。样例选择用于验证开发接口，不代表产品只能支持文本工具。\n\n## 当前代码证据",
+          "bytes": 885,
+          "truncated": false
+        },
+        {
+          "path": "docs/superpowers/specs/2026-10-02-file-workflow-design.md",
+          "startLine": 1886,
+          "endLine": 1902,
+          "text": "- 文件回归要证明：漏 new_string 明确未写，10099／13923 不会被匹配规则偷偷等同；当前原文可用于短且唯一的更正调用，正确参数和合法包装仍可成功。已有 Edit 的单次／批量条件主要在工具内部校验，此事实可以解释 schema 必填表达偏弱的风险，但不足以证明它造成了本次数字错误，不因此扩展通用 schema 规范化器。\n- 这轮评估只读了源码、白名单配置字段及 readonly／query_only 会话数据；仅更新本文档。没有改生产／测试代码、切换通道、读取凭据文件、运行会话脚本、调用真实模型、构建／重启应用或提交／push。其他未提交工作保留。\n\n## 41. 已授权实施：执行链路收敛与克制的生成展示\n\n用户授权将 §40 的 Shell 删减、真实失败参数离线回归及参数生成展示一起完成；界面必须克制，不能靠堆文字制造进度感。自动文件版本保护、切换供应商／Messages API、供应商测速仍不实施。\n\n### 运行范围与职责\n\n- Shell 删除独立 ParseInput 探测及三个入口的调用，不恢复正则硬拒；实际解释器负责语法解析，原执行器保留 stdout／stderr、退出码、超时、取消和日志。后台只登记任务，失败仍由 JobWait／JobRead 查看。探测承担过的取消保护必须留在正常启动边界，而不是再建一套预检。\n- 离线测试使用 §40 的遗漏 new_string、10099／13923 差异及合法 arguments 包装：替换模型网络传输，真实解析／核心准备／权限／Edit 写入仍执行。遗漏或旧文不符均不落盘，修正后的短且唯一调用才成功；不为测试新增参数修复逻辑、不放宽数字匹配。\n- 生成展示沿用现有 tool_generation_progress → Agent domain event → Run 临时 metadata → renderer 占位工具行的路线，增加可选 `filePath` 摘要；省略表示保留此前摘要，字符串更新路径，null 明确撤回已经不可信的路径。放弃恢复时在同一进度事件中附带 discarded 撤销标记，仅清理该占位。provider 负责从生成中的参数提取已完整接收的路径，核心的普通接收量继续按既有 250ms 节流；撤销不是累计量，立即转发并清掉对应待发进度，不能被后续进度合并吞掉。服务端过滤摘要，renderer 只消费展示信息。\n- 摘要只限文件工具，只接受完整、合法转义的路径字符串，最多 4096 字符，含控制字符或不可确定时不展示；不能从正文里的示例字段推测路径。支持现有合法参数包装与跨分片字符串，不把别名转换或半成品 JSON 用于实际执行。路径晚于正文时等它真正到达，不要求模型字段顺序永远正确。\n- 不传／持久化原始参数片段和完整正文，不修改正式 tool_use_start 的发布时间；正式执行仍等待完整参数、校验和授权。renderer 生成占位不得填入可执行 input／正式 toolUseId／output，不算已完成操作；进度事件及 Run 摘要继续保留已有可选 toolUseId 用于身份衔接。重试、取消、结束及正式调用到达时按已有 generation／attempt／调用身份收束，不凭文件名合并调用。\n- 原生 OpenAI／Anthropic／Codex 增量共同支持。已声明文件工具的 DSML invoke 同样发布展示进度，复用 scanner 的识别边界及最终 dsml_N 身份，不另建 DSML 解析框架；完整路径才进入摘要。未知工具和普通引用不产生占位，未闭合、超限释放或最终放弃恢复只清理展示，不生成正式调用，不改变恢复执行条件。\n- 路径摘要可以使用一个共享的小型字符串扫描辅助模块，复用 provider 已有参数缓冲及调用生命周期；不新增通用半成品 JSON 修复器、参数规范化器或执行输入。按增量扫描或已有节流窗口处理，不能每个字符都重新遍历一份不断变长的正文。\n- Write／Edit 仅在已有 file_path 字段说明中建议先提供路径，再提供正文／替换",
+          "bytes": 4096,
+          "truncated": true
+        }
+      ]
+    },
+    {
+      "taskId": "chinese-plugin-data",
+      "status": "hits",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [
+          "docs/plans/2026-08-22-durable-agent-application-convergence.md",
+          "docs/mcp-apps.md",
+          "apps/desktop/docs/packaging.md",
+          "docs/plugin-system.md",
+          "docs/superpowers/specs/2026-08-29-conversation-attachments-retrospective.md"
+        ],
+        "evidenceFiles": []
+      },
+      "evidence": [
+        {
+          "path": "docs/plans/2026-08-22-durable-agent-application-convergence.md",
+          "startLine": 12,
+          "endLine": 36,
+          "text": "- [x] A2：移除 `client -> services` 依赖；client 测试不再加载 SQLite Store。\n- [x] A3：共享 client 不再直接读取 Node `process`；`/doctor` 的本机信息由宿主提供。\n- [x] A4：增加无 Node polyfill 的 Vite 浏览器构建 fixture。\n- [x] B1：AgentPool、Session/Run/Projection/Recovery 和 Control 实现已经移入 `packages/server/src/application`；生产代码不再依赖 Hono 或 HTTP 类型。\n- [x] B2-B4：应用现在自己拥有 Session、Run、Permission、Job、Terminal、Project 和事件入口；HTTP 可以接收外部 Application；事件支持先按游标补历史、再持续接收新事件。\n- [x] C1-C4：Bot 已通过 daemon 进入同一套 durable Session/Run；聊天映射、重复消息准入和回复发送结果都会保存。\n- [x] D1-D4：Kernel 已改为只接收显式 runtime 和宿主能力；Node 默认组装只保留命名明确的入口；发布包可在仓库外安装并跑完 root、child 和 close。\n- [x] E1-E4：daemon Workflow 已写入统一 SQLite；不读取或迁移旧项目文件；Jobs 等待改成状态变化通知并补上订阅竞态保护。\n- [x] F1-F4：已增加单执行者租约和 generation 防旧写、协议能力清单、可审计清理策略及带校验的备份恢复。\n\n## 一、这轮要解决什么\n\n以下是计划开始时的代码基线，当时已经有三块重要能力：\n\n```text\nagent-runtime\n  负责一次 Agent 怎么运行、怎么调用工具、怎么创建子 Agent、怎么停止和释放资源\n\ndaemon application\n  负责 Session、Input、Run、Permission 和 Transcript 怎么保存、排队、恢复和给多个客户端使用\n\nclient\n  负责通过 HTTP/SSE 读取状态、发送命令，并把 snapshot 与增量事件合并成客户端状态\n```\n",
+          "bytes": 1782,
+          "truncated": false
+        },
+        {
+          "path": "docs/mcp-apps.md",
+          "startLine": 105,
+          "endLine": 129,
+          "text": "Vykor 宿主 -> 应用授权与操作回执\n应用授权与操作回执 -> MCP Client: tools/call\nMCP Client -> MCP 服务: 模板使用 stdio\nMCP 服务 -> 业务代码: 查询天气或保存备忘\n```\n\n安装批准后，Vykor 启动并连接服务，读取工具和资源声明。打开应用时，Vykor 用 resources/read 取得页面 HTML。\n\n页面资源使用 text/html;profile=mcp-app。工具通过 _meta.ui.resourceUri 关联页面，visibility 声明调用方可见性。\n\n服务提供 HTML，但 HTML 在 Vykor 的页面沙箱中运行。页面不会直接连接 stdio、访问文件或请求天气网站。\n\n例如点击“查询天气”：页面请求宿主，宿主检查后调用 MCP 天气工具。服务访问天气接口，返回文字和 structuredContent，页面再显示数据。\n\n天气模板由宿主向服务注入固定的数据目录、会话标识和工作区。MCP 的通用协议不会自动提供这些 Vykor 安装与授权约定。\n\n```callout info 可见性与权限分开\napp-only 只表示模型看不到该工具。\n它不会跳过安装批准、角色限制或每次调用的检查。\n```\n\n## C 应用怎样打开，结果怎样进入页面\n\n| 入口或事件 | 当前行为 |\n| --- | --- |",
+          "bytes": 1229,
+          "truncated": false
+        },
+        {
+          "path": "apps/desktop/docs/packaging.md",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "# 桌面安装包：为什么会慢、怎么保持快\n\n`pnpm build:win` 里，Vite 打 JS 通常几分钟内结束。真正容易“卡住”的是后面的 **electron-builder 收 node_modules**：它会按 `package.json` 的 production `dependencies` 走完整棵 pnpm 依赖树，再拷进 `dist/win-unpacked`。pnpm 是大量 junction，Windows 上再叠加 Defender 扫盘，这一步可以耗很久。\n\n## 现在的分工\n\n安装包里只需要运行时还 `require` 得着、又打不进 JS 的东西。\n\n| 放哪里 | 放什么 | 为什么 |\n|---|---|---|\n| `dependencies` | `better-sqlite3`、`node-pty`、`sharp`、`electron-updater`、`electron-log` | C++ 插件和更新器运行时不能打进主进程 bundle；`install-app-deps` 只重编原生模块 |\n| `devDependencies` | React、Tailwind、图标、workspace 包、electron-vite 等 | 开发期用；渲染进程和主进程 JS 已经打进 `out/` |\n| `electron-builder.yml` 的 `files` | `out/**`、`resources/**`、`package.json` | 不要默认拷整个 `apps/desktop` |",
+          "bytes": 1040,
+          "truncated": false
+        },
+        {
+          "path": "docs/plugin-system.md",
+          "startLine": 26,
+          "endLine": 50,
+          "text": "Native Tool 接入 MCP Apps 时，无需另起 MCP 服务。\n```\n\n### 两种带页面的插件怎样选\n\n| 组合 | 作者实现什么 | Vykor 怎样执行 | 页面怎样得到结果 |\n| --- | --- | --- | --- |\n| Native Tool＋MCP Apps | registerTools 工具入口、Apps 清单和 HTML 页面 | 校验后由 Tool Host 调用 invoke | metadata.appData 转为 structuredContent |\n| MCP 服务＋MCP Apps | 标准 MCP 工具与资源、服务配置、Apps 清单和 HTML 页面 | 校验后由 MCP Client 调用服务 | 直接使用 MCP structuredContent |\n\n两种页面都使用官方 App SDK，与 Vykor 通过标准 MCP Apps 协议通信。Native 的适配只发生在后台工具接口这一段。\n\nMCP 服务提供页面 HTML，但页面实际运行在 Vykor 右侧。服务进程与页面沙箱分别运行；页面不能直接操作服务进程或宿主文件。\n\n| 谁发起 | 请求入口 | 结果回来后 |\n| --- | --- | --- |\n| Agent | 已关联页面的模型工具 | 返回 Agent，并由宿主投递给页面的 ontoolresult |\n| 页面按钮 | 作者绑定事件，调用 app.callServerTool | 返回原 Promise，由页面显示；不重复推送 ontoolresult |\n\n两种组合都保留原工具权限、安装批准和操作回执。协议不会自动替作者完成按钮绑定、草稿保存或版本冲突处理。\n\n两套完整流程图和页面接线示例见 [MCP Apps 开发与运行机制](mcp-apps.html)。\n\n当前可激活 Skills、Agents、Hooks、MCP、Node Tools 和 Apps。Wasm Tool 尚不激活。\n",
+          "bytes": 1524,
+          "truncated": false
+        },
+        {
+          "path": "docs/superpowers/specs/2026-08-29-conversation-attachments-retrospective.md",
+          "startLine": 11,
+          "endLine": 35,
+          "text": "这轮工作已经把“对话附件”从一个上传按钮，做成了一条可持久化、可恢复、可追踪、可降级、可清理的完整运行链路。\n\n当前真正完成并适合发布的范围是：\n\n- 常见图片附件：模型和供应商都支持图片时，直接交给模型；否则由主 Agent 按需调用本地 `ImageToText` 做 OCR。\n- 安全文本和代码附件：小文件直接放进提示词，大文件通过只读资源按行读取。\n- 会话生命周期：附件跟随发送、排队、重试、编辑、分叉、重启、压缩和历史消息稳定存在。\n- 本地存储治理：支持去重、租约保护、延迟删除、安全回收、完整性扫描、备份恢复和设置页可视化。\n- 不支持的文件不会被悄悄忽略，而是在调用模型前明确阻止并说明原因。\n\n这并不等于“通用文件平台已经完成”。PDF、Word、Excel、PowerPoint、压缩包、未知二进制、文件夹上传和断点续传仍然不在当前发布范围内。这是有意收窄的产品边界，不是遗漏。\n\n## 2. 最初的问题，为什么不能只做一个上传按钮\n\n最开始的需求看起来很直接：对话框支持上传附件。但真正把附件交给 Agent 使用，需要同时回答下面的问题：\n\n1. 文件由谁保存，保存多久，重启后还能不能找到？\n2. 一条输入引用了哪些附件，顺序如何保持？\n3. 上传成功但发送失败时，附件和输入怎么恢复？\n4. 模型支持图片、供应商接口却不支持图片时，应该走哪条路？\n5. 自定义模型的图片能力无法自动判断时，如何安全配置？\n6. 模型不支持图片时，OCR 是自动执行，还是作为 Agent 工具按需调用？\n7. 文本附件多大可以直接放进上下文，多大必须按需读取？\n8. PDF、Office、压缩包和未知二进制该如何处理，能不能误当文本？\n9. 去重后的文件怎样统计空间，什么时候可以安全删除？",
+          "bytes": 1978,
+          "truncated": false
+        }
+      ]
+    },
+    {
+      "taskId": "chinese-schedule-history",
+      "status": "hits",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 2,
+        "fileRecall": 0,
+        "topFiles": [
+          "docs/superpowers/specs/2026-09-17-architecture-documentation-closeout-design.md",
+          "docs/superpowers/specs/2026-10-20-approval-presets-and-plan-mode-design.md",
+          "docs/plans/2026-08-23-documentation-architecture-and-gaps.md"
+        ],
+        "evidenceFiles": []
+      },
+      "evidence": [
+        {
+          "path": "docs/superpowers/specs/2026-09-17-architecture-documentation-closeout-design.md",
+          "startLine": 173,
+          "endLine": 197,
+          "text": "\n## 6. 事实来源与冲突处理\n\n文档修订时按以下顺序判定当前事实：\n\n1. 当前代码中的公开类型、导出和运行路径；\n2. 当前自动化测试与架构检查；\n3. 当前权威文档之间可相互验证的描述；\n4. 已完成阶段的设计、实施计划和复盘。\n\n如果历史计划与代码冲突，以代码和当前检查为准，并在收口记录中只写最终结论。若两个当前文档冲突，应找到实际拥有该行为的模块，不凭措辞投票决定。\n\n文档描述重要流程时统一回答四个问题：\n\n1. 从哪里进入；\n2. 中间经过哪些关键步骤；\n3. 状态保存在哪里；\n4. 结果或事件从哪里返回。\n\n## 7. 链接与可维护性规则\n\n- 链接优先指向稳定的文件或目录，不绑定容易变化的行号；\n- 当前文档中的代码路径必须在仓库中真实存在；\n- 一个约束只选择一份主要文档详细解释，其他文档用链接引用；\n- 版本号、header 名称、脚本名等精确值必须从代码或配置中复核；",
+          "bytes": 1053,
+          "truncated": false
+        },
+        {
+          "path": "docs/superpowers/specs/2026-10-20-approval-presets-and-plan-mode-design.md",
+          "startLine": 11,
+          "endLine": 35,
+          "text": "不在本次范围内实现原生 Windows 的新系统沙箱后端。当前平台没有系统隔离时必须准确说明能力；不能把工具参数检查描述成对任意命令和子进程的隔离。\n\n## 2. 对用户的行为\n\n| 授权选项 | 行为 |\n| --- | --- |\n| 请我批准 | 已允许的操作直接执行；其余需要授权的操作显示用户审批。 |\n| 帮我批准 | 已允许的操作直接执行；其余先由独立审查请求判断，可以自动通过、请求用户决定或拒绝。 |\n| 完全访问权限 | 在系统和强制策略允许的范围内扩大当前会话的文件、命令与网络访问，通常不再请求普通操作审批。 |\n\n新安装首次默认“请我批准”；不在这次改造中额外改变用户已保存的有效默认值。用户可主动选择另外两档。完全访问只授权当前执行环境，不授予系统管理员权限，也不替代外部应用自己的登录和同意流程。\n\n选择计划模式后，输入框附近出现可移除的“计划模式”标记，授权按钮保留原选项。发送消息后标记继续显示；切换聊天或重启后从会话记录恢复。用户移除标记、再次执行 `/plan`，或明确点击“开始执行”后退出。\n\n计划模式允许可信只读工具，阻止文件修改、命令执行、后台任务变更及其他有副作用的工具。授权为完全访问时也必须遵守计划限制。用户开启的计划模式不能被模型调用 `ExitPlanMode` 自行解除；模型临时进入计划仍只缩小权限，退出最多恢复用户当前选择。\n\n## 3. 状态放在哪里\n\n协议增加两类独立状态：\n\n```ts\nexport type ApprovalMode = \"ask\" | \"auto_review\" | \"full_access\";\nexport type WorkMode = \"execute\" | \"plan\";\n```\n",
+          "bytes": 1773,
+          "truncated": false
+        },
+        {
+          "path": "docs/plans/2026-08-23-documentation-architecture-and-gaps.md",
+          "startLine": 145,
+          "endLine": 169,
+          "text": "回答：怎样调用、部署、观察和修复。\n\n已有 SDK、Workflow CLI、slash command、daemon system service、remote attach 和 observability。\n\n需要新增 `operations-and-recovery.md`（P0）：\n\n- daemon 启动顺序和 ready 条件；\n- Application Owner 租约、心跳、失去所有权和 stale takeover；\n- 正常 shutdown 的 gate、drain、pool、store 顺序；\n- 异常退出后 Run、Attempt、Tool、Permission、Child、Workflow 怎样收束；\n- `unknown_outcome` 什么时候需要人工判断；\n- Projection Settlement 的 retry、resolve、abandon；\n- Retention 默认删什么、绝不删什么、审计在哪里；\n- Backup 包含什么、怎样校验、怎样恢复到空目标；\n- 常用 debug/inspect 命令和故障排查顺序。\n\n### 第 5 层：可执行验证\n\n回答：哪条规则由哪个测试证明。\n\n建议新增 `contract-test-index.md`（P2），但最好由脚本检查，避免手工目录再次过期。它至少应覆盖：\n\n- lifecycle 契约编号 → 测试文件；\n- durable record → schema/migration/round-trip test；\n- HTTP route → protocol validation test；",
+          "bytes": 1131,
+          "truncated": false
+        }
+      ]
+    },
+    {
+      "taskId": "docs-plugin-process",
+      "status": "hits",
+      "score": {
+        "fileHit": true,
+        "evidenceHit": false,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "docs/plugin-marketplace.md",
+          "docs/superpowers/specs/2026-10-02-native-plugin-ui-design.md",
+          "packages/agent-runtime/src/node/plugins/native-tools/README.md",
+          "packages/server/src/application/visual-tools/README.md",
+          "docs/plugin-system.md"
+        ],
+        "evidenceFiles": []
+      },
+      "evidence": [
+        {
+          "path": "docs/plugin-marketplace.md",
+          "startLine": 1,
+          "endLine": 21,
+          "text": "# 插件市场\n\n> 状态：当前实现与使用说明。\n\n插件页的“浏览市场”从登记的 HTTPS 来源读取目录，用户选择插件后，宿主下载固定版本的 ZIP、校验内容，再进入现有 Native Plugin 安装流程。\n\n## 官方来源\n\n- [源码与发布规则](https://github.com/rzx007/vykor-plugins)。\n- [市场目录](https://rzx007.github.io/vykor-plugins/marketplace.json)。\n- [版本安装包](https://github.com/rzx007/vykor-plugins/releases)。\n\n首批插件为 Excalidraw 1.0.0、Text Inspector 1.2.2、Notes 1.0.2。普通用户不需要 GitHub 登录、Git 或 npm；Excalidraw 运行服务需要 Node.js 24 或更新版本。\n\n在插件页搜索、查看详情后点击安装。已有本地或其他来源的同 ID 插件会显示关联或更换来源入口，并明确确认替换。安装完成后可新建对话使用；不会自动向聊天发送消息。\n\n市场和已安装列表共用现有的图标、列表行与间距，描述只显示一行，超出部分省略，鼠标悬停可查看完整描述；宽窗口双列、窄窗口单列。点击名称进入共用的插件详情页，返回保留搜索；版本、来源、兼容要求与许可证放在详情中。没有详细介绍时不重复简介，也不显示占位内容。安装成功使用轻量提示，原安装回执仍可在对应插件详情中查看，不把其他来源同 ID 插件的回执混在一起。\n\n插件作者可在 `.vykor-plugin/plugin.json` 声明 `icon`、`displayName`、`introduction`、`prompts` 和 `homepage`。图标使用图片 base64 data URI 或 HTTPS 地址；包内图片由作者在构建时转成 data URI，不使用相对路径。发布工具把这些展示信息加入目录；HTTPS 图标沿用宿主已有加载机制，缺失或加载失败使用默认图标。市场与已安装详情共用作者介绍和使用示例展示；市场示例在收到对应来源的安装成功回执、取得真实安装状态并确认权限齐全后才能使用，必须手动点击。旧目录没有这些可选字段时仍可浏览和安装。展示信息不授予权限，权限仍从实际安装包读取。\n\n## 自定义来源",
+          "bytes": 2168,
+          "truncated": false
+        },
+        {
+          "path": "docs/superpowers/specs/2026-10-02-native-plugin-ui-design.md",
+          "startLine": 429,
+          "endLine": 453,
+          "text": "open ── resolve 动作明确成功 ──→ resolved\nopen ── 用户确认取消交互 ─────→ dismissed\n```\n\nresolved 和 dismissed 是业务终态，不可回到 open。界面仍可显示已有数据，但动作只读。重新做任务需要重新调用初始工具，产生新实例。\n\nactiveActionRunId 只表示有一项执行中的操作，不是新的业务状态。最后一次 Run 的状态决定成功、失败或结果不确定。\n\n### 12.2 业务状态与可用性分离\n\n可用性由当前插件和 Session 事实计算，不写成永久业务终态：\n\n返回值为 `{ code, canRender, canInvoke }`。canInvoke 为 true 必须同时满足 canRender、实例 open、会话可变、Runtime 准备成功和没有未知结果保护。plugin-disabled、permission-missing、snapshot-missing、snapshot-changed、invalid-definition 的 canRender / canInvoke 都为 false。Session 归档或 Tool Host 暂不可用但快照仍有效时，可以 canRender=true、canInvoke=false，以只读方式查看既有数据。\n\n后台读取设置、安装记录、文档与准备 Runtime 的整段流程使用现有 operation gate（运行与维护互斥入口）。reload、卸载或全局维护持有维护入口时，UI 读取不能重新创建 Runtime；daemon 尚未就绪或已开始关闭时也不准备 Runtime，不返回可显示的 HTML。已进入的读取在关闭时排空并清理，Host 真正启动失败的精确快照只读回退仅适用于 daemon 正常运行期间。关闭流程先封住新入口、取消并等待活动 Run 结算，再等待既有读取与执行租约释放；动作执行租约仍覆盖权限等待、工具调用和原子结算。\n\n实例查找只在请求所属会话的 Parts 内进行，不扫描其他会话。缺少组件、工具归属或 UI 运行端造成的诊断只限制 UI 能力，不作为所有业务工具的准备失败；整体插件权限缺失仍遵守既有安装校验规则。\n\n| 可用性 | 行为 |\n| --- | --- |\n| available | 可以显示；open 实例可以请求动作 |\n| plugin-disabled / permission-missing | 卸载 iframe；保留文字结果和原因 |\n| snapshot-missing / snapshot-changed | 保留摘要；不运行其他版本来替代旧界面 |\n| runtime-unavailable / session-archived | 展示持久结果；不可执行动作 |\n| action-unknown | 显示最后数据和未知结果说明；不再请求工具动作 |",
+          "bytes": 2416,
+          "truncated": false
+        },
+        {
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/README.md",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "# 本地插件工具进程\n\n在独立的 Node 进程中加载插件工具，处理注册、调用、取消和日志，再将结果返回运行宿主。\n\n| 文件 | 用途 |\n| --- | --- |\n| `activate.ts` | 启用插件工具，向运行注册表提交结果 |\n| `tool-host.ts` | `NativeToolHost`，启动子进程并管理请求、超时和关闭 |\n| `host-entry.mjs` | 子进程入口，加载插件模块并执行工具 |\n| `protocol.ts` | 宿主与子进程间的注册、调用、取消和日志消息约定 |\n| `guard.ts` | 调用保护、参数与资源限制，以及审计事件 |\n| `status.ts` | 记录和读取本地工具运行状态 |\n| `__test__/` | 宿主协议、插件数据、实际插件和插件开发流程测试 |",
+          "bytes": 733,
+          "truncated": false
+        },
+        {
+          "path": "packages/server/src/application/visual-tools/README.md",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "# 图像工具接入\n\n提供图片生成、图片转文字、远程图片读取与取消处理。\n\n## 入口与流程\n\n工具工厂校验请求并调用图像能力；远程图片读取器检查地址与重定向；取消范围辅助函数将宿主取消接到当前工具调用。\n\n## 状态归属\n\n生成文件和读取结果由工具及其宿主保存，取消监听只属于当前调用并在结束时释放。\n\n## 主要文件",
+          "bytes": 431,
+          "truncated": false
+        },
+        {
+          "path": "docs/plugin-system.md",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "---\ntitle: Vykor 新插件体系\nsubtitle: 从插件包到实际调用：结构、安装、权限与开发入口\ntemplate: doc\ntheme: paper\nsource: 当前工作区源码 · 2026-10-23\n---\n> 状态：当前插件体系开发说明；以当前源码和插件清单校验规则为准。\n\n插件以 Native Plugin 包为入口。技能、工具和页面分别加载，调用始终受实际权限约束。\n\n这份文档介绍插件整体机制。页面协议和常驻面板见独立的 [MCP Apps 文档](mcp-apps.html)。\n",
+          "bytes": 516,
+          "truncated": false
+        }
+      ]
+    },
+    {
+      "taskId": "docs-attachment-routing",
+      "status": "hits",
+      "score": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [
+          "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "packages/server/src/application/session/execution/session-run-executor.ts",
+          "packages/server/src/application/session/execution/__test__/session-run-executor.test.ts",
+          "packages/services/src/session-runtime/__test__/store.test.ts",
+          "packages/server/src/application/attachments/routing/attachment-routing-types.ts"
+        ],
+        "evidenceFiles": []
+      },
+      "evidence": [
+        {
+          "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "import type { ContentBlock } from \"@vykor/agent-contracts\";\nimport { officeFormat, OFFICE_MEDIA_TYPES } from \"@vykor/domain-contracts/attachments\";\nimport {\n  classifyAttachmentCandidate,\n  AttachmentTextDecodingError,\n  type AttachmentTextEncoding,\n} from \"@vykor/services\";\n\nimport type { ResolvedAttachmentContentPath } from \"../attachment-service.js\";\n\nimport {\n  AttachmentRoutingError,\n  type AttachmentRoutingDecision,",
+          "bytes": 425,
+          "truncated": false
+        },
+        {
+          "path": "packages/server/src/application/session/execution/session-run-executor.ts",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "import { hostedContextUsageAgent } from \"../../context-usage/assemble-session-context-usage.js\";\nimport type { AutoReviewMode } from \"@vykor/domain-contracts/approvals\";\nimport type { SessionRecord } from \"@vykor/domain-contracts/sessions\";\nimport { readSessionModelRetryState } from \"@vykor/domain-contracts/sessions\";\nimport { resolveRunPluginSelection } from \"../plugins/session-plugin-selection.js\";\nimport type { ProviderInputCapabilities } from \"@vykor/api\";\nimport { PluginPreparationError } from \"@vykor/agent-runtime\";\nimport {\n  createGoalRunContribution,\n  type GoalRunBinding,\n} from \"../../goals/goal-run-contribution.js\";\nimport type { GoalReadSnapshot } from \"../../goals/goal-read-tool.js\";\nimport {",
+          "bytes": 715,
+          "truncated": false
+        },
+        {
+          "path": "packages/server/src/application/session/execution/__test__/session-run-executor.test.ts",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "import {hostedAgentFactory,hostedAgentFixture} from \"../../../../../test-helpers/hosted-agent.js\";\nimport type { AgentExecutionLimits, AgentRunHandle } from \"@vykor/agent-contracts\";\nimport type { AgentCapabilitySnapshot } from \"@vykor/agent-runtime\";\nimport type {AgentRunContribution} from \"@vykor/agent-contracts\";\nimport type {GoalReadSnapshot} from \"../../../goals/goal-read-tool.js\";\nimport type {GoalRunBinding} from \"../../../goals/goal-run-contribution.js\";\nimport { createRunCapabilityView } from \"@vykor/agent-runtime\";\nimport { ToolRegistry } from \"@vykor/core\";\nimport { describe, expect, it, vi } from \"vitest\";\n\nimport {\n  SessionRunExecutor,\n  type SessionRunExecutorContext,",
+          "bytes": 691,
+          "truncated": false
+        },
+        {
+          "path": "packages/services/src/session-runtime/__test__/store.test.ts",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from \"node:fs\";\nimport { tmpdir } from \"node:os\";\nimport { join } from \"node:path\";\n\nimport Database from \"better-sqlite3\";\nimport { describe, expect, it } from \"vitest\";\n\nimport { SessionStore, type SessionStoreOptions } from \"../store.js\";\nimport { createDurableEventRegistry } from \"../events/event-registry.js\";\nimport { PermissionRepository } from \"../../permissions/permission-repository.js\";\n\nconst fixtureEventRegistry = createDurableEventRegistry([\n  {",
+          "bytes": 518,
+          "truncated": false
+        },
+        {
+          "path": "packages/server/src/application/attachments/routing/attachment-routing-types.ts",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "import type { ProviderInputCapabilities } from \"@vykor/api\";\nimport type { ContentBlock } from \"@vykor/agent-contracts\";\nimport type { ModelInputCapabilities } from \"@vykor/host-config\";\nimport type { SessionInputAttachmentRecord } from \"@vykor/domain-contracts/attachments\";\n\nexport type AttachmentRoutingErrorCode =\n  | \"attachment_model_capability_unknown\"\n  | \"attachment_model_unsupported\"\n  | \"attachment_provider_capability_unknown\"\n  | \"attachment_provider_unsupported\"\n  | \"attachment_intent_unavailable\"\n  | \"attachment_kind_unsupported\"\n  | \"attachment_document_unsupported\"",
+          "bytes": 585,
+          "truncated": false
+        }
+      ]
+    },
+    {
+      "taskId": "docs-compaction",
+      "status": "hits",
+      "score": {
+        "fileHit": true,
+        "evidenceHit": false,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/core/src/engine/compaction/README.md",
+          "docs/native-vision-image-preprocessing.md",
+          "packages/core/src/engine/README.md",
+          "docs/superpowers/specs/2026-08-29-conversation-attachments-stage-7-design.md",
+          "packages/core/src/engine/compaction/compact-service.ts"
+        ],
+        "evidenceFiles": []
+      },
+      "evidence": [
+        {
+          "path": "packages/core/src/engine/compaction/README.md",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "# 历史消息压缩\n\n当长对话接近模型的上下文容量时，缩减旧消息，同时尽量保留最近工具调用和继续任务所需的信息。\n\n| 文件 | 用途 |\n| --- | --- |\n| `compact-service.ts` | `CompactService` 入口，选择压缩步骤、处理重试并报告进度 |\n| `compact-types.ts` | 压缩来源、进度、检查点、补充上下文和摘要客户端接口 |\n| `compact-messages.ts` | 估算消息大小，清理旧工具输出、截断长内容并保护工具调用与结果的配对 |\n| `compact-prompt.ts` | 构造摘要提示，提取近期文件与工具工作记录 |\n| `compact-summary.ts` | 收集和格式化模型摘要，识别上下文超长错误 |\n| `compact-continuity.ts` | 保留继续任务所需的原文片段，管理压缩前后的衔接信息 |\n| `__test__/` | 压缩阶段、回退、取消与上下文保留测试 |",
+          "bytes": 877,
+          "truncated": false
+        },
+        {
+          "path": "docs/native-vision-image-preprocessing.md",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "# 原生视觉图片预处理\n\n> 状态：当前原生视觉图片进入模型前的处理、缓存与失败边界。\n\n这份文档说明用户图片从 `ImageBlock` 进入模型请求前实际发生什么，重点回答：\n\n- 为什么原图不能直接塞进 Provider 请求\n- 图片什么时候进入消息历史\n- 怎样保证最长边和请求体大小\n- 同一张图怎样复用，什么时候清理\n- 失败后为什么不会把当前会话持续卡在 413\n\n## 为什么需要这一层",
+          "bytes": 492,
+          "truncated": false
+        },
+        {
+          "path": "packages/core/src/engine/README.md",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "# 查询执行\n\n`QueryEngine` 是模型与工具循环的入口。它接收用户消息，维护当前历史，组织压缩、模型请求、工具调用和结束处理，并通过 `submitMessage()` 的异步事件流将进度与结果交给调用方。\n\n## 文件与子目录\n\n| 位置 | 用途 |\n| --- | --- |\n| `query-engine.ts` | 查询循环、请求配置应用、历史维护、手动工具执行与压缩入口 |\n| `turn-context.ts` | 固定本轮请求的消息与工具列表，拼接系统提示和记忆提醒 |\n| `index.ts` | `@vykor/core/engine` 公开入口 |\n| [model/](./model/README.md) | 执行模型请求、处理流式响应和重试 |\n| [tools/](./tools/README.md) | 准备、授权和执行工具调用 |",
+          "bytes": 728,
+          "truncated": false
+        },
+        {
+          "path": "docs/superpowers/specs/2026-08-29-conversation-attachments-stage-7-design.md",
+          "startLine": 13,
+          "endLine": 37,
+          "text": "- Provider Files API、远端文件 ID、credential scope 和远端过期重传；\n- PDF、DOCX、XLSX、PPTX、压缩包及其他二进制文档；\n- 文档转换、扫描 PDF OCR 和语义索引；\n- 完整的 Desktop 配额配置和分类清理界面；\n- 为暂时没有消费者的 Provider 文件接口预留半成品抽象。\n\nProvider 文件缓存等真正出现原生远端文件输入后再设计，避免它与未来的文档转换方案互相限制。\n\n## 一、附件感知的对话压缩\n\n### 当前问题\n\n现有 `CompactService` 能把最近文件路径、任务、计划和工具统计放进摘要 prompt，但不知道对话附件的稳定身份，也不知道已经生成了哪些 representation。持久化的 `session_input_attachment` 不会随 transcript 替换而丢失，但摘要后的 Agent 没有足够信息找到它们。\n\n### 附件目录\n\n压缩前由 session application 层查询当前会话的持久附件引用和 representation，生成有上限的结构化附件目录。每项至少包含：\n\n- `assetId`；\n- 来源 input ID 和会话内顺序；\n- 显示名称、MIME、大小和附件意图；\n- 当前可用状态；\n- 资源 URI；\n- 已完成 representation 的类型、处理器、处理器版本和有界预览；\n- 推荐的继续访问方式，例如 `Read attachment://...` 或 `ImageToText`。",
+          "bytes": 1344,
+          "truncated": false
+        },
+        {
+          "path": "packages/core/src/engine/compaction/compact-service.ts",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "/**\n * CompactService —— 对话上下文压缩服务\n *\n * 长会话中工具输出、文件内容会迅速占满模型 context window。本服务在\n * QueryEngine 每轮调用模型前自动触发（也可由 `/compact` 手动触发），\n * 按「先便宜后昂贵」的分层策略缩小历史，同时尽量保留任务连续性信息。\n *\n * 压缩阶梯（autoCompact）：\n *   1. microCompact      —— 清空旧工具结果正文（零模型调用）\n *   2. tryContextCollapse —— 对超长文本做头尾截断（零模型调用）\n *   3. llmCompact         —— 用 LLM 把旧消息摘要成一条 summary\n *   4. simpleCompact      —— 无 client / LLM 失败时的占位兜底\n *",
+          "bytes": 711,
+          "truncated": false
+        }
+      ]
+    },
+    {
+      "taskId": "docs-token-estimate",
+      "status": "hits",
+      "score": {
+        "fileHit": true,
+        "evidenceHit": true,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/services/src/token-estimation/README.md",
+          "docs/session-goals-retrospective.md",
+          "docs/desktop-settings-requirements.md",
+          "apps/desktop/src/renderer/src/components/desktop/settings-page/usage/README.md",
+          "docs/superpowers/specs/2026-10-02-file-workflow-design.md"
+        ],
+        "evidenceFiles": [
+          "packages/services/src/token-estimation/README.md"
+        ]
+      },
+      "evidence": [
+        {
+          "path": "packages/services/src/token-estimation/README.md",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "# 文本 Token 估算\n\n提供不依赖模型请求的文本 Token 数量估算。\n\n## 入口与流程\n\n调用方使用 `estimateTokens()` 传入文本，获得估算结果供上下文和用量展示使用。\n\n## 状态归属\n\n结果按输入即时计算，不保存长期状态，也不代表供应商实际计费用量。\n\n## 主要文件",
+          "bytes": 339,
+          "truncated": false
+        },
+        {
+          "path": "docs/session-goals-retrospective.md",
+          "startLine": 62,
+          "endLine": 86,
+          "text": "### 4.3 独立运行与能力边界需要分别验证\n\n当前 `goal` 为可选字段，未发现 Goal 引入 `agent-runtime` 到 `server/services` 的反向依赖。这支持普通运行仍能独立使用的结构判断。\n\n但是 [QueryEngine](../packages/core/src/engine/query-engine.ts) 包含目标提示、`GoalAssessment` 工具可见性与权限放行的专用分支。通用引擎已理解具体目标能力，后续扩展容易继续增加特判。\n\n调整建议：将 Goal 提示、评估工具与生命周期行为收拢到可选扩展；core 提供通用的本轮上下文、工具注入和运行生命周期接口。持久状态与跨回合调度仍由宿主负责。受信任控制工具的权限处理也应有明确通用契约，不能简单放行所有工具。\n\n不直接照搬 Codex 的完整扩展框架；先检查现有扩展入口，补足 Goal 实际需要的能力。\n\n验收场景：在隔离消费者中安装并执行普通任务，不安装或启动 server/services，不配置 Goal 存储；未启用 Goal 时不出现 Goal 工具与提示；目标运行结束后不污染下一次普通运行。已有单元测试与类型检查不能替代独立安装包验证。\n\n### 4.4 自动续跑次数不是 Token 预算\n\n当前 `maxAutoTurns` 与 `autoTurnsUsed` 限制自动续跑次数，不限制单轮模型调用、耗时或子代理消耗。应继续称为“自动续跑上限”，不能在界面和文档中等同于成本预算。\n\n后续若增加预算，应明确 Token 口径、根代理与子代理归集、失败和中断计费、超限停止时机以及重启后的记账。预算耗尽、服务商使用限制和用户暂停应至少拥有可区分的原因，不必立即复制 Codex 的所有状态。\n\n### 4.5 maintenance 报错尚未定位根因\n\n[DaemonOperationGate](../packages/server/src/application/control/daemon-operation-gate.ts) 在普通请求与维护屏障冲突时拒绝请求。这个错误证明当时存在冲突，不能据此断言维护锁残留。\n\n此前结束 Electron 进程后，没有核实实际 daemon 的进程身份、维护操作和释放结果，因此“已释放”的结论没有充分证据。关闭进程也不能替代根因修复。\n\n调整建议：记录维护操作类型、范围、开始时间、所属操作标识和释放结果；错误提示给出具体维护原因。先确认持有者与异常路径，再修复释放问题，不添加无条件清锁或任意超时释放机制。",
+          "bytes": 2472,
+          "truncated": false
+        },
+        {
+          "path": "docs/desktop-settings-requirements.md",
+          "startLine": 435,
+          "endLine": 459,
+          "text": "### 刷新与导出\n\n页面读取既有桌面维护 API 的真实请求记录，每 30 秒刷新，并提供手动刷新。首次加载不显示伪造数字；读取失败保留上次结果并说明状态。筛选变更后，旧请求的迟到结果不能覆盖新筛选结果。\n\nCSV、JSON 沿用现有后端导出，包含全部筛选结果，不限于表格当前页。导出严格使用当前已显示快照保存的时间边界和筛选条件；新筛选尚未成功或正在读取时禁用导出，避免把旧图表与新筛选混在一起。导出不包含消息、密钥或工具内容。\n\n后端为兼容保留既有费用、币种、价格来源及采用时间等导出字段，本次不移除这些字段，也不把估算费用或订阅用量解释为实际扣款。\n\n### 本月 Token 提醒\n\n提醒属于低频设置，默认折叠、新规则默认关闭。范围固定为本地时区本月的所有项目，使用已知输入与输出 Token 合计，不受上方时间、项目、供应商或模型筛选影响。统计不完整时只依据已知小计；达到阈值由既有桌面主进程发送系统通知，是否显示取决于通知设置，不停止任务。\n\n启用或保存 Token 规则时，提交正整数 Token 阈值并设置 `amount: null`，同时在 `expected` 中提交读取到的完整旧预算，用于检查并发修改。取消不保存，保存失败保留输入；成功后使用服务返回值更新页面。\n\n若原规则为 `enabled: true` 且 `amount` 非空，收起时明确显示“旧版提醒已启用”，展开后说明“旧版金额提醒仍可能发送通知”。用户可选择改为 Token 提醒并保存，或关闭提醒；仅打开页面不得静默改写旧规则。\n\n### 完成验收\n\n- 请求、重试及子任务归属不重复计数；未知、部分已知和已知零清楚区分；缓存不重复相加。\n- 日期边界按本地时区处理，趋势与占比的数值、指标和筛选一致，小占比保持真实比例。\n- 请求明细每页十条、数字完整可读；CSV、JSON 使用显示快照的筛选，保留既有导出兼容字段。\n- 新记录可刷新，加载、空数据、失败、旧结果与并发请求均有真实状态。\n- 提醒明确全项目本月范围；Token 规则清除金额阈值并检查旧值，旧金额规则提示、替换和关闭均与实际行为一致。\n- 页面不包含费用展示、价格表单、金额阈值、虚构订阅余额或 Vykor 支付入口；视觉效果由用户查看反馈。\n",
+          "bytes": 2515,
+          "truncated": false
+        },
+        {
+          "path": "apps/desktop/src/renderer/src/components/desktop/settings-page/usage/README.md",
+          "startLine": 5,
+          "endLine": 29,
+          "text": "## 放置边界\n\n这里呈现用量信息；消息内的单次用量提示留在 conversation-page/message/notices。\n\n组件、模型、类型和 hook 按本功能共同维护。测试、测试辅助文件和基准测试统一放在同级 `__test__`，沿用被测功能的文件名。\n\n## 主要文件\n\n- [usage-settings.tsx](usage-settings.tsx)：页面入口、筛选、每 30 秒刷新、CSV/JSON 导出与请求顺序保护。`maintenanceApi()` 仍供已有存储和诊断页面调用。\n- [usage-analytics.ts](usage-analytics.ts)：按本地日期分组、合计已知字段、生成模型和供应商前四名及其他项；今天按小时，较长范围按天，超过 62 天按月。\n- [usage-charts.tsx](usage-charts.tsx)：真实数值的输入/输出堆叠柱形图，以及接入的 [beUI 环形占比图](../../../charts/README.md)。支持 Token / 请求记录切换、模型 / 供应商分组和键盘检查时间点。\n- [usage-request-table.tsx](usage-request-table.tsx)：每页十条请求，完整数字、简短任务 ID、未知状态与窄窗口内的横向滚动。\n- [usage-token-budget.tsx](usage-token-budget.tsx)：默认收起的本月 Token 阈值表单，修改后明确保存。提醒沿用全项目本月统计和系统通知，不受页面筛选影响；启用或保存 Token 阈值时清除旧金额阈值，并用完整旧预算检查并发修改，不停止任务。已有启用的金额规则明确提示仍可能发送通知，由用户选择替换或关闭，读取页面不会改写它。\n- [usage-ui.tsx](usage-ui.tsx)：复用 beUI Tabs 与 DigitSwap，组合统一的指标切换、数字读数和可聚焦的帮助 tooltip；只处理本页呈现。\n\n## 数据与状态\n\n页面通过桌面维护 API 读取真实请求记录，不使用示例数据，也不重新累计会话或任务汇总。服务端保存原始用量与提醒设置；时间、筛选、图表指标和明细页码只保存在当前页面。每次返回结果同时保存对应的时间边界与筛选；刷新失败或筛选尚未完成时明确显示上次结果，导出使用当前已显示结果的筛选。CSV/JSON 沿用后端，保留费用等兼容字段，不解释为实际扣款。\n\n已知 Token = 输入 + 输出，缓存单独展示。未知字段保持 `null` 并显示“—”；有记录但全部未知的时间段不画成零，无请求记录的时间段不伪造活动。模型按供应商和模型共同分组，同名模型不会被错误合并。分组占比和趋势始终使用同一份筛选结果。\n\n## 视觉与检查\n\n保留 Vykor 的字体、主题与外壳，按用户反馈用 beUI Card 分隔概览、趋势、占比、明细和提醒。四项概览数字共享一个模块，使用已接入的 DigitSwap；时间切换复用 beUI Tabs，图表指标与分组使用其完整胶囊样式，提醒展开复用 beUI Collapsible。右上角复用 beUI OverflowActions 的圆角操作组，常驻“刷新用量”，展开更多操作后明确显示“导出 CSV”和“导出 JSON”。统计口径、缓存、历史缺失与操作解释收进可通过键盘访问的 tooltip；错误、旧规则状态等必须处理的信息仍直接显示。没有新增运行时依赖。\n",
+          "bytes": 3224,
+          "truncated": false
+        },
+        {
+          "path": "docs/superpowers/specs/2026-10-02-file-workflow-design.md",
+          "startLine": 1137,
+          "endLine": 1161,
+          "text": "\nRuling: Task 8 的单块瞬时解码限制保留为已知 Minor，不加新的 chunk 切片逻辑 — §18 要求有界保存，现有 ProcessHandle 未定义单块硬上限，也没有实际超大单块故障证据 — 代价是上游若一次交付极大 Uint8Array，会有与该块大小成正比的瞬时内存占用；真实出现时再以固定字节片段修复并补有效 RED。\n\n本轮脚本化事实：正常 Write 回放为 4 次调用，其中 3 次小 prepare（1 次提前拒绝）、1 次正文提交；拒绝的准备未触发正文生成。新文件 Task 10 回放为 3 次模型请求、2 次 Write（prepare→commit）、1 次正文，无 Read；既有 workflow 为 7 次模型请求、6 次工具调用，失败旧式长调用的正文可在新准备后以 content_from 复用。这些仅是脚本客户端/真实临时文件的行为计数，不是实际模型成功率、供应商速度或 token 节省测量。任务范围源码/测试相对 b7988381 共 23 文件：tracked 19 文件增加 479 行、删除 61 行；4 个新增文件共 550 行，合计增加 1,029 行、删除 61 行（Git 行数口径；不含本文档与忽略证据）。最终不提交、push、部署、重启、调用真实模型或触碰用户数据库/生成文件；证据保存在新的 `.superpowers/sdd/2026-10-02-file-workflow-design/`。\n\n## 21. 准备引用可见性修正\n\n会话 `107cbb24-33f0-425c-abfa-e56b7141a272` 的新复用提示已生效，但截至 18:36 的五次 Write 准备成功、三次正文提交失败，模型明确表示准备结果没有可填的调用 ID，并多次填写不存在的引用。准备正文只有路径、意图、hash/不存在条件；旧回放脚本预先知道 ID，没有覆盖“仅从结果正文取得下一步参数”的实际使用边界。\n\n用户已批准再次修复。本次属于现有流程内的有限修正，不另建协议、缓存或任务系统：\n\n- 引擎内准备成功时，在唯一 JSON 文本中明确返回真实 toolCallId 的 prepared_from 和简短提交示例；示例只含 prepared_from 与 content，不含路径、覆盖或 hash。\n- 新可见引用必须匹配唯一历史源调用；显示字段不能改变目标、意图和原快照。安全的旧平面凭据和不带调用 ID 的直接 SDK 检查保持兼容，不编造 token。\n- 反馈区分禁止的提交字段、缺引用和无效/失效引用，不把“已成功准备”误说成没准备；原有正文复用、唯一性、消费/过期、同批、权限与文件变化检查保留。\n- 新回归使用不预先约定的 opaque ID，模型替身只读返回正文取 prepared_from/示例，再实际提交文件；不得读取 envelope ID、执行上下文或 schema enum 来替代返回字段。\n- 不改 Shell/Browser/GTK，不判断供应商速度，不调用收费真实模型，不提交/push/覆盖 out/重启，保留用户并发源码和正在运行任务。\n\n证据独立保存在忽略目录 `.superpowers/write-reference-visibility/`；七份实施前文件副本为本次增量起点，不把旧未提交功能或用户改动算成本次修正。此补充修复只需短设计、有效 RED/GREEN 与独立审核，不重做前轮全部 Spec/计划/测试。\n\n- [x] 修复范围已确认，实施前副本及 bounded brief 保存。\n- [x] 有效 RED → 最小实现 → 消费/信任边界验证。\n- [x] 独立审核、独立构建与交付记录。\n\n执行结果：限定七个源码/测试文件（三个生产文件 Write、准备解析、原两句 prompt；四个现有测试），没有改 core。新可见字段 prepared_from/submit_example 成对出现，前者等于唯一源调用 ID，后者是只含引用与正文占位符的 JSON 字符串；旧四字段凭据及缺调用 ID 的直接 SDK 检查保持兼容。反馈分别报告缺引用、无效/过期引用和禁止提交字段，明确 file_path 只在准备步骤使用。\n",
+          "bytes": 3911,
+          "truncated": false
+        }
+      ]
+    }
+  ],
+  "valid": false
+}

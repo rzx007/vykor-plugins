@@ -1,0 +1,41 @@
+{
+  "path": "packages/tools/src/search/grep.ts",
+  "symbols": [
+    {
+      "name": "createGrepTool",
+      "kind": "function",
+      "line": 8,
+      "end_line": 141
+    },
+    {
+      "name": "execute",
+      "kind": "method",
+      "line": 37,
+      "end_line": 139
+    },
+    {
+      "name": "invalid",
+      "kind": "function",
+      "line": 38,
+      "end_line": 38
+    },
+    {
+      "name": "grepTool",
+      "kind": "const",
+      "line": 143,
+      "end_line": 143
+    }
+  ],
+  "targetLine": 56,
+  "targetText": "        const found = await host.shellOutputLogs.search({ sessionId: context.sessionId, reference: input.path, pattern, caseSensitive: input.caseSensitive !== false, signal: context.abortSignal });",
+  "descriptionLines": [
+    "export function createGrepTool(host: FileToolHost = {}): ToolDefinition {",
+    "  return {",
+    "    name: \"Grep\",",
+    "    description:",
+    "      \"Search file contents using regular expressions. For Shell logs use path=shell-output://UUID; byte positions can be opened with Read cursor.\",",
+    "    inputSchema: {",
+    "      type: \"object\",",
+    "      properties: {"
+  ]
+}

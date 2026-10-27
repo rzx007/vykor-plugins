@@ -1,0 +1,33 @@
+{
+  "status": "passed",
+  "hostRoot": "D:\\code\\personal-project\\OpenHarness-ts",
+  "pluginId": "dev.vykor.xerj-search",
+  "nativeChildPid": 39856,
+  "permissions": [
+    "filesystem:read",
+    "network:127.0.0.1",
+    "tool:filesystem:read",
+    "tool:network:127.0.0.1"
+  ],
+  "httpRequests": 3,
+  "checks": [
+    "validate",
+    "load",
+    "permission approval",
+    "isolated installation",
+    "discovery",
+    "disabled visibility",
+    "unselected visibility",
+    "native process",
+    "HTTP search",
+    "readLine to real Read",
+    "scope denial",
+    "network denial",
+    "input validation",
+    "disabled fallback",
+    "fallback to real Grep and Read",
+    "missing fallback",
+    "timeout fallback",
+    "cleanup"
+  ]
+}

@@ -1,0 +1,3 @@
+# Evaluation hashes refer to captured bytes, including original line endings.
+evaluation/tasks.json -text
+evaluation/results/** -text

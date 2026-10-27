@@ -1,0 +1,1685 @@
+{
+  "method": "Replay the same 11 captured native pages through delivered 0.2.0 and current 0.2.1 production services. Hold query, native payload, corpus, byte/time budgets fixed; no network or model calls.",
+  "beforeVersion": "0.2.0",
+  "afterVersion": "0.2.1",
+  "beforeArchiveSha256": "c7eb3dddd6eefe6ec721b3e9a820cde76f49511bd5e2d37facd64d9e3ce1642b",
+  "nativePagesSha256": "bbc79cce7fa56aa593fb2a7df8bd6a7c34f70a9aa850c5e0dc219179fe5dbcd4",
+  "sameGold": true,
+  "summary": {
+    "pages": 11,
+    "validHitsBefore": 35,
+    "validHitsAfter": 55,
+    "fileHitsBefore": 6,
+    "fileHitsAfter": 6,
+    "evidenceBefore": 0,
+    "evidenceParserOnly": 0,
+    "evidenceAfter": 5,
+    "newModelRequests": 0,
+    "newNativeRequests": 0
+  },
+  "rows": [
+    {
+      "taskId": "english-shell-logs",
+      "before": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "packages/tools/src/search/grep.ts",
+            "line": 8,
+            "startLine": 8,
+            "endLine": 36,
+            "text": "export function createGrepTool(host: FileToolHost = {}): ToolDefinition {\n  return {\n    name: \"Grep\",\n    description:\n      \"Search file contents using regular expressions. For Shell logs use path=shell-output://UUID; byte positions can be opened with Read cursor.\",\n    inputSchema: {\n      type: \"object\",\n      properties: {\n        pattern: { type: \"string\", description: \"Regex pattern to search for.\" },\n        path: { type: \"string\", description: \"Directory, file, or shell-output://UUID from Shell.\" },\n        include: {\n          type: \"string\",\n          description: 'File glob pattern to include (e.g. \"*.ts\").',\n        },\n        caseSensitive: {\n          type: \"boolean\",\n          description: \"Whether the search is case-sensitive. Default: true.\",\n          default: true,\n        },\n        limit: {\n          type: \"integer\",\n          description: \"Maximum number of matches (1–200). Output is also limited to 8 KiB; narrow the search if results are limited. Default: 200.\",\n          minimum: 1,\n          maximum: 200,\n          default: 200,\n        },\n      },\n      required: [\"pattern\"],\n    },",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 114.61"
+          },
+          {
+            "path": "packages/agent-contracts/src/tools/shell-output.ts",
+            "line": 21,
+            "startLine": 21,
+            "endLine": 25,
+            "text": "export interface ShellOutputLogSearchResult {\n  status: \"ok\" | \"unavailable\" | \"invalid_pattern\" | \"limit\" | \"timeout\" | \"search_unavailable\";\n  matches: Array<{ byteOffset: number; text: string }>;\n  truncated: boolean;\n}",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 85.85"
+          }
+        ],
+        "truncated": true,
+        "note": "保留 XERJ 原生排序与片段，正文已与当前项目文件核对；索引仍可能遗漏新文件，证据不足时继续 Grep/Read。"
+      },
+      "after": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "packages/tools/src/search/grep.ts",
+            "line": 8,
+            "startLine": 8,
+            "endLine": 36,
+            "readLine": 22,
+            "text": "export function createGrepTool(host: FileToolHost = {}): ToolDefinition {\n  return {\n    name: \"Grep\",\n    description:\n      \"Search file contents using regular expressions. For Shell logs use path=shell-output://UUID; byte positions can be opened with Read cursor.\",\n    inputSchema: {\n      type: \"object\",\n      properties: {\n        pattern: { type: \"string\", description: \"Regex pattern to search for.\" },\n        path: { type: \"string\", description: \"Directory, file, or shell-output://UUID from Shell.\" },\n        include: {\n          type: \"string\",\n          description: 'File glob pattern to include (e.g. \"*.ts\").',\n        },\n        caseSensitive: {\n          type: \"boolean\",\n          description: \"Whether the search is case-sensitive. Default: true.\",\n          default: true,\n        },\n        limit: {\n          type: \"integer\",\n          description: \"Maximum number of matches (1–200). Output is also limited to 8 KiB; narrow the search if results are limited. Default: 200.\",\n          minimum: 1,\n          maximum: 200,\n          default: 200,\n        },\n      },\n      required: [\"pattern\"],\n    },",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 114.61"
+          },
+          {
+            "path": "packages/execution-node/src/executions/shell-output-log.ts",
+            "line": 242,
+            "startLine": 242,
+            "endLine": 266,
+            "readLine": 254,
+            "text": "async function searchLog(directory: string, input: Parameters<ShellOutputLogHost[\"search\"]>[0]): Promise<ShellOutputLogSearchResult> {\n  const unavailable: ShellOutputLogSearchResult = { status: \"unavailable\", matches: [], truncated: false };\n  const found = availableLog(directory, input.sessionId, input.reference);\n  if (!found) return unavailable;\n  if (typeof input.pattern !== \"string\" || input.pattern.includes(\"\\0\")) {\n    return { status: \"invalid_pattern\", matches: [], truncated: false };\n  }\n  if (input.signal?.aborted) return { status: \"timeout\", matches: [], truncated: true };\n  let buffer: Buffer;\n  try {\n    buffer = readFileSync(found.path);\n  } catch { return unavailable; }\n  let regex: RegExp;\n  try {\n    regex = new RegExp(input.pattern, input.caseSensitive ? \"g\" : \"gi\");\n  } catch {\n    return { status: \"invalid_pattern\", matches: [], truncated: false };\n  }\n  const text = new TextDecoder(\"utf-8\").decode(buffer);\n  const matches: ShellOutputLogSearchResult[\"matches\"] = [];\n  let emittedBytes = 0;\n  let truncated = false;\n  let charIndex = 0;\n  let byteOffset = 0;\n  for (let match = regex.exec(text); match !== null; match = regex.exec(text)) {",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 101.46"
+          },
+          {
+            "path": "packages/agent-contracts/src/tools/shell-output.ts",
+            "line": 21,
+            "startLine": 21,
+            "endLine": 25,
+            "readLine": 23,
+            "text": "export interface ShellOutputLogSearchResult {\n  status: \"ok\" | \"unavailable\" | \"invalid_pattern\" | \"limit\" | \"timeout\" | \"search_unavailable\";\n  matches: Array<{ byteOffset: number; text: string }>;\n  truncated: boolean;\n}",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 85.85"
+          },
+          {
+            "path": "packages/execution-node/src/executions/__test__/shell-output-log.test.ts",
+            "line": 11,
+            "startLine": 11,
+            "endLine": 15,
+            "readLine": 13,
+            "text": "const directory = () => {\n  const value = mkdtempSync(join(tmpdir(), \"vykor-shell-log-\"));\n  directories.push(value);\n  return value;\n};",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 83.14"
+          },
+          {
+            "path": "packages/tools/src/file/read.ts",
+            "line": 154,
+            "startLine": 154,
+            "endLine": 167,
+            "readLine": 160,
+            "text": "export function createFileReadTool(host: FileToolHost = {}): ToolDefinition {\n  return {\n    name: \"Read\",\n    description:\n      \"Read a local text file, supported image, or directory. For Shell output use file_path=shell-output://UUID and cursor=0 (UTF-8 byte position); omit info_only/offset/limit. Use info_only=true to inspect local target existence, type and raw-byte SHA-256 without returning its body or changing files; this does not authorize a write. Otherwise local text is returned with each line prefixed as `N: <content>`. Use `offset` (1-indexed) and `limit` to continue through large local files or directories. Lines longer than 2000 characters and local text or directory output beyond 50 KB are truncated with a note. Supported images are returned as image blocks; other binary files are rejected.\",\n    inputSchema: {\n      type: \"object\",\n      properties: {\n        file_path: {\n          type: \"string\",\n          description: \"An absolute or working-directory-relative local path, or shell-output://UUID from Shell.\",\n        },\n        cursor: { type: \"number\", description: \"For shell-output:// only: UTF-8 byte cursor (default 0).\" },\n        offset: { type: \"",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 80.93"
+          }
+        ],
+        "truncated": false,
+        "note": "片段已核对当前原文；需要补读时以 readLine 为中心，Read offset=max(1,readLine-12)、limit=25。未知行号先 Grep；证据不足继续 Grep/Read。"
+      },
+      "beforeScore": {
+        "fileHit": true,
+        "evidenceHit": false,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/tools/src/search/grep.ts",
+          "packages/agent-contracts/src/tools/shell-output.ts"
+        ],
+        "evidenceFiles": []
+      },
+      "parserAndLocationOnlyScore": {
+        "fileHit": true,
+        "evidenceHit": false,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/tools/src/search/grep.ts",
+          "packages/execution-node/src/executions/shell-output-log.ts",
+          "packages/agent-contracts/src/tools/shell-output.ts",
+          "packages/execution-node/src/executions/__test__/shell-output-log.test.ts",
+          "packages/tools/src/file/read.ts"
+        ],
+        "evidenceFiles": []
+      },
+      "afterScore": {
+        "fileHit": true,
+        "evidenceHit": false,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/tools/src/search/grep.ts",
+          "packages/execution-node/src/executions/shell-output-log.ts",
+          "packages/agent-contracts/src/tools/shell-output.ts",
+          "packages/execution-node/src/executions/__test__/shell-output-log.test.ts",
+          "packages/tools/src/file/read.ts"
+        ],
+        "evidenceFiles": []
+      }
+    },
+    {
+      "taskId": "english-cancel-host",
+      "before": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+            "line": 257,
+            "startLine": 257,
+            "endLine": 283,
+            "text": "  private cancelPendingCall(\n    id: string,\n    pending: PendingRequest,\n    child: ChildProcess,\n    error: NativeToolHostError,\n  ): void {\n    if (pending.callerSettled) return;\n    pending.callerSettled = true;\n    clearTimeout(pending.timer);\n    pending.removeAbortListener?.();\n    pending.reject(error);\n    try {\n      if (child.connected) child.send({ type: \"cancel\", id });\n    } catch {\n      // The grace timer below is the authoritative containment boundary.\n    }\n    pending.cancellationTimer = setTimeout(() => {\n      if (this.pending.get(id) !== pending || this.child !== child) return;\n      this.pending.delete(id);\n      child.kill();\n      this.handleCrash(new NativeToolHostError(\n        \"tool_host_unresponsive\",\n        `Native Tool Host did not stop call ${id} within the cancellation grace period`,\n        { cause: error },\n      ));\n    }, this.options.cancellationGraceMs ?? 250);\n  }",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 133.87"
+          },
+          {
+            "path": "docs/plugin-mechanism-report.md",
+            "line": 297,
+            "startLine": 297,
+            "endLine": 313,
+            "text": "用 `child_process.fork` 启动 `host-entry.mjs`，IPC 用 advanced serialization，走四种请求方法：`healthcheck`、`registerTools`、`callTool`、`shutdown`，另有宿主主动发的 `cancel`。\n\n子进程侧（`packages/agent-runtime/src/node/plugins/native-tools/host-entry.mjs`）：\n\n- 逐个 `import()` manifest 声明的入口模块，要求导出 `registerTools`；\n- 校验每个工具定义（`name`、`description`、`inputSchema`、`invoke` 都要合法），工具名在一个插件内不能重复；\n- 调用时把 `plugin`、`permissions`、`cwd`、`sessionId`、`deadline`、`signal` 交给插件，其中 `plugin` 与 `permissions` 是冻结副本；\n- 校验返回值形状必须是 `{ content: [...] }`；\n- `uncaughtException` / `unhandledRejection` 会把栈写回宿主日志后退出，宿主据此判为崩溃。\n\n`deadline` 是绝对毫秒时间戳，`signal` 用于协作式取消——插件不响应取消时，宿主会在 grace period 后杀进程。\n\n### 8.2 调用闸门\n\n每次调用都经过 `NativeToolCallGuard`（`packages/agent-runtime/src/node/plugins/native-tools/guard.ts`）：\n\n1. **并发上限**，默认 4，超了返回 `tool_concurrency_limit`；",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 44.13, weak"
+          },
+          {
+            "path": "apps/desktop/scripts/test-plugin-apps-electron.mjs",
+            "line": 59,
+            "startLine": 59,
+            "endLine": 68,
+            "text": "      /^Error occurred in handler for 'plugin-apps:prepareTool': Error: plugin_app_mount_closed\\r?\\n/.test(block)\n      // Explicit post-cancel call is denied; an already-started refresh can finish after viewer release.\n      || /^Error occurred in handler for 'plugin-apps:prepareTool': Error: plugin_app_tool_not_available\\r?\\n/.test(block)\n      || /^Error occurred in handler for 'plugin-apps:refresh': Error: plugin_app_mount_closed\\r?\\n/.test(block)\n      || /^Error occurred in handler for 'plugin-apps:invokeTool': VykorApiError: Vykor API request failed with 409\\r?\\n/.test(block)\n        && block.includes(\"code: 'plugin_app_not_accepted'\")\n      || /^Error occurred in handler for 'plugin-apps:invokeTool': Error: test: accepted tool acknowledgement lost\\r?\\n/.test(block)\n      || /^Error occurred in handler for 'plugin-apps:submitMessage': Error: test: accepted message acknowledgement lost\\r?\\n/.test(block)\n      || /^Error occurred in handler for 'plugin-apps:close': VykorApiError: /.test(block) && block.includes(\"status: 409\")\n      // Stage 4 asserts an in-flight resource read denied after the app closes; no stale body escapes.",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 38.75, weak"
+          }
+        ],
+        "truncated": true,
+        "note": "保留 XERJ 原生排序与片段，正文已与当前项目文件核对；索引仍可能遗漏新文件，证据不足时继续 Grep/Read。"
+      },
+      "after": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+            "line": 257,
+            "startLine": 257,
+            "endLine": 283,
+            "readLine": 270,
+            "text": "  private cancelPendingCall(\n    id: string,\n    pending: PendingRequest,\n    child: ChildProcess,\n    error: NativeToolHostError,\n  ): void {\n    if (pending.callerSettled) return;\n    pending.callerSettled = true;\n    clearTimeout(pending.timer);\n    pending.removeAbortListener?.();\n    pending.reject(error);\n    try {\n      if (child.connected) child.send({ type: \"cancel\", id });\n    } catch {\n      // The grace timer below is the authoritative containment boundary.\n    }\n    pending.cancellationTimer = setTimeout(() => {\n      if (this.pending.get(id) !== pending || this.child !== child) return;\n      this.pending.delete(id);\n      child.kill();\n      this.handleCrash(new NativeToolHostError(\n        \"tool_host_unresponsive\",\n        `Native Tool Host did not stop call ${id} within the cancellation grace period`,\n        { cause: error },\n      ));\n    }, this.options.cancellationGraceMs ?? 250);\n  }",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 133.87"
+          },
+          {
+            "path": "packages/agent-runtime/src/node/plugins/native-tools/__test__/tool-host.test.ts",
+            "line": 44,
+            "startLine": 44,
+            "endLine": 48,
+            "readLine": 46,
+            "text": "async function loadPlugin(root: string) {\n  const validation = await validateNativePlugin(root);\n  expect(validation.status).toBe(\"valid\");\n  return await loadNativePlugin(validation.plugin!);\n}",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 76.97"
+          },
+          {
+            "path": "docs/plugin-mechanism-report.md",
+            "line": 297,
+            "startLine": 297,
+            "endLine": 313,
+            "readLine": 305,
+            "text": "用 `child_process.fork` 启动 `host-entry.mjs`，IPC 用 advanced serialization，走四种请求方法：`healthcheck`、`registerTools`、`callTool`、`shutdown`，另有宿主主动发的 `cancel`。\n\n子进程侧（`packages/agent-runtime/src/node/plugins/native-tools/host-entry.mjs`）：\n\n- 逐个 `import()` manifest 声明的入口模块，要求导出 `registerTools`；\n- 校验每个工具定义（`name`、`description`、`inputSchema`、`invoke` 都要合法），工具名在一个插件内不能重复；\n- 调用时把 `plugin`、`permissions`、`cwd`、`sessionId`、`deadline`、`signal` 交给插件，其中 `plugin` 与 `permissions` 是冻结副本；\n- 校验返回值形状必须是 `{ content: [...] }`；\n- `uncaughtException` / `unhandledRejection` 会把栈写回宿主日志后退出，宿主据此判为崩溃。\n\n`deadline` 是绝对毫秒时间戳，`signal` 用于协作式取消——插件不响应取消时，宿主会在 grace period 后杀进程。\n\n### 8.2 调用闸门\n\n每次调用都经过 `NativeToolCallGuard`（`packages/agent-runtime/src/node/plugins/native-tools/guard.ts`）：\n\n1. **并发上限**，默认 4，超了返回 `tool_concurrency_limit`；",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 44.13, weak"
+          },
+          {
+            "path": "apps/desktop/tests/plugin-apps-electron/plugin-app-check.ts",
+            "line": 15,
+            "startLine": 15,
+            "endLine": 28,
+            "readLine": 21,
+            "text": "export async function checkResidentPluginApps(root: string, documents: PluginAppDocumentStore, kind: \"native-tools\" | \"mcp-server\" | \"text-inspector\" | \"notes-app\", probeUrl: string, probeRequests: () => number) {\n  const child = spawn(process.env.VYKOR_UI_TEST_NODE!, [join(__dirname, \"../backend/plugin-app-backend.mjs\")], {\n    cwd: root, windowsHide: true, stdio: [\"ignore\", \"pipe\", \"pipe\", \"ipc\"],\n    env: { ...process.env, VYKOR_APP_BACKEND: kind, VYKOR_APP_PAGE_BUNDLE: join(__dirname, \"../plugin-app-page.js\") },\n  })\n  let stderr = \"\"\n  let modelCalls: number | undefined\n  child.stdout?.resume(); child.stderr?.on(\"data\", data => { stderr += data })\n  child.on(\"message\", value => { if (value && typeof value === \"object\" && \"modelCalls\" in value) modelCalls = Number(value.modelCalls) })\n  const ready = await new Promise<Ready>((resolve, reject) => {\n    const timer = setTimeout(() => { child.kill(); reject(new Error(\"App backend startup: \" + stderr)) }, 45000)\n    child.once(\"error\", reject)\n    child.once(\"exit\", code => { clearTimeout(timer); reject(new Error(`App backend exited ${code}: ${stderr}`)) })\n    child.on(\"message\", value => { if (value && typeof value =",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 42.54, weak"
+          },
+          {
+            "path": "apps/desktop/scripts/test-plugin-apps-electron.mjs",
+            "line": 59,
+            "startLine": 59,
+            "endLine": 68,
+            "readLine": 63,
+            "text": "      /^Error occurred in handler for 'plugin-apps:prepareTool': Error: plugin_app_mount_closed\\r?\\n/.test(block)\n      // Explicit post-cancel call is denied; an already-started refresh can finish after viewer release.\n      || /^Error occurred in handler for 'plugin-apps:prepareTool': Error: plugin_app_tool_not_available\\r?\\n/.test(block)\n      || /^Error occurred in handler for 'plugin-apps:refresh': Error: plugin_app_mount_closed\\r?\\n/.test(block)\n      || /^Error occurred in handler for 'plugin-apps:invokeTool': VykorApiError: Vykor API request failed with 409\\r?\\n/.test(block)\n        && block.includes(\"code: 'plugin_app_not_accepted'\")\n      || /^Error occurred in handler for 'plugin-apps:invokeTool': Error: test: accepted tool acknowledgement lost\\r?\\n/.test(block)\n      || /^Error occurred in handler for 'plugin-apps:submitMessage': Error: test: accepted message acknowledgement lost\\r?\\n/.test(block)\n      || /^Error occurred in handler for 'plugin-apps:close': VykorApiError: /.test(block) && block.includes(\"status: 409\")\n      // Stage 4 asserts an in-flight resource read denied after the app closes; no stale body escapes.",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 38.75, weak"
+          }
+        ],
+        "truncated": false,
+        "note": "片段已核对当前原文；需要补读时以 readLine 为中心，Read offset=max(1,readLine-12)、limit=25。未知行号先 Grep；证据不足继续 Grep/Read。"
+      },
+      "beforeScore": {
+        "fileHit": true,
+        "evidenceHit": false,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "docs/plugin-mechanism-report.md",
+          "apps/desktop/scripts/test-plugin-apps-electron.mjs"
+        ],
+        "evidenceFiles": []
+      },
+      "parserAndLocationOnlyScore": {
+        "fileHit": true,
+        "evidenceHit": false,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "packages/agent-runtime/src/node/plugins/native-tools/__test__/tool-host.test.ts",
+          "docs/plugin-mechanism-report.md",
+          "apps/desktop/tests/plugin-apps-electron/plugin-app-check.ts",
+          "apps/desktop/scripts/test-plugin-apps-electron.mjs"
+        ],
+        "evidenceFiles": []
+      },
+      "afterScore": {
+        "fileHit": true,
+        "evidenceHit": true,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "packages/agent-runtime/src/node/plugins/native-tools/__test__/tool-host.test.ts",
+          "docs/plugin-mechanism-report.md",
+          "apps/desktop/tests/plugin-apps-electron/plugin-app-check.ts",
+          "apps/desktop/scripts/test-plugin-apps-electron.mjs"
+        ],
+        "evidenceFiles": [
+          "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts"
+        ]
+      }
+    },
+    {
+      "taskId": "english-image-route",
+      "before": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "apps/desktop/src/renderer/src/components/desktop/settings-page/providers/__test__/provider-defaults-control.test.tsx",
+            "line": 76,
+            "startLine": 76,
+            "endLine": 77,
+            "text": "  const render = () =>\n    act(async () => root!.render(<ProviderDefaultsControl onChanged={onChanged} />))",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 85.58"
+          },
+          {
+            "path": "packages/api/src/providers/registry.ts",
+            "line": 28,
+            "startLine": 28,
+            "endLine": 32,
+            "text": "export function providerInputCapabilities(\n  _backendType: BackendType,\n): ProviderInputCapabilities {\n  return { image: \"native\", imageMediaTypes: [...NATIVE_IMAGE_MEDIA_TYPES] };\n}",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 74.64"
+          }
+        ],
+        "truncated": true,
+        "note": "保留 XERJ 原生排序与片段，正文已与当前项目文件核对；索引仍可能遗漏新文件，证据不足时继续 Grep/Read。"
+      },
+      "after": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "apps/desktop/src/renderer/src/components/desktop/settings-page/providers/__test__/provider-defaults-control.test.tsx",
+            "line": 76,
+            "startLine": 76,
+            "endLine": 77,
+            "readLine": 76,
+            "text": "  const render = () =>\n    act(async () => root!.render(<ProviderDefaultsControl onChanged={onChanged} />))",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 85.58"
+          },
+          {
+            "path": "apps/desktop/src/renderer/src/components/desktop/settings-page/providers/provider-defaults-control.tsx",
+            "line": 189,
+            "startLine": 189,
+            "endLine": 224,
+            "readLine": 206,
+            "text": "  async function save(nextDraft: Draft) {\n    if (\n      !snapshot ||\n      saving.current ||\n      !snapshot.models.some(\n        (item) => item.providerName === nextDraft.provider && item.id === nextDraft.model\n      )\n    )\n      return\n    saving.current = true\n    if (mounted.current) setBusy(true)\n    let modelSaved = false\n    try {\n      let next: ProviderDefaultsSnapshot\n      if (\n        nextDraft.provider === snapshot.provider &&\n        nextDraft.model === snapshot.model &&\n        !snapshot.disabled\n      ) {\n        next = await window.desktop.providerDefaults.updateEffort({\n          effort: nextDraft.effort,\n          expectedRevision: snapshot.revision,\n        })\n      } else {\n        const bootstrap = await window.desktop.sessions.setDefaultModel({\n          provider: nextDraft.provider,\n          model: nextDraft.model,\n          effort: nextDraft.effort ?? \"\",\n        })\n        modelSaved = true\n        useDesktopSessionStore.setState({\n          models: bootstrap.models,\n          defaultModel: bootstrap.defaultModel,\n          defaultProvider: bootstrap.defaultProvider,\n        })\n        next = await window.desktop.provi",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 81.58"
+          },
+          {
+            "path": "packages/server/src/application/session/execution/__test__/session-run-executor.test.ts",
+            "line": 930,
+            "startLine": 930,
+            "endLine": 960,
+            "readLine": 945,
+            "text": "function createStore(options: {\n  attachments?: ReturnType<typeof attachment>[];\n  metadata?: Record<string, unknown>;\n  items?: Array<{ type: \"text\"; text: string } | { type: \"skill\"; name: string; path: string }>;\n} = {}) {\n  const run = { id: \"run-1\", sessionId: \"s1\", inputId: \"input-1\", status: \"pending\" };\n  const getSession = vi.fn(() => ({\n    id: \"s1\",\n    cwd: \"/repo\",\n    model: \"gpt-test\",\n    metadata: { runtime: { model: \"gpt-test\" } },\n  }));\n  const getInput = vi.fn(() => ({\n    id: \"input-1\",\n    sessionId: \"s1\",\n    content: \"hello\",\n    items: options.items ?? [{ type: \"text\", text: \"hello\" }],\n    attachments: options.attachments ?? [],\n    delivery: \"queue\",\n    metadata: options.metadata ?? { requestedBy: \"test\", traceId: \"trace-1\" },\n  }));\n  const getRun = vi.fn(() => run);\n  const appendEvent = vi.fn();\n  const updateRun = vi.fn((id, update) => Object.assign(run, update, { id, metadata: { ...(run as any).metadata, ...update.metadata } }));\n  const data = {\n    transaction: <T>(work: () => T) => work(),\n    sessions: { get: getSession },\n    conversations: {\n      getInput,\n      listMessages: vi.fn(() => []),\n      listMessagePa",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 81.37"
+          },
+          {
+            "path": "packages/server/src/application/attachments/routing/attachment-capabilities.ts",
+            "line": 15,
+            "startLine": 15,
+            "endLine": 44,
+            "readLine": 29,
+            "text": "export function supportsNativeImageInput(\n  context: {\n    requestConfiguration?: { model: string; provider?: string; apiFormat?: Settings[\"apiFormat\"] };\n    settings?: Settings;\n  },\n  catalog: ModelsDevCatalog,\n): boolean {\n  const request = context.requestConfiguration;\n  if (!request) return false;\n\n  const providerName = request.provider ?? context.settings?.provider;\n  const customProvider = context.settings?.customProviders?.find((item) => item.id === providerName);\n  const backend = customProvider\n    ? \"openai_compat\"\n    : providerName\n      ? findByName(providerName)?.backendType\n      : request.apiFormat === \"openai\"\n        ? \"openai_compat\"\n        : request.apiFormat === \"anthropic\"\n          ? \"anthropic\"\n          : undefined;\n  if (!backend) return false;\n\n  const provider = providerName ? readCatalogProvider(catalog, providerName) : undefined;\n  const model = Object.entries(provider?.models ?? {}).find(([id, value]) =>\n    (value.id ?? id) === request.model,\n  )?.[1];\n  const customModel = customProvider?.models.find((item) => item.id === request.model);\n  const modelSupport: InputSupport = model\n    ? modelInputCapabilities(model).i",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 80.50"
+          },
+          {
+            "path": "packages/api/src/providers/registry.ts",
+            "line": 28,
+            "startLine": 28,
+            "endLine": 32,
+            "readLine": 30,
+            "text": "export function providerInputCapabilities(\n  _backendType: BackendType,\n): ProviderInputCapabilities {\n  return { image: \"native\", imageMediaTypes: [...NATIVE_IMAGE_MEDIA_TYPES] };\n}",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 74.64"
+          }
+        ],
+        "truncated": false,
+        "note": "片段已核对当前原文；需要补读时以 readLine 为中心，Read offset=max(1,readLine-12)、limit=25。未知行号先 Grep；证据不足继续 Grep/Read。"
+      },
+      "beforeScore": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [
+          "apps/desktop/src/renderer/src/components/desktop/settings-page/providers/__test__/provider-defaults-control.test.tsx",
+          "packages/api/src/providers/registry.ts"
+        ],
+        "evidenceFiles": []
+      },
+      "parserAndLocationOnlyScore": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [
+          "apps/desktop/src/renderer/src/components/desktop/settings-page/providers/__test__/provider-defaults-control.test.tsx",
+          "apps/desktop/src/renderer/src/components/desktop/settings-page/providers/provider-defaults-control.tsx",
+          "packages/server/src/application/session/execution/__test__/session-run-executor.test.ts",
+          "packages/server/src/application/attachments/routing/attachment-capabilities.ts",
+          "packages/api/src/providers/registry.ts"
+        ],
+        "evidenceFiles": []
+      },
+      "afterScore": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [
+          "apps/desktop/src/renderer/src/components/desktop/settings-page/providers/__test__/provider-defaults-control.test.tsx",
+          "apps/desktop/src/renderer/src/components/desktop/settings-page/providers/provider-defaults-control.tsx",
+          "packages/server/src/application/session/execution/__test__/session-run-executor.test.ts",
+          "packages/server/src/application/attachments/routing/attachment-capabilities.ts",
+          "packages/api/src/providers/registry.ts"
+        ],
+        "evidenceFiles": []
+      }
+    },
+    {
+      "taskId": "english-timezone",
+      "before": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "packages/services/src/schedules/__test__/recurrence.test.ts",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 34,
+            "text": "import { describe, expect, it } from \"vitest\";\n\nimport { computeNextScheduledTime, parseRRule } from \"../recurrence.js\";\n\ndescribe(\"scheduled recurrence\", () => {\n  it(\"returns a future one-time occurrence\", () => {\n    expect(\n      computeNextScheduledTime(\n        { format: \"once\", value: \"2026-08-19T09:00:00+08:00\" },\n        { after: new Date(\"2026-08-18T00:00:00Z\") },\n      ),\n    ).toBe(Date.parse(\"2026-08-19T09:00:00+08:00\"));\n  });\n\n  it(\"finds the next weekday morning in the requested timezone\", () => {\n    const next = computeNextScheduledTime(\n      {\n        format: \"rrule\",\n        value: \"RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR;BYHOUR=9;BYMINUTE=0\",\n      },\n      {\n        after: new Date(\"2026-08-21T02:00:00Z\"),\n        anchor: new Date(\"2026-08-18T01:00:00Z\"),\n        timezone: \"Asia/Shanghai\",\n      },\n    );\n    expect(new Date(next).toISOString()).toBe(\"2026-08-24T01:00:00.000Z\");\n  });\n\n  it(\"supports minute-based follow-up loops\", () => {\n    const next = computeNextScheduledTime(\n      { format: \"rrule\", value: \"RRULE:FREQ=MINUTELY;INTERVAL=10\" },\n      {\n        after: new Date(\"2026-08-18T00:06:00Z\"),",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 80.76"
+          },
+          {
+            "path": "packages/services/src/schedules/recurrence.ts",
+            "line": 46,
+            "startLine": 46,
+            "endLine": 71,
+            "text": "export function computeNextScheduledTime(\n  recurrence: ScheduledRecurrence,\n  options: NextOccurrenceOptions = {},\n): number {\n  const after = options.after ?? new Date();\n  if (recurrence.format === \"once\") {\n    const timestamp = Date.parse(recurrence.value);\n    if (!Number.isFinite(timestamp))\n      throw new Error(`Invalid one-time schedule: ${recurrence.value}`);\n    if (timestamp <= after.getTime())\n      throw new Error(\"One-time schedule is not in the future\");\n    return timestamp;\n  }\n\n  const rule = parseRRule(recurrence.value);\n  assertTimezone(options.timezone);\n  const anchor = options.anchor ?? after;\n  const start = Math.floor(after.getTime() / 60_000) * 60_000 + 60_000;\n  const end = start + 366 * 5 * 24 * 60 * 60_000;\n  for (let timestamp = start; timestamp <= end; timestamp += 60_000) {\n    if (rule.until !== undefined && timestamp > rule.until) break;\n    if (matchesRule(timestamp, anchor.getTime(), rule, options.timezone))\n      return timestamp;\n  }\n  throw new Error(\"RRULE has no matching time in the next five years\");\n}",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 79.51"
+          }
+        ],
+        "truncated": true,
+        "note": "保留 XERJ 原生排序与片段，正文已与当前项目文件核对；索引仍可能遗漏新文件，证据不足时继续 Grep/Read。"
+      },
+      "after": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "packages/services/src/schedules/__test__/recurrence.test.ts",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 34,
+            "readLine": 17,
+            "text": "import { describe, expect, it } from \"vitest\";\n\nimport { computeNextScheduledTime, parseRRule } from \"../recurrence.js\";\n\ndescribe(\"scheduled recurrence\", () => {\n  it(\"returns a future one-time occurrence\", () => {\n    expect(\n      computeNextScheduledTime(\n        { format: \"once\", value: \"2026-08-19T09:00:00+08:00\" },\n        { after: new Date(\"2026-08-18T00:00:00Z\") },\n      ),\n    ).toBe(Date.parse(\"2026-08-19T09:00:00+08:00\"));\n  });\n\n  it(\"finds the next weekday morning in the requested timezone\", () => {\n    const next = computeNextScheduledTime(\n      {\n        format: \"rrule\",\n        value: \"RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR;BYHOUR=9;BYMINUTE=0\",\n      },\n      {\n        after: new Date(\"2026-08-21T02:00:00Z\"),\n        anchor: new Date(\"2026-08-18T01:00:00Z\"),\n        timezone: \"Asia/Shanghai\",\n      },\n    );\n    expect(new Date(next).toISOString()).toBe(\"2026-08-24T01:00:00.000Z\");\n  });\n\n  it(\"supports minute-based follow-up loops\", () => {\n    const next = computeNextScheduledTime(\n      { format: \"rrule\", value: \"RRULE:FREQ=MINUTELY;INTERVAL=10\" },\n      {\n        after: new Date(\"2026-08-18T00:06:00Z\"),",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 80.76"
+          },
+          {
+            "path": "packages/services/src/schedules/recurrence.ts",
+            "line": 46,
+            "startLine": 46,
+            "endLine": 71,
+            "readLine": 58,
+            "text": "export function computeNextScheduledTime(\n  recurrence: ScheduledRecurrence,\n  options: NextOccurrenceOptions = {},\n): number {\n  const after = options.after ?? new Date();\n  if (recurrence.format === \"once\") {\n    const timestamp = Date.parse(recurrence.value);\n    if (!Number.isFinite(timestamp))\n      throw new Error(`Invalid one-time schedule: ${recurrence.value}`);\n    if (timestamp <= after.getTime())\n      throw new Error(\"One-time schedule is not in the future\");\n    return timestamp;\n  }\n\n  const rule = parseRRule(recurrence.value);\n  assertTimezone(options.timezone);\n  const anchor = options.anchor ?? after;\n  const start = Math.floor(after.getTime() / 60_000) * 60_000 + 60_000;\n  const end = start + 366 * 5 * 24 * 60 * 60_000;\n  for (let timestamp = start; timestamp <= end; timestamp += 60_000) {\n    if (rule.until !== undefined && timestamp > rule.until) break;\n    if (matchesRule(timestamp, anchor.getTime(), rule, options.timezone))\n      return timestamp;\n  }\n  throw new Error(\"RRULE has no matching time in the next five years\");\n}",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 79.51"
+          },
+          {
+            "path": "packages/server/src/daemon/__test__/scheduled-task-service.test.ts",
+            "line": 22,
+            "startLine": 22,
+            "endLine": 53,
+            "readLine": 37,
+            "text": "function createHarness(\n  execute = vi.fn(async (\n    _task: ScheduledTaskRecord,\n    _run: ScheduledRunRecord,\n    reportSessionReady: (sessionId: string) => void,\n  ) => {\n    reportSessionReady(\"scheduled-session\");\n    return {\n      sessionId: \"scheduled-session\",\n      runId: \"agent-run\",\n      summary: \"Agent completed the scheduled work.\",\n    };\n  }),\n) {\n  const dir = mkdtempSync(join(tmpdir(), \"vk-scheduled-service-\"));\n  const store = new SessionStore({ path: join(dir, \"store.db\") });\n  store.sessions.create({\n    id: \"scheduled-session\",\n    cwd: process.cwd(),\n    model: \"test-model\",\n  });\n  const service = new ScheduledTaskService({\n    schedules: store.schedules,\n    execute,\n  });\n  cleanups.push(async () => {\n    await service.shutdown();\n    store.close();\n    rmSync(dir, { recursive: true, force: true });\n  });\n  return { execute, service, store };\n}",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 77.19"
+          },
+          {
+            "path": "packages/services/src/conversations/__test__/conversation-transactions.test.ts",
+            "line": 1058,
+            "startLine": 1058,
+            "endLine": 1074,
+            "readLine": 1066,
+            "text": "    it(\"validates edit source ownership and rolls back deletion when admission fails\", () => {\n      const dir = mkdtempSync(join(tmpdir(), \"vk-edit-latest-fail-\"));\n      const store = new SessionStore({ path: join(dir, \"store.db\") });\n      try {\n        store.sessions.create({ id: \"s1\", cwd: dir, model: \"m\" });\n        store.sessions.create({ id: \"s2\", cwd: dir, model: \"m\" });\n        const sourceInput = store.conversationTransactions.admitPrompt({ id: \"source-input\", sessionId: \"s1\", content: \"source\" });\n        const sourceMessage = store.conversations.createMessage({ id: \"source-message\", sessionId: \"s1\", role: \"user\", inputId: sourceInput.id });\n        const otherMessage = store.conversations.createMessage({ id: \"other-message\", sessionId: \"s2\", role: \"user\" });\n        const tx = createTransactions(store);\n\n        expect(() => tx.replaceLatestPromptWithAdmission({\n          sessionId: \"s1\",\n          sourceMessageId: otherMessage.id,\n          admission: { prompt: { sessionId: \"s1\", content: \"new\" } },\n          createRun: false,\n        })).toThrow(\"The edit source must be a user message in the session\");",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 43.70"
+          },
+          {
+            "path": "packages/prompts/src/index.ts",
+            "line": 133,
+            "startLine": 133,
+            "endLine": 149,
+            "readLine": 141,
+            "text": "export function buildWorkStyleSection(style: WorkStyle = \"practical\"): string {\n  if (style === \"efficient\") {\n    return `# Work Style: Efficient\n\n- Prefer immediate execution over conversational progress updates.\n- Do not send a preamble before routine tool use.\n- Do not narrate file reads, searches, commands, edits, or validation steps.\n- Send an intermediate user-visible message only when user input or approval is required, a blocker prevents progress, or an important risk must be communicated.\n- When the task is complete, send a concise final answer with the outcome, validation performed, and any remaining issue.\n- This communication style does not reduce investigation, implementation, validation, safety, or permission requirements.`;\n  }\n\n  return `# Work Style: Practical\n\n- For a multi-step task that requires tools, send one short user-visible update before the first tool call of the current user request. Acknowledge the request and state the first meaningful step in one or two sentences.\n- This is a task-level preamble, not tool-by-tool narration. Send it at most once before the first tool call for the current request.\n- Do not send another update merely bec",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 36.87, weak"
+          }
+        ],
+        "truncated": false,
+        "note": "片段已核对当前原文；需要补读时以 readLine 为中心，Read offset=max(1,readLine-12)、limit=25。未知行号先 Grep；证据不足继续 Grep/Read。"
+      },
+      "beforeScore": {
+        "fileHit": true,
+        "evidenceHit": false,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/services/src/schedules/__test__/recurrence.test.ts",
+          "packages/services/src/schedules/recurrence.ts"
+        ],
+        "evidenceFiles": []
+      },
+      "parserAndLocationOnlyScore": {
+        "fileHit": true,
+        "evidenceHit": false,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/services/src/schedules/__test__/recurrence.test.ts",
+          "packages/services/src/schedules/recurrence.ts",
+          "packages/server/src/daemon/__test__/scheduled-task-service.test.ts",
+          "packages/services/src/conversations/__test__/conversation-transactions.test.ts",
+          "packages/prompts/src/index.ts"
+        ],
+        "evidenceFiles": []
+      },
+      "afterScore": {
+        "fileHit": true,
+        "evidenceHit": true,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/services/src/schedules/__test__/recurrence.test.ts",
+          "packages/services/src/schedules/recurrence.ts",
+          "packages/server/src/daemon/__test__/scheduled-task-service.test.ts",
+          "packages/services/src/conversations/__test__/conversation-transactions.test.ts",
+          "packages/prompts/src/index.ts"
+        ],
+        "evidenceFiles": [
+          "packages/services/src/schedules/recurrence.ts"
+        ]
+      }
+    },
+    {
+      "taskId": "chinese-tool-outcome",
+      "before": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "packages/core/src/engine/README.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 22,
+            "text": "# 查询执行\n\n`QueryEngine` 是模型与工具循环的入口。它接收用户消息，维护当前历史，组织压缩、模型请求、工具调用和结束处理，并通过 `submitMessage()` 的异步事件流将进度与结果交给调用方。\n\n## 文件与子目录\n\n| 位置 | 用途 |\n| --- | --- |\n| `query-engine.ts` | 查询循环、请求配置应用、历史维护、手动工具执行与压缩入口 |\n| `turn-context.ts` | 固定本轮请求的消息与工具列表，拼接系统提示和记忆提醒 |\n| `index.ts` | `@vykor/core/engine` 公开入口 |\n| [model/](./model/README.md) | 执行模型请求、处理流式响应和重试 |\n| [tools/](./tools/README.md) | 准备、授权和执行工具调用 |\n| [results/](./results/README.md) | 保存有容量上限的 SDK 结果引用，统一文本分页和字面检索 |\n| [compaction/](./compaction/README.md) | 缩减历史消息并保留继续任务所需的线索 |\n| [trajectory/](./trajectory/README.md) | 根据工具结果生成后续行动提示 |\n| [usage/](./usage/README.md) | 累计模型请求用量 |\n| `__test__/` | 查询循环、请求配置、记忆注入、目标上下文等整体流程测试 |\n\n## 状态与调用关系\n\n`QueryEngine` 实例保存消息历史、当前模型和提示词、最近工具结果以及累计用量。每轮先准备历史和请求，再调用 `model/`；出现工具调用时交给 `tools/`，将结果写入历史后继续。`compaction/` 返回缩减后的历史，由引…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 69.14"
+          },
+          {
+            "path": "docs/model-network-retry-design.md",
+            "line": 104,
+            "startLine": 104,
+            "endLine": 122,
+            "text": "求，不重试 |\n| 401、403、无效参数、不支持的模型能力 | 直接报告需处理的问题 |\n| 完整响应中的工具参数解析失败 | 不执行工具，反馈模型纠正；不是网络重试 |\n| 未知编程错误、其他解析错误 | 不用兜底无限重试掩盖问题，保留诊断信息 |\n\n建议起点是指数增加等待时间，例如 1、2、4、8 秒，再加少量随机延迟，避免多个请求同时重试。次数、最大等待和总时限应明确；具体默认值在实施时结合产品体验确定，Codex 默认值仅供参考。\n\n`Retry-After` 应支持秒数和 HTTP 日期。若服务端要求的等待超过剩余总预算，应明确结束或提示，不能把它压短后提前重试。\n\n流空闲超时指连续没有收到数据，不是整段生成总时长。服务端心跳与有效输出需要分别考虑，避免把模型正常长思考误判为断线。\n\n## 状态保存与界面\n\n建议的职责分工：\n\n- 适配器：提供错误类型、状态码、等待提示、请求标识和是否收到完成事件；保留原始原因。\n- 引擎：保存当前模型调用的尝试次数、截止时间、取消信号和未完成输出；决定何时重试、替换或提交。\n- 运行记录与事件通路：保存可供诊断的尝试结果，将当前重试状态纳入客户端可恢复的状态。先检查现有 Run/Attempt 模型，不能直接假设“一次 HTTP 请求”等于“一次运行 Attempt”。\n- 客户端：显示…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 67.83"
+          },
+          {
+            "path": "packages/core/src/engine/compaction/README.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 19,
+            "text": "# 历史消息压缩\n\n当长对话接近模型的上下文容量时，缩减旧消息，同时尽量保留最近工具调用和继续任务所需的信息。\n\n| 文件 | 用途 |\n| --- | --- |\n| `compact-service.ts` | `CompactService` 入口，选择压缩步骤、处理重试并报告进度 |\n| `compact-types.ts` | 压缩来源、进度、检查点、补充上下文和摘要客户端接口 |\n| `compact-messages.ts` | 估算消息大小，清理旧工具输出、截断长内容并保护工具调用与结果的配对 |\n| `compact-prompt.ts` | 构造摘要提示，提取近期文件与工具工作记录 |\n| `compact-summary.ts` | 收集和格式化模型摘要，识别上下文超长错误 |\n| `compact-continuity.ts` | 保留继续任务所需的原文片段，管理压缩前后的衔接信息 |\n| `__test__/` | 压缩阶段、回退、取消与上下文保留测试 |\n\n`QueryEngine` 在模型请求前调用自动压缩，也可通过 `compact()` 手动触发。服务先清理旧工具输出和截短长文本，再按需请求模型摘要；没有摘要客户端或摘要失败时，使用简单压缩作为后备处理。压缩结果交回引擎替换历史。\n\n压缩阈值、连续失败次数和检查点保存在 `CompactService` 实例中。摘要客户端与额外任务上下文由调用方注入。新增压缩规则放在对应文件，测试放在同层 `__test__/`；完整设计见 [上下文压缩说明](../../../../../docs/compact-service-design.md)。\n\n日常续做的…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 67.74"
+          },
+          {
+            "path": "docs/model-network-retry-design.md",
+            "line": 130,
+            "startLine": 130,
+            "endLine": 130,
+            "text": "",
+            "truncated": false,
+            "evidence": "native_locator_only",
+            "notice": "score 65.61"
+          }
+        ],
+        "truncated": true,
+        "note": "保留 XERJ 原生排序与片段，正文已与当前项目文件核对；索引仍可能遗漏新文件，证据不足时继续 Grep/Read。"
+      },
+      "after": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "packages/core/src/engine/README.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 22,
+            "readLine": 11,
+            "text": "# 查询执行\n\n`QueryEngine` 是模型与工具循环的入口。它接收用户消息，维护当前历史，组织压缩、模型请求、工具调用和结束处理，并通过 `submitMessage()` 的异步事件流将进度与结果交给调用方。\n\n## 文件与子目录\n\n| 位置 | 用途 |\n| --- | --- |\n| `query-engine.ts` | 查询循环、请求配置应用、历史维护、手动工具执行与压缩入口 |\n| `turn-context.ts` | 固定本轮请求的消息与工具列表，拼接系统提示和记忆提醒 |\n| `index.ts` | `@vykor/core/engine` 公开入口 |\n| [model/](./model/README.md) | 执行模型请求、处理流式响应和重试 |\n| [tools/](./tools/README.md) | 准备、授权和执行工具调用 |\n| [results/](./results/README.md) | 保存有容量上限的 SDK 结果引用，统一文本分页和字面检索 |\n| [compaction/](./compaction/README.md) | 缩减历史消息并保留继续任务所需的线索 |\n| [trajectory/](./trajectory/README.md) | 根据工具结果生成后续行动提示 |\n| [usage/](./usage/README.md) | 累计模型请求用量 |\n| `__test__/` | 查询循环、请求配置、记忆注入、目标上下文等整体流程测试 |\n\n## 状态与调用关系\n\n`QueryEngine` 实例保存消息历史、当前模型和提示词、最近工具结果以及累计用量。每轮先准备历史和请求，再调用 `model/`；出现工具调用时交给 `tools/`，将结果写入历史后继续。`compaction/` 返回缩减后的历史，由引…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 69.14"
+          },
+          {
+            "path": "docs/model-network-retry-design.md",
+            "line": 104,
+            "startLine": 104,
+            "endLine": 122,
+            "readLine": 113,
+            "text": "求，不重试 |\n| 401、403、无效参数、不支持的模型能力 | 直接报告需处理的问题 |\n| 完整响应中的工具参数解析失败 | 不执行工具，反馈模型纠正；不是网络重试 |\n| 未知编程错误、其他解析错误 | 不用兜底无限重试掩盖问题，保留诊断信息 |\n\n建议起点是指数增加等待时间，例如 1、2、4、8 秒，再加少量随机延迟，避免多个请求同时重试。次数、最大等待和总时限应明确；具体默认值在实施时结合产品体验确定，Codex 默认值仅供参考。\n\n`Retry-After` 应支持秒数和 HTTP 日期。若服务端要求的等待超过剩余总预算，应明确结束或提示，不能把它压短后提前重试。\n\n流空闲超时指连续没有收到数据，不是整段生成总时长。服务端心跳与有效输出需要分别考虑，避免把模型正常长思考误判为断线。\n\n## 状态保存与界面\n\n建议的职责分工：\n\n- 适配器：提供错误类型、状态码、等待提示、请求标识和是否收到完成事件；保留原始原因。\n- 引擎：保存当前模型调用的尝试次数、截止时间、取消信号和未完成输出；决定何时重试、替换或提交。\n- 运行记录与事件通路：保存可供诊断的尝试结果，将当前重试状态纳入客户端可恢复的状态。先检查现有 Run/Attempt 模型，不能直接假设“一次 HTTP 请求”等于“一次运行 Attempt”。\n- 客户端：显示…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 67.83"
+          },
+          {
+            "path": "packages/core/src/engine/compaction/README.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 19,
+            "readLine": 10,
+            "text": "# 历史消息压缩\n\n当长对话接近模型的上下文容量时，缩减旧消息，同时尽量保留最近工具调用和继续任务所需的信息。\n\n| 文件 | 用途 |\n| --- | --- |\n| `compact-service.ts` | `CompactService` 入口，选择压缩步骤、处理重试并报告进度 |\n| `compact-types.ts` | 压缩来源、进度、检查点、补充上下文和摘要客户端接口 |\n| `compact-messages.ts` | 估算消息大小，清理旧工具输出、截断长内容并保护工具调用与结果的配对 |\n| `compact-prompt.ts` | 构造摘要提示，提取近期文件与工具工作记录 |\n| `compact-summary.ts` | 收集和格式化模型摘要，识别上下文超长错误 |\n| `compact-continuity.ts` | 保留继续任务所需的原文片段，管理压缩前后的衔接信息 |\n| `__test__/` | 压缩阶段、回退、取消与上下文保留测试 |\n\n`QueryEngine` 在模型请求前调用自动压缩，也可通过 `compact()` 手动触发。服务先清理旧工具输出和截短长文本，再按需请求模型摘要；没有摘要客户端或摘要失败时，使用简单压缩作为后备处理。压缩结果交回引擎替换历史。\n\n压缩阈值、连续失败次数和检查点保存在 `CompactService` 实例中。摘要客户端与额外任务上下文由调用方注入。新增压缩规则放在对应文件，测试放在同层 `__test__/`；完整设计见 [上下文压缩说明](../../../../../docs/compact-service-design.md)。\n\n日常续做的…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 67.74"
+          },
+          {
+            "path": "docs/model-network-retry-design.md",
+            "line": 130,
+            "startLine": 130,
+            "endLine": 130,
+            "readLine": 130,
+            "text": "",
+            "truncated": false,
+            "evidence": "native_locator_only",
+            "notice": "score 65.61"
+          },
+          {
+            "path": "docs/superpowers/specs/2026-08-29-conversation-attachments-retrospective.md",
+            "line": 23,
+            "startLine": 23,
+            "endLine": 23,
+            "readLine": 23,
+            "text": "",
+            "truncated": false,
+            "evidence": "native_locator_only",
+            "notice": "score 62.68"
+          }
+        ],
+        "truncated": false,
+        "note": "片段已核对当前原文；需要补读时以 readLine 为中心，Read offset=max(1,readLine-12)、limit=25。未知行号先 Grep；证据不足继续 Grep/Read。"
+      },
+      "beforeScore": {
+        "fileHit": true,
+        "evidenceHit": false,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 2,
+        "fileRecall": 0.5,
+        "topFiles": [
+          "packages/core/src/engine/README.md",
+          "docs/model-network-retry-design.md",
+          "packages/core/src/engine/compaction/README.md"
+        ],
+        "evidenceFiles": []
+      },
+      "parserAndLocationOnlyScore": {
+        "fileHit": true,
+        "evidenceHit": false,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 2,
+        "fileRecall": 0.5,
+        "topFiles": [
+          "packages/core/src/engine/README.md",
+          "docs/model-network-retry-design.md",
+          "packages/core/src/engine/compaction/README.md",
+          "docs/superpowers/specs/2026-08-29-conversation-attachments-retrospective.md"
+        ],
+        "evidenceFiles": []
+      },
+      "afterScore": {
+        "fileHit": true,
+        "evidenceHit": true,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 2,
+        "fileRecall": 0.5,
+        "topFiles": [
+          "packages/core/src/engine/README.md",
+          "docs/model-network-retry-design.md",
+          "packages/core/src/engine/compaction/README.md",
+          "docs/superpowers/specs/2026-08-29-conversation-attachments-retrospective.md"
+        ],
+        "evidenceFiles": [
+          "packages/core/src/engine/compaction/README.md"
+        ]
+      }
+    },
+    {
+      "taskId": "chinese-plugin-guard",
+      "before": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "docs/native-plugin-authoring.md",
+            "line": 274,
+            "startLine": 274,
+            "endLine": 284,
+            "text": "isError、failureKind、metadata。文本输出使用 `{ type: \"text\", text: \"...\" }`；不要直接返回字符串。异常由宿主转换成结构化错误。`safeToRetry` 只对能够安全重复调用的工具设为 true。\n\n异步工作应监听 `signal`，中止底层请求或等待并释放资源。只在长同步循环里读取 signal 不能及时接收进程间取消消息；同步任务必须有明确的工作量上限。调用超时、调用方主动取消分别返回 `tool_call_timeout`、`tool_call_cancelled`；插件长期不响应时宿主会结束进程。\n\n工具可通过注册日志接口记录调试信息；正文、凭据和完整输入不要写日志。宿主对 stdout、stderr 和插件日志消息设有大小限制，超出时截断或抑制；当前没有对 `ToolResult.content` 应用这些限额，工具应自行限制返回结果大小，不能依赖宿主自动截断。每次工具调用另有不包含完整参数正文的审计记录。\n\n## 插件持久数据与本轮工具结果\n\n宿主注入 `context.plugin.dataDir`，位置为 `~/.vykor/plugins/data/<plugin-id>`，与安装版本、代码快照和当前工作目录分开。插件按需创建目录并自行使用 Node 文件 API，保存格式、迁移及缓存清理由插件负责。普通更新与卸载不删除这些数据；此入口规范数据位置，不提供系统级文件沙箱，也不会隐式授予读写权限。\n\n原生工具可以声明 `toolResultInput: \"tool_result_id\"`，并…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 46.25"
+          },
+          {
+            "path": "docs/superpowers/specs/2026-09-09-native-plugin-authoring-v1-design.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 20,
+            "text": "# 原生插件第一阶段：开发规范与参考插件\n\n状态：实现、验收与独立审查已完成。\n\n## 目标与范围\n\n开发者可以从公开文档和参考代码出发，编写一个 Vykor Native Plugin，完成校验、本地开发链接、正式安装和实际工具调用，并知道错误从哪里查看、何时需要重载。\n\n本阶段落实 [插件系统交接](../../plugin-system-handoff.md) 的 Native 运行格式与安装边界。Converter 到此停止扩展，不是本阶段的开发对象。\n\n参考业务选为“文本检查助手”：检查调用者提供的文本，报告行尾空白与行首制表符。它不依赖文件读写、网络、密钥、第三方库或模型服务，因此可以在自动化测试中验证真实 Tool Host 调用。样例选择用于验证开发接口，不代表产品只能支持文本工具。\n\n## 当前代码证据\n\n| 已存在的能力 | 当前入口 | 对本阶段的影响 |\n| --- | --- | --- |\n| Native manifest 与路径校验 | `packages/plugins/src/manifest/schema-v1.ts`、`paths.ts` | 延续 schemaVersion 1，不增加第二种格式 |\n| 五类组件加载 | `packages/plugins/src/loading/load-native-plugin.ts` | 文档覆盖 Skills、Agents、Hooks、MCP、Node Tools |\n| Tool 注册与调用 | `packages/agent-runtime/src/node/plugins/native-tools/host-entry.mjs` | 导出 `registerTools()`，工具提供 `invoke()`；不能写成宿主内部的 `execute()` |\n| 调用上下文 | `native-tools/protocol.ts` 与 `…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 45.11"
+          },
+          {
+            "path": "docs/superpowers/specs/2026-10-02-file-workflow-design.md",
+            "line": 1898,
+            "startLine": 1898,
+            "endLine": 1902,
+            "text": "符，含控制字符或不可确定时不展示；不能从正文里的示例字段推测路径。支持现有合法参数包装与跨分片字符串，不把别名转换或半成品 JSON 用于实际执行。路径晚于正文时等它真正到达，不要求模型字段顺序永远正确。\n- 不传／持久化原始参数片段和完整正文，不修改正式 tool_use_start 的发布时间；正式执行仍等待完整参数、校验和授权。renderer 生成占位不得填入可执行 input／正式 toolUseId／output，不算已完成操作；进度事件及 Run 摘要继续保留已有可选 toolUseId 用于身份衔接。重试、取消、结束及正式调用到达时按已有 generation／attempt／调用身份收束，不凭文件名合并调用。\n- 原生 OpenAI／Anthropic／Codex 增量共同支持。已声明文件工具的 DSML invoke 同样发布展示进度，复用 scanner 的识别边界及最终 dsml_N 身份，不另建 DSML 解析框架；完整路径才进入摘要。未知工具和普通引用不产生占位，未闭合、超限释放或最终放弃恢复只清理展示，不生成正式调用，不改变恢复执行条件。\n- 路径摘要可以使用一个共享的小型字符串扫描辅助模块，复用 provider 已有参数缓冲及调用生命周期；不新增通用半成品 JSON 修复器、参数规范化器或执行输入。按增量扫描或已有节流窗口处理，不能每个字符都重新遍历一份不断变长的正文。\n- W…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 44.51"
+          },
+          {
+            "path": "docs/plugin-system.md",
+            "line": 92,
+            "startLine": 92,
+            "endLine": 92,
+            "text": "",
+            "truncated": false,
+            "evidence": "native_locator_only",
+            "notice": "score 43.96"
+          }
+        ],
+        "truncated": true,
+        "note": "保留 XERJ 原生排序与片段，正文已与当前项目文件核对；索引仍可能遗漏新文件，证据不足时继续 Grep/Read。"
+      },
+      "after": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "docs/native-plugin-authoring.md",
+            "line": 274,
+            "startLine": 274,
+            "endLine": 284,
+            "readLine": 279,
+            "text": "isError、failureKind、metadata。文本输出使用 `{ type: \"text\", text: \"...\" }`；不要直接返回字符串。异常由宿主转换成结构化错误。`safeToRetry` 只对能够安全重复调用的工具设为 true。\n\n异步工作应监听 `signal`，中止底层请求或等待并释放资源。只在长同步循环里读取 signal 不能及时接收进程间取消消息；同步任务必须有明确的工作量上限。调用超时、调用方主动取消分别返回 `tool_call_timeout`、`tool_call_cancelled`；插件长期不响应时宿主会结束进程。\n\n工具可通过注册日志接口记录调试信息；正文、凭据和完整输入不要写日志。宿主对 stdout、stderr 和插件日志消息设有大小限制，超出时截断或抑制；当前没有对 `ToolResult.content` 应用这些限额，工具应自行限制返回结果大小，不能依赖宿主自动截断。每次工具调用另有不包含完整参数正文的审计记录。\n\n## 插件持久数据与本轮工具结果\n\n宿主注入 `context.plugin.dataDir`，位置为 `~/.vykor/plugins/data/<plugin-id>`，与安装版本、代码快照和当前工作目录分开。插件按需创建目录并自行使用 Node 文件 API，保存格式、迁移及缓存清理由插件负责。普通更新与卸载不删除这些数据；此入口规范数据位置，不提供系统级文件沙箱，也不会隐式授予读写权限。\n\n原生工具可以声明 `toolResultInput: \"tool_result_id\"`，并…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 46.25"
+          },
+          {
+            "path": "docs/superpowers/specs/2026-09-09-native-plugin-authoring-v1-design.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 20,
+            "readLine": 10,
+            "text": "# 原生插件第一阶段：开发规范与参考插件\n\n状态：实现、验收与独立审查已完成。\n\n## 目标与范围\n\n开发者可以从公开文档和参考代码出发，编写一个 Vykor Native Plugin，完成校验、本地开发链接、正式安装和实际工具调用，并知道错误从哪里查看、何时需要重载。\n\n本阶段落实 [插件系统交接](../../plugin-system-handoff.md) 的 Native 运行格式与安装边界。Converter 到此停止扩展，不是本阶段的开发对象。\n\n参考业务选为“文本检查助手”：检查调用者提供的文本，报告行尾空白与行首制表符。它不依赖文件读写、网络、密钥、第三方库或模型服务，因此可以在自动化测试中验证真实 Tool Host 调用。样例选择用于验证开发接口，不代表产品只能支持文本工具。\n\n## 当前代码证据\n\n| 已存在的能力 | 当前入口 | 对本阶段的影响 |\n| --- | --- | --- |\n| Native manifest 与路径校验 | `packages/plugins/src/manifest/schema-v1.ts`、`paths.ts` | 延续 schemaVersion 1，不增加第二种格式 |\n| 五类组件加载 | `packages/plugins/src/loading/load-native-plugin.ts` | 文档覆盖 Skills、Agents、Hooks、MCP、Node Tools |\n| Tool 注册与调用 | `packages/agent-runtime/src/node/plugins/native-tools/host-entry.mjs` | 导出 `registerTools()`，工具提供 `invoke()`；不能写成宿主内部的 `execute()` |\n| 调用上下文 | `native-tools/protocol.ts` 与 `…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 45.11"
+          },
+          {
+            "path": "docs/superpowers/specs/2026-10-02-file-workflow-design.md",
+            "line": 1898,
+            "startLine": 1898,
+            "endLine": 1902,
+            "readLine": 1900,
+            "text": "符，含控制字符或不可确定时不展示；不能从正文里的示例字段推测路径。支持现有合法参数包装与跨分片字符串，不把别名转换或半成品 JSON 用于实际执行。路径晚于正文时等它真正到达，不要求模型字段顺序永远正确。\n- 不传／持久化原始参数片段和完整正文，不修改正式 tool_use_start 的发布时间；正式执行仍等待完整参数、校验和授权。renderer 生成占位不得填入可执行 input／正式 toolUseId／output，不算已完成操作；进度事件及 Run 摘要继续保留已有可选 toolUseId 用于身份衔接。重试、取消、结束及正式调用到达时按已有 generation／attempt／调用身份收束，不凭文件名合并调用。\n- 原生 OpenAI／Anthropic／Codex 增量共同支持。已声明文件工具的 DSML invoke 同样发布展示进度，复用 scanner 的识别边界及最终 dsml_N 身份，不另建 DSML 解析框架；完整路径才进入摘要。未知工具和普通引用不产生占位，未闭合、超限释放或最终放弃恢复只清理展示，不生成正式调用，不改变恢复执行条件。\n- 路径摘要可以使用一个共享的小型字符串扫描辅助模块，复用 provider 已有参数缓冲及调用生命周期；不新增通用半成品 JSON 修复器、参数规范化器或执行输入。按增量扫描或已有节流窗口处理，不能每个字符都重新遍历一份不断变长的正文。\n- W…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 44.51"
+          },
+          {
+            "path": "docs/plugin-system.md",
+            "line": 92,
+            "startLine": 92,
+            "endLine": 92,
+            "readLine": 92,
+            "text": "",
+            "truncated": false,
+            "evidence": "native_locator_only",
+            "notice": "score 43.96"
+          },
+          {
+            "path": "docs/plugin-system.md",
+            "line": 134,
+            "startLine": 134,
+            "endLine": 134,
+            "readLine": 134,
+            "text": "",
+            "truncated": false,
+            "evidence": "native_locator_only",
+            "notice": "score 43.75"
+          }
+        ],
+        "truncated": false,
+        "note": "片段已核对当前原文；需要补读时以 readLine 为中心，Read offset=max(1,readLine-12)、limit=25。未知行号先 Grep；证据不足继续 Grep/Read。"
+      },
+      "beforeScore": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [
+          "docs/native-plugin-authoring.md",
+          "docs/superpowers/specs/2026-09-09-native-plugin-authoring-v1-design.md",
+          "docs/superpowers/specs/2026-10-02-file-workflow-design.md",
+          "docs/plugin-system.md"
+        ],
+        "evidenceFiles": []
+      },
+      "parserAndLocationOnlyScore": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [
+          "docs/native-plugin-authoring.md",
+          "docs/superpowers/specs/2026-09-09-native-plugin-authoring-v1-design.md",
+          "docs/superpowers/specs/2026-10-02-file-workflow-design.md",
+          "docs/plugin-system.md"
+        ],
+        "evidenceFiles": []
+      },
+      "afterScore": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [
+          "docs/native-plugin-authoring.md",
+          "docs/superpowers/specs/2026-09-09-native-plugin-authoring-v1-design.md",
+          "docs/superpowers/specs/2026-10-02-file-workflow-design.md",
+          "docs/plugin-system.md"
+        ],
+        "evidenceFiles": []
+      }
+    },
+    {
+      "taskId": "chinese-plugin-data",
+      "before": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "docs/plans/2026-08-22-durable-agent-application-convergence.md",
+            "line": 24,
+            "startLine": 24,
+            "endLine": 49,
+            "text": "以下是计划开始时的代码基线，当时已经有三块重要能力：\n\n```text\nagent-runtime\n  负责一次 Agent 怎么运行、怎么调用工具、怎么创建子 Agent、怎么停止和释放资源\n\ndaemon application\n  负责 Session、Input、Run、Permission 和 Transcript 怎么保存、排队、恢复和给多个客户端使用\n\nclient\n  负责通过 HTTP/SSE 读取状态、发送命令，并把 snapshot 与增量事件合并成客户端状态\n```\n\n这三块各自已经可用，但连接方式还没有完全收口：\n\n1. `@vykor/client` 仍依赖带 SQLite 实现的 `@vykor/services`，浏览器或 IDE webview 很难只拿一个轻量客户端包。\n2. 真正负责 durable 业务的 `DaemonApplication` 仍放在 `@vykor/server` 内部，很多实现文件也仍位于 `http/` 目录。\n3. `vk channels serve` 直接创建 standalone Agent，Bot 消息没有进入 daemon 的 durable Session/Run。\n4. `agent-runtime` 的运行规则已经像独立内核，但默认组装同时读取本机配置、凭据、插件、Skill、MCP、Sandbox 和 Git worktree，包本身也还不能脱离 monorepo 发布。\n5. 当时 Workflow 使用项目目录中的 JSON/NDJSON 文件保存状态，没有和 Session/Run 使用同一份 durable 状态与诊断入口。\n\n用大白话说，这轮的目标是：\n\n- Web 和 IDE 只安装客户端，不会顺带安装 SQLite；\n- Bot 发来的消息和 TUI 输入一样，都先保存成 durable Input，再由同一个应用执行；\n- HT…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 45.98"
+          },
+          {
+            "path": "docs/mcp-apps.md",
+            "line": 117,
+            "startLine": 117,
+            "endLine": 145,
+            "text": "查后调用 MCP 天气工具。服务访问天气接口，返回文字和 structuredContent，页面再显示数据。\n\n天气模板由宿主向服务注入固定的数据目录、会话标识和工作区。MCP 的通用协议不会自动提供这些 Vykor 安装与授权约定。\n\n```callout info 可见性与权限分开\napp-only 只表示模型看不到该工具。\n它不会跳过安装批准、角色限制或每次调用的检查。\n```\n\n## C 应用怎样打开，结果怎样进入页面\n\n| 入口或事件 | 当前行为 |\n| --- | --- |\n| 右侧“应用”目录 | 打开或复用当前会话的应用标签 |\n| 聊天中的“查看…” | 打开或定位右侧标签，不嵌入聊天 |\n| 首次实时工具结果 | 优先展开右上角工作摘要；点击具名应用后才定位右侧面板 |\n| 后续实时结果 | 更新原页面，保留当前标签选择 |\n| 历史消息渲染 | 不自动打开应用 |\n| 查看已打开页面的旧结果 | 只定位，不补发旧正文覆盖当前内容 |\n\n主进程根据可信来源决定页面身份。多个入口共用资源地址时，不能仅凭地址合并页面。\n\n每条不同的可信工具结果只投递一次。页面主动调用的结果直接返回原 Promise，不再推送第二份通知。\n\n### Agent 调用：宿主把工具结果交给页面\n\n用户说“查杭州天气”时，Agent 选择并调用天气工具。工具必须已经关联页面；返回一段 JSON 或 HTML 本身不会创建应用。\n\n```sequence…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 45.25"
+          },
+          {
+            "path": "apps/desktop/docs/packaging.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 17,
+            "text": "# 桌面安装包：为什么会慢、怎么保持快\n\n`pnpm build:win` 里，Vite 打 JS 通常几分钟内结束。真正容易“卡住”的是后面的 **electron-builder 收 node_modules**：它会按 `package.json` 的 production `dependencies` 走完整棵 pnpm 依赖树，再拷进 `dist/win-unpacked`。pnpm 是大量 junction，Windows 上再叠加 Defender 扫盘，这一步可以耗很久。\n\n## 现在的分工\n\n安装包里只需要运行时还 `require` 得着、又打不进 JS 的东西。\n\n| 放哪里 | 放什么 | 为什么 |\n|---|---|---|\n| `dependencies` | `better-sqlite3`、`node-pty`、`sharp`、`electron-updater`、`electron-log` | C++ 插件和更新器运行时不能打进主进程 bundle；`install-app-deps` 只重编原生模块 |\n| `devDependencies` | React、Tailwind、图标、workspace 包、electron-vite 等 | 开发期用；渲染进程和主进程 JS 已经打进 `out/` |\n| `electron-builder.yml` 的 `files` | `out/**`、`resources/**`、`package.json` | 不要默认拷整个 `apps/desktop` |\n\nDesktop 只直接依赖 `@rzx/client` 和 `@vykor/server`。主进程把 server 及其 `core`、`sandbox`、`terminal-node` 等传递实现打进 `out/main`；renderer/preload 不允许导入 server。SQLite 迁移文件仍由 `electron.vite.config.ts` 拷到 `out/session-runtime/migrations`，以匹配 bundle 后迁移加载器相对于 `out/main/index.js` 的路径。原生模块保持外置，asar 里再解开 `prebuilds` / `build`。\n\n正式发布…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 44.83"
+          },
+          {
+            "path": "docs/plugin-system.md",
+            "line": 38,
+            "startLine": 38,
+            "endLine": 73,
+            "text": "运行；页面不能直接操作服务进程或宿主文件。\n\n| 谁发起 | 请求入口 | 结果回来后 |\n| --- | --- | --- |\n| Agent | 已关联页面的模型工具 | 返回 Agent，并由宿主投递给页面的 ontoolresult |\n| 页面按钮 | 作者绑定事件，调用 app.callServerTool | 返回原 Promise，由页面显示；不重复推送 ontoolresult |\n\n两种组合都保留原工具权限、安装批准和操作回执。协议不会自动替作者完成按钮绑定、草稿保存或版本冲突处理。\n\n两套完整流程图和页面接线示例见 [MCP Apps 开发与运行机制](mcp-apps.html)。\n\n当前可激活 Skills、Agents、Hooks、MCP、Node Tools 和 Apps。Wasm Tool 尚不激活。\n\nLSP、Workflows、Channels 等字段可被识别，但尚无对应激活能力。不要把清单通过校验当成能力已经可用。\n\n## B 一个插件包包含什么\n\n```tree\nplugin/\n  .vykor-plugin/\n    plugin.json | 唯一原生清单入口\n  skills/ | 按需读取的流程说明\n  agents/ | 角色定义与工具限制\n  hooks/ | 生命周期事件处理配置\n  tools/ | Native Tool 的可执行模块\n  mcp.json | 可选 MCP 服务配置\n  ui/\n    apps.json | 后台、页面资源与打开入口\n    panel.html | 构建后的离线应用页面\n```\n\n**清单中的组件路径必须留在插件目录内。** 各目录按需提供，无须全部创建。\n\n下面是包声明示意，需同时提供所引用的文件。\n\n```json title=\"原生插件清单 · 示意\"…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 43.25"
+          }
+        ],
+        "truncated": true,
+        "note": "保留 XERJ 原生排序与片段，正文已与当前项目文件核对；索引仍可能遗漏新文件，证据不足时继续 Grep/Read。"
+      },
+      "after": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "docs/plans/2026-08-22-durable-agent-application-convergence.md",
+            "line": 24,
+            "startLine": 24,
+            "endLine": 49,
+            "readLine": 36,
+            "text": "以下是计划开始时的代码基线，当时已经有三块重要能力：\n\n```text\nagent-runtime\n  负责一次 Agent 怎么运行、怎么调用工具、怎么创建子 Agent、怎么停止和释放资源\n\ndaemon application\n  负责 Session、Input、Run、Permission 和 Transcript 怎么保存、排队、恢复和给多个客户端使用\n\nclient\n  负责通过 HTTP/SSE 读取状态、发送命令，并把 snapshot 与增量事件合并成客户端状态\n```\n\n这三块各自已经可用，但连接方式还没有完全收口：\n\n1. `@vykor/client` 仍依赖带 SQLite 实现的 `@vykor/services`，浏览器或 IDE webview 很难只拿一个轻量客户端包。\n2. 真正负责 durable 业务的 `DaemonApplication` 仍放在 `@vykor/server` 内部，很多实现文件也仍位于 `http/` 目录。\n3. `vk channels serve` 直接创建 standalone Agent，Bot 消息没有进入 daemon 的 durable Session/Run。\n4. `agent-runtime` 的运行规则已经像独立内核，但默认组装同时读取本机配置、凭据、插件、Skill、MCP、Sandbox 和 Git worktree，包本身也还不能脱离 monorepo 发布。\n5. 当时 Workflow 使用项目目录中的 JSON/NDJSON 文件保存状态，没有和 Session/Run 使用同一份 durable 状态与诊断入口。\n\n用大白话说，这轮的目标是：\n\n- Web 和 IDE 只安装客户端，不会顺带安装 SQLite；\n- Bot 发来的消息和 TUI 输入一样，都先保存成 durable Input，再由同一个应用执行；\n- HT…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 45.98"
+          },
+          {
+            "path": "docs/mcp-apps.md",
+            "line": 117,
+            "startLine": 117,
+            "endLine": 145,
+            "readLine": 131,
+            "text": "查后调用 MCP 天气工具。服务访问天气接口，返回文字和 structuredContent，页面再显示数据。\n\n天气模板由宿主向服务注入固定的数据目录、会话标识和工作区。MCP 的通用协议不会自动提供这些 Vykor 安装与授权约定。\n\n```callout info 可见性与权限分开\napp-only 只表示模型看不到该工具。\n它不会跳过安装批准、角色限制或每次调用的检查。\n```\n\n## C 应用怎样打开，结果怎样进入页面\n\n| 入口或事件 | 当前行为 |\n| --- | --- |\n| 右侧“应用”目录 | 打开或复用当前会话的应用标签 |\n| 聊天中的“查看…” | 打开或定位右侧标签，不嵌入聊天 |\n| 首次实时工具结果 | 优先展开右上角工作摘要；点击具名应用后才定位右侧面板 |\n| 后续实时结果 | 更新原页面，保留当前标签选择 |\n| 历史消息渲染 | 不自动打开应用 |\n| 查看已打开页面的旧结果 | 只定位，不补发旧正文覆盖当前内容 |\n\n主进程根据可信来源决定页面身份。多个入口共用资源地址时，不能仅凭地址合并页面。\n\n每条不同的可信工具结果只投递一次。页面主动调用的结果直接返回原 Promise，不再推送第二份通知。\n\n### Agent 调用：宿主把工具结果交给页面\n\n用户说“查杭州天气”时，Agent 选择并调用天气工具。工具必须已经关联页面；返回一段 JSON 或 HTML 本身不会创建应用。\n\n```sequence…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 45.25"
+          },
+          {
+            "path": "apps/desktop/docs/packaging.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 17,
+            "readLine": 9,
+            "text": "# 桌面安装包：为什么会慢、怎么保持快\n\n`pnpm build:win` 里，Vite 打 JS 通常几分钟内结束。真正容易“卡住”的是后面的 **electron-builder 收 node_modules**：它会按 `package.json` 的 production `dependencies` 走完整棵 pnpm 依赖树，再拷进 `dist/win-unpacked`。pnpm 是大量 junction，Windows 上再叠加 Defender 扫盘，这一步可以耗很久。\n\n## 现在的分工\n\n安装包里只需要运行时还 `require` 得着、又打不进 JS 的东西。\n\n| 放哪里 | 放什么 | 为什么 |\n|---|---|---|\n| `dependencies` | `better-sqlite3`、`node-pty`、`sharp`、`electron-updater`、`electron-log` | C++ 插件和更新器运行时不能打进主进程 bundle；`install-app-deps` 只重编原生模块 |\n| `devDependencies` | React、Tailwind、图标、workspace 包、electron-vite 等 | 开发期用；渲染进程和主进程 JS 已经打进 `out/` |\n| `electron-builder.yml` 的 `files` | `out/**`、`resources/**`、`package.json` | 不要默认拷整个 `apps/desktop` |\n\nDesktop 只直接依赖 `@rzx/client` 和 `@vykor/server`。主进程把 server 及其 `core`、`sandbox`、`terminal-node` 等传递实现打进 `out/main`；renderer/preload 不允许导入 server。SQLite 迁移文件仍由 `electron.vite.config.ts` 拷到 `out/session-runtime/migrations`，以匹配 bundle 后迁移加载器相对于 `out/main/index.js` 的路径。原生模块保持外置，asar 里再解开 `prebuilds` / `build`。\n\n正式发布…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 44.83"
+          },
+          {
+            "path": "docs/plugin-system.md",
+            "line": 38,
+            "startLine": 38,
+            "endLine": 73,
+            "readLine": 55,
+            "text": "运行；页面不能直接操作服务进程或宿主文件。\n\n| 谁发起 | 请求入口 | 结果回来后 |\n| --- | --- | --- |\n| Agent | 已关联页面的模型工具 | 返回 Agent，并由宿主投递给页面的 ontoolresult |\n| 页面按钮 | 作者绑定事件，调用 app.callServerTool | 返回原 Promise，由页面显示；不重复推送 ontoolresult |\n\n两种组合都保留原工具权限、安装批准和操作回执。协议不会自动替作者完成按钮绑定、草稿保存或版本冲突处理。\n\n两套完整流程图和页面接线示例见 [MCP Apps 开发与运行机制](mcp-apps.html)。\n\n当前可激活 Skills、Agents、Hooks、MCP、Node Tools 和 Apps。Wasm Tool 尚不激活。\n\nLSP、Workflows、Channels 等字段可被识别，但尚无对应激活能力。不要把清单通过校验当成能力已经可用。\n\n## B 一个插件包包含什么\n\n```tree\nplugin/\n  .vykor-plugin/\n    plugin.json | 唯一原生清单入口\n  skills/ | 按需读取的流程说明\n  agents/ | 角色定义与工具限制\n  hooks/ | 生命周期事件处理配置\n  tools/ | Native Tool 的可执行模块\n  mcp.json | 可选 MCP 服务配置\n  ui/\n    apps.json | 后台、页面资源与打开入口\n    panel.html | 构建后的离线应用页面\n```\n\n**清单中的组件路径必须留在插件目录内。** 各目录按需提供，无须全部创建。\n\n下面是包声明示意，需同时提供所引用的文件。\n\n```json title=\"原生插件清单 · 示意\"…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 43.25"
+          },
+          {
+            "path": "docs/superpowers/specs/2026-08-29-conversation-attachments-retrospective.md",
+            "line": 23,
+            "startLine": 23,
+            "endLine": 23,
+            "readLine": 23,
+            "text": "",
+            "truncated": false,
+            "evidence": "native_locator_only",
+            "notice": "score 43.07"
+          }
+        ],
+        "truncated": false,
+        "note": "片段已核对当前原文；需要补读时以 readLine 为中心，Read offset=max(1,readLine-12)、limit=25。未知行号先 Grep；证据不足继续 Grep/Read。"
+      },
+      "beforeScore": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [
+          "docs/plans/2026-08-22-durable-agent-application-convergence.md",
+          "docs/mcp-apps.md",
+          "apps/desktop/docs/packaging.md",
+          "docs/plugin-system.md"
+        ],
+        "evidenceFiles": []
+      },
+      "parserAndLocationOnlyScore": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [
+          "docs/plans/2026-08-22-durable-agent-application-convergence.md",
+          "docs/mcp-apps.md",
+          "apps/desktop/docs/packaging.md",
+          "docs/plugin-system.md",
+          "docs/superpowers/specs/2026-08-29-conversation-attachments-retrospective.md"
+        ],
+        "evidenceFiles": []
+      },
+      "afterScore": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [
+          "docs/plans/2026-08-22-durable-agent-application-convergence.md",
+          "docs/mcp-apps.md",
+          "apps/desktop/docs/packaging.md",
+          "docs/plugin-system.md",
+          "docs/superpowers/specs/2026-08-29-conversation-attachments-retrospective.md"
+        ],
+        "evidenceFiles": []
+      }
+    },
+    {
+      "taskId": "chinese-schedule-history",
+      "before": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "docs/superpowers/specs/2026-09-17-architecture-documentation-closeout-design.md",
+            "line": 185,
+            "startLine": 185,
+            "endLine": 211,
+            "text": "文档描述重要流程时统一回答四个问题：\n\n1. 从哪里进入；\n2. 中间经过哪些关键步骤；\n3. 状态保存在哪里；\n4. 结果或事件从哪里返回。\n\n## 7. 链接与可维护性规则\n\n- 链接优先指向稳定的文件或目录，不绑定容易变化的行号；\n- 当前文档中的代码路径必须在仓库中真实存在；\n- 一个约束只选择一份主要文档详细解释，其他文档用链接引用；\n- 版本号、header 名称、脚本名等精确值必须从代码或配置中复核；\n- 不把兼容、旧版、临时别名写成当前可用能力；\n- “已完成”必须能对应到代码、测试、检查脚本或合并记录，而不是只引用计划中的复选框。\n\n## 8. 验收标准\n\n文档收口完成后应满足：\n\n- `docs/README.md` 能清楚区分当前文档、操作手册和历史记录；\n- `docs/architecture-migration-status.md` 完整覆盖 Stage 0–8，并明确重构已经结束；\n- 当前核心架构文档不存在已删除的顶层 Client 业务方法、旧协议版本或“等待下一阶段”等当前时态表述；\n- 根 `README.md` 的项目目录与实际一级目录一致，示例只使用领域 Resource API；\n- 当前存储架构由新文档说明，历史 `session-storage-design.md` 不再承担当前规范职责；\n- 独立架构图通过 Archify showcase validation 和 visual-check，图源、HTML 与截图来自同一版本；\n- 文档内引用的仓库路径存在，Markdown 链接通…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 59.82"
+          },
+          {
+            "path": "docs/superpowers/specs/2026-10-20-approval-presets-and-plan-mode-design.md",
+            "line": 23,
+            "startLine": 23,
+            "endLine": 45,
+            "text": "`/plan`，或明确点击“开始执行”后退出。\n\n计划模式允许可信只读工具，阻止文件修改、命令执行、后台任务变更及其他有副作用的工具。授权为完全访问时也必须遵守计划限制。用户开启的计划模式不能被模型调用 `ExitPlanMode` 自行解除；模型临时进入计划仍只缩小权限，退出最多恢复用户当前选择。\n\n## 3. 状态放在哪里\n\n协议增加两类独立状态：\n\n```ts\nexport type ApprovalMode = \"ask\" | \"auto_review\" | \"full_access\";\nexport type WorkMode = \"execute\" | \"plan\";\n```\n\n- `settings.permission.mode` 保存新聊天采用的默认授权档位，不保存计划开关。\n- `session.metadata.runtime.approvalMode` 保存当前聊天授权档位。\n- `session.metadata.runtime.workMode` 保存当前聊天工作模式。\n- 新聊天尚未创建时，工作模式仅存在当前新聊天的内存状态。首次发送和创建目标时一起写入会话；不因此修改全局默认。\n- 正文和附件仍保存在原有草稿里，不把工作模式伪装成纯文本、Skill 或插件引用。\n- 每次运行记录当时的模式与配置修订号，历史展示读取真实运行状态，不使用当前菜单值回填。\n\n运行时可以把两类状态计算成现有工具检查器的只读或自动执行限制；内部计算结果不是第三份可写会话状态。必须同时更新给模型的工具与模式说明，以及真正拦截工具的检查器。\n\n## 4. 一次操作…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 57.18"
+          },
+          {
+            "path": "docs/superpowers/specs/2026-09-17-architecture-documentation-closeout-design.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 33,
+            "text": "# 架构重构文档收口设计\n\n> 日期：2026-09-17\n>\n> 状态：已实施（可交互架构图由维护者后续单独调整）\n>\n> 范围：只修订文档，不修改代码、协议、数据库或开发数据\n\n## 1. 背景\n\n按业务域重组代码、收窄公开 API、拆分运行时职责以及删除兼容层的工作已经完成，代码现状不再处于“等待下一阶段”的迁移中。\n\n当前文档仍混合了三类内容：\n\n1. 描述现在如何运行的权威文档；\n2. 记录 Stage 0–8 如何实施的历史计划与设计；\n3. 已经过时的迁移措辞或调用示例。\n\n如果继续把这三类内容放在同一层级，后续维护者很难判断应该相信哪一份文档，也容易把已经删除的接口或兼容策略重新带回代码。\n\n## 2. 目标\n\n本次收口要得到一套面向长期维护的文档结构：\n\n- 从文档首页可以直接找到“系统现在如何运行”的权威说明；\n- 用一份收口记录说明 Stage 0–8 已完成、最终边界是什么、由哪些检查长期守护；\n- 校准核心架构文档，使名称、调用入口、协议版本和职责边界与当前代码一致；\n- 历史计划继续可查，但明确它们是决策和实施记录，不再作为当前规范；\n- 后续新增功能时，维护者能够判断代码应该进入哪个层、通过哪个入口返回结果。\n\n## 3. 不在本次范围内\n\n- 不修改任何生产代码、测试代码、协议版本、数据库 schema 或构建配…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 56.59"
+          },
+          {
+            "path": "docs/plans/2026-08-23-documentation-architecture-and-gaps.md",
+            "line": 157,
+            "startLine": 157,
+            "endLine": 157,
+            "text": "",
+            "truncated": false,
+            "evidence": "native_locator_only",
+            "notice": "score 56.43"
+          },
+          {
+            "path": "packages/plugins/src/__test__/helpers/README.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 20,
+            "text": "# 插件测试帮助代码\n\n构造测试所需的原生插件应用及历史界面记录。\n\n## 主要文件与目录\n\n- [native-app.ts](./native-app.ts)\n- [native-ui.ts](./native-ui.ts)\n\n## 入口与处理步骤\n\n测试先创建所需插件目录，再执行加载、安装或历史兼容检查，最后由用例清理临时目录。\n\n## 状态放在哪里\n\n仅保存测试临时资源，不参与生产导出。\n\n## 新代码与测试\n\n需要被多个测试复用的构造逻辑放在这里；测试断言仍放在被测目录的 `__test__/`。",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 53.77"
+          }
+        ],
+        "truncated": false,
+        "note": "保留 XERJ 原生排序与片段，正文已与当前项目文件核对；索引仍可能遗漏新文件，证据不足时继续 Grep/Read。"
+      },
+      "after": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "docs/superpowers/specs/2026-09-17-architecture-documentation-closeout-design.md",
+            "line": 185,
+            "startLine": 185,
+            "endLine": 211,
+            "readLine": 198,
+            "text": "文档描述重要流程时统一回答四个问题：\n\n1. 从哪里进入；\n2. 中间经过哪些关键步骤；\n3. 状态保存在哪里；\n4. 结果或事件从哪里返回。\n\n## 7. 链接与可维护性规则\n\n- 链接优先指向稳定的文件或目录，不绑定容易变化的行号；\n- 当前文档中的代码路径必须在仓库中真实存在；\n- 一个约束只选择一份主要文档详细解释，其他文档用链接引用；\n- 版本号、header 名称、脚本名等精确值必须从代码或配置中复核；\n- 不把兼容、旧版、临时别名写成当前可用能力；\n- “已完成”必须能对应到代码、测试、检查脚本或合并记录，而不是只引用计划中的复选框。\n\n## 8. 验收标准\n\n文档收口完成后应满足：\n\n- `docs/README.md` 能清楚区分当前文档、操作手册和历史记录；\n- `docs/architecture-migration-status.md` 完整覆盖 Stage 0–8，并明确重构已经结束；\n- 当前核心架构文档不存在已删除的顶层 Client 业务方法、旧协议版本或“等待下一阶段”等当前时态表述；\n- 根 `README.md` 的项目目录与实际一级目录一致，示例只使用领域 Resource API；\n- 当前存储架构由新文档说明，历史 `session-storage-design.md` 不再承担当前规范职责；\n- 独立架构图通过 Archify showcase validation 和 visual-check，图源、HTML 与截图来自同一版本；\n- 文档内引用的仓库路径存在，Markdown 链接通…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 59.82"
+          },
+          {
+            "path": "docs/superpowers/specs/2026-10-20-approval-presets-and-plan-mode-design.md",
+            "line": 23,
+            "startLine": 23,
+            "endLine": 45,
+            "readLine": 34,
+            "text": "`/plan`，或明确点击“开始执行”后退出。\n\n计划模式允许可信只读工具，阻止文件修改、命令执行、后台任务变更及其他有副作用的工具。授权为完全访问时也必须遵守计划限制。用户开启的计划模式不能被模型调用 `ExitPlanMode` 自行解除；模型临时进入计划仍只缩小权限，退出最多恢复用户当前选择。\n\n## 3. 状态放在哪里\n\n协议增加两类独立状态：\n\n```ts\nexport type ApprovalMode = \"ask\" | \"auto_review\" | \"full_access\";\nexport type WorkMode = \"execute\" | \"plan\";\n```\n\n- `settings.permission.mode` 保存新聊天采用的默认授权档位，不保存计划开关。\n- `session.metadata.runtime.approvalMode` 保存当前聊天授权档位。\n- `session.metadata.runtime.workMode` 保存当前聊天工作模式。\n- 新聊天尚未创建时，工作模式仅存在当前新聊天的内存状态。首次发送和创建目标时一起写入会话；不因此修改全局默认。\n- 正文和附件仍保存在原有草稿里，不把工作模式伪装成纯文本、Skill 或插件引用。\n- 每次运行记录当时的模式与配置修订号，历史展示读取真实运行状态，不使用当前菜单值回填。\n\n运行时可以把两类状态计算成现有工具检查器的只读或自动执行限制；内部计算结果不是第三份可写会话状态。必须同时更新给模型的工具与模式说明，以及真正拦截工具的检查器。\n\n## 4. 一次操作…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 57.18"
+          },
+          {
+            "path": "docs/superpowers/specs/2026-09-17-architecture-documentation-closeout-design.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 33,
+            "readLine": 17,
+            "text": "# 架构重构文档收口设计\n\n> 日期：2026-09-17\n>\n> 状态：已实施（可交互架构图由维护者后续单独调整）\n>\n> 范围：只修订文档，不修改代码、协议、数据库或开发数据\n\n## 1. 背景\n\n按业务域重组代码、收窄公开 API、拆分运行时职责以及删除兼容层的工作已经完成，代码现状不再处于“等待下一阶段”的迁移中。\n\n当前文档仍混合了三类内容：\n\n1. 描述现在如何运行的权威文档；\n2. 记录 Stage 0–8 如何实施的历史计划与设计；\n3. 已经过时的迁移措辞或调用示例。\n\n如果继续把这三类内容放在同一层级，后续维护者很难判断应该相信哪一份文档，也容易把已经删除的接口或兼容策略重新带回代码。\n\n## 2. 目标\n\n本次收口要得到一套面向长期维护的文档结构：\n\n- 从文档首页可以直接找到“系统现在如何运行”的权威说明；\n- 用一份收口记录说明 Stage 0–8 已完成、最终边界是什么、由哪些检查长期守护；\n- 校准核心架构文档，使名称、调用入口、协议版本和职责边界与当前代码一致；\n- 历史计划继续可查，但明确它们是决策和实施记录，不再作为当前规范；\n- 后续新增功能时，维护者能够判断代码应该进入哪个层、通过哪个入口返回结果。\n\n## 3. 不在本次范围内\n\n- 不修改任何生产代码、测试代码、协议版本、数据库 schema 或构建配…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 56.59"
+          },
+          {
+            "path": "docs/plans/2026-08-23-documentation-architecture-and-gaps.md",
+            "line": 157,
+            "startLine": 157,
+            "endLine": 157,
+            "readLine": 157,
+            "text": "",
+            "truncated": false,
+            "evidence": "native_locator_only",
+            "notice": "score 56.43"
+          },
+          {
+            "path": "packages/plugins/src/__test__/helpers/README.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 20,
+            "readLine": 10,
+            "text": "# 插件测试帮助代码\n\n构造测试所需的原生插件应用及历史界面记录。\n\n## 主要文件与目录\n\n- [native-app.ts](./native-app.ts)\n- [native-ui.ts](./native-ui.ts)\n\n## 入口与处理步骤\n\n测试先创建所需插件目录，再执行加载、安装或历史兼容检查，最后由用例清理临时目录。\n\n## 状态放在哪里\n\n仅保存测试临时资源，不参与生产导出。\n\n## 新代码与测试\n\n需要被多个测试复用的构造逻辑放在这里；测试断言仍放在被测目录的 `__test__/`。",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 53.77"
+          }
+        ],
+        "truncated": false,
+        "note": "片段已核对当前原文；需要补读时以 readLine 为中心，Read offset=max(1,readLine-12)、limit=25。未知行号先 Grep；证据不足继续 Grep/Read。"
+      },
+      "beforeScore": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 2,
+        "fileRecall": 0,
+        "topFiles": [
+          "docs/superpowers/specs/2026-09-17-architecture-documentation-closeout-design.md",
+          "docs/superpowers/specs/2026-10-20-approval-presets-and-plan-mode-design.md",
+          "docs/plans/2026-08-23-documentation-architecture-and-gaps.md",
+          "packages/plugins/src/__test__/helpers/README.md"
+        ],
+        "evidenceFiles": []
+      },
+      "parserAndLocationOnlyScore": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 2,
+        "fileRecall": 0,
+        "topFiles": [
+          "docs/superpowers/specs/2026-09-17-architecture-documentation-closeout-design.md",
+          "docs/superpowers/specs/2026-10-20-approval-presets-and-plan-mode-design.md",
+          "docs/plans/2026-08-23-documentation-architecture-and-gaps.md",
+          "packages/plugins/src/__test__/helpers/README.md"
+        ],
+        "evidenceFiles": []
+      },
+      "afterScore": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 2,
+        "fileRecall": 0,
+        "topFiles": [
+          "docs/superpowers/specs/2026-09-17-architecture-documentation-closeout-design.md",
+          "docs/superpowers/specs/2026-10-20-approval-presets-and-plan-mode-design.md",
+          "docs/plans/2026-08-23-documentation-architecture-and-gaps.md",
+          "packages/plugins/src/__test__/helpers/README.md"
+        ],
+        "evidenceFiles": []
+      }
+    },
+    {
+      "taskId": "docs-plugin-process",
+      "before": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "docs/plugin-marketplace.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 17,
+            "text": "# 插件市场\n\n> 状态：当前实现与使用说明。\n\n插件页的“浏览市场”从登记的 HTTPS 来源读取目录，用户选择插件后，宿主下载固定版本的 ZIP、校验内容，再进入现有 Native Plugin 安装流程。\n\n## 官方来源\n\n- [源码与发布规则](https://github.com/rzx007/vykor-plugins)。\n- [市场目录](https://rzx007.github.io/vykor-plugins/marketplace.json)。\n- [版本安装包](https://github.com/rzx007/vykor-plugins/releases)。\n\n首批插件为 Excalidraw 1.0.0、Text Inspector 1.2.2、Notes 1.0.2。普通用户不需要 GitHub 登录、Git 或 npm；Excalidraw 运行服务需要 Node.js 24 或更新版本。\n\n在插件页搜索、查看详情后点击安装。已有本地或其他来源的同 ID 插件会显示关联或更换来源入口，并明确确认替换。安装完成后可新建对话使用；不会自动向聊天发送消息。\n\n市场和已安装列表共用现有的图标、列表行与间距，描述只显示一行，超出部分省略，鼠标悬停可查看完整描述；宽窗口双列、窄窗口单列。点击名称进入共用的插件详情页，返回保留搜索；版本、来源、兼容要求与许可证放在详情中。没有详细介绍时不重复简介，也不显示占位内容。安装成功使用轻量提示，原安装回执仍可在对应插件详情中查看，不把其他来源同 ID 插件的回执混在一起。",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 45.12"
+          },
+          {
+            "path": "docs/superpowers/specs/2026-10-02-native-plugin-ui-design.md",
+            "line": 435,
+            "startLine": 435,
+            "endLine": 447,
+            "text": "\n\nactiveActionRunId 只表示有一项执行中的操作，不是新的业务状态。最后一次 Run 的状态决定成功、失败或结果不确定。\n\n### 12.2 业务状态与可用性分离\n\n可用性由当前插件和 Session 事实计算，不写成永久业务终态：\n\n返回值为 `{ code, canRender, canInvoke }`。canInvoke 为 true 必须同时满足 canRender、实例 open、会话可变、Runtime 准备成功和没有未知结果保护。plugin-disabled、permission-missing、snapshot-missing、snapshot-changed、invalid-definition 的 canRender / canInvoke 都为 false。Session 归档或 Tool Host 暂不可用但快照仍有效时，可以 canRender=true、canInvoke=false，以只读方式查看既有数据。\n\n后台读取设置、安装记录、文档与准备 Runtime 的整段流程使用现有 operation gate（运行与维护互斥入口）。reload、卸载或全局维护持有维护入口时，UI 读取不能重新创建 Runtime；daemon 尚未就绪或已开始关闭时也不准备 Runtime，不返回可显示的 HTML。已进入的读取在关闭时排空并清理，Host 真正启动失败的精确快照只读回退仅适用于 daemon 正常运行期间。关闭流程先封住新入口、取消并等待活动 Run 结算，再等待既有读取与执行租约释放；动作执行租约仍覆盖权限等待、工具调用和原子结算。\n\n实例查找只在请求所属会话的 Parts 内进行，不扫描其他会话。缺少组件、工具归属…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 45.07"
+          },
+          {
+            "path": "packages/agent-runtime/src/node/plugins/native-tools/README.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 19,
+            "text": "# 本地插件工具进程\n\n在独立的 Node 进程中加载插件工具，处理注册、调用、取消和日志，再将结果返回运行宿主。\n\n| 文件 | 用途 |\n| --- | --- |\n| `activate.ts` | 启用插件工具，向运行注册表提交结果 |\n| `tool-host.ts` | `NativeToolHost`，启动子进程并管理请求、超时和关闭 |\n| `host-entry.mjs` | 子进程入口，加载插件模块并执行工具 |\n| `protocol.ts` | 宿主与子进程间的注册、调用、取消和日志消息约定 |\n| `guard.ts` | 调用保护、参数与资源限制，以及审计事件 |\n| `status.ts` | 记录和读取本地工具运行状态 |\n| `__test__/` | 宿主协议、插件数据、实际插件和插件开发流程测试 |\n\n启用时创建宿主并捕获注册结果，调用时先通过保护检查，再把请求交给子进程，收到结果后按请求编号返回。进程和待处理请求由宿主持有，插件持久数据由授权的数据目录保存。\n\n`tool-host.ts` 与 `host-entry.mjs` 保持相邻，构建时将进程入口复制到发布目录。迁移本目录时需要同时检查构建脚本和桌面打包引用。新增进程协议或保护规则放在这里，测试放在同层 `__test__/`。\n\n官方插件由 `vykor-plugins` 仓库独立测试和发布。需要用真实“研究与写作”插件检查宿主兼容性时，设置测试变量 `VYKOR_OFFICIAL_PLUGINS_DIR` 指向其 `plugins` 目录，再运行 `__test__/knowledge-work.test.ts`。未设置时…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 40.71"
+          },
+          {
+            "path": "packages/server/src/application/visual-tools/README.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 27,
+            "text": "# 图像工具接入\n\n提供图片生成、图片转文字、远程图片读取与取消处理。\n\n## 入口与流程\n\n工具工厂校验请求并调用图像能力；远程图片读取器检查地址与重定向；取消范围辅助函数将宿主取消接到当前工具调用。\n\n## 状态归属\n\n生成文件和读取结果由工具及其宿主保存，取消监听只属于当前调用并在结束时释放。\n\n## 主要文件\n\n| 文件 | 主要接口或用途 |\n| --- | --- |\n| [daemon-image-generation-tool.ts](./daemon-image-generation-tool.ts) | `DaemonImageGenerationToolOptions`、`createDaemonImageGenerationTool` |\n| [daemon-image-to-text-tool.ts](./daemon-image-to-text-tool.ts) | `createDaemonImageToTextTool` |\n| [index.ts](./index.ts) | 汇总本分类的公开接口 |\n| [remote-image-source.ts](./remote-image-source.ts) | `ImportedImageSource`、`downloadRemoteImage`、`isPublicAddress` |\n| [tool-abort-scope.ts](./tool-abort-scope.ts) | `createToolAbortScope` |\n\n## 测试与维护\n\n图像工具组装、下载规则和取消衔接放在这里，附件授权读取放在 attachments/tools。\n\n测试放在本分类同层的 `__test__/`；覆盖多个子分类的测试放在共同上层的 `__test__/`。迁移文件时同步导入、公开入口、文档链接与旧引用清单。",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 40.68"
+          }
+        ],
+        "truncated": true,
+        "note": "保留 XERJ 原生排序与片段，正文已与当前项目文件核对；索引仍可能遗漏新文件，证据不足时继续 Grep/Read。"
+      },
+      "after": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "docs/plugin-marketplace.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 17,
+            "readLine": 9,
+            "text": "# 插件市场\n\n> 状态：当前实现与使用说明。\n\n插件页的“浏览市场”从登记的 HTTPS 来源读取目录，用户选择插件后，宿主下载固定版本的 ZIP、校验内容，再进入现有 Native Plugin 安装流程。\n\n## 官方来源\n\n- [源码与发布规则](https://github.com/rzx007/vykor-plugins)。\n- [市场目录](https://rzx007.github.io/vykor-plugins/marketplace.json)。\n- [版本安装包](https://github.com/rzx007/vykor-plugins/releases)。\n\n首批插件为 Excalidraw 1.0.0、Text Inspector 1.2.2、Notes 1.0.2。普通用户不需要 GitHub 登录、Git 或 npm；Excalidraw 运行服务需要 Node.js 24 或更新版本。\n\n在插件页搜索、查看详情后点击安装。已有本地或其他来源的同 ID 插件会显示关联或更换来源入口，并明确确认替换。安装完成后可新建对话使用；不会自动向聊天发送消息。\n\n市场和已安装列表共用现有的图标、列表行与间距，描述只显示一行，超出部分省略，鼠标悬停可查看完整描述；宽窗口双列、窄窗口单列。点击名称进入共用的插件详情页，返回保留搜索；版本、来源、兼容要求与许可证放在详情中。没有详细介绍时不重复简介，也不显示占位内容。安装成功使用轻量提示，原安装回执仍可在对应插件详情中查看，不把其他来源同 ID 插件的回执混在一起。",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 45.12"
+          },
+          {
+            "path": "docs/superpowers/specs/2026-10-02-native-plugin-ui-design.md",
+            "line": 435,
+            "startLine": 435,
+            "endLine": 447,
+            "readLine": 441,
+            "text": "\n\nactiveActionRunId 只表示有一项执行中的操作，不是新的业务状态。最后一次 Run 的状态决定成功、失败或结果不确定。\n\n### 12.2 业务状态与可用性分离\n\n可用性由当前插件和 Session 事实计算，不写成永久业务终态：\n\n返回值为 `{ code, canRender, canInvoke }`。canInvoke 为 true 必须同时满足 canRender、实例 open、会话可变、Runtime 准备成功和没有未知结果保护。plugin-disabled、permission-missing、snapshot-missing、snapshot-changed、invalid-definition 的 canRender / canInvoke 都为 false。Session 归档或 Tool Host 暂不可用但快照仍有效时，可以 canRender=true、canInvoke=false，以只读方式查看既有数据。\n\n后台读取设置、安装记录、文档与准备 Runtime 的整段流程使用现有 operation gate（运行与维护互斥入口）。reload、卸载或全局维护持有维护入口时，UI 读取不能重新创建 Runtime；daemon 尚未就绪或已开始关闭时也不准备 Runtime，不返回可显示的 HTML。已进入的读取在关闭时排空并清理，Host 真正启动失败的精确快照只读回退仅适用于 daemon 正常运行期间。关闭流程先封住新入口、取消并等待活动 Run 结算，再等待既有读取与执行租约释放；动作执行租约仍覆盖权限等待、工具调用和原子结算。\n\n实例查找只在请求所属会话的 Parts 内进行，不扫描其他会话。缺少组件、工具归属…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 45.07"
+          },
+          {
+            "path": "packages/agent-runtime/src/node/plugins/native-tools/README.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 19,
+            "readLine": 10,
+            "text": "# 本地插件工具进程\n\n在独立的 Node 进程中加载插件工具，处理注册、调用、取消和日志，再将结果返回运行宿主。\n\n| 文件 | 用途 |\n| --- | --- |\n| `activate.ts` | 启用插件工具，向运行注册表提交结果 |\n| `tool-host.ts` | `NativeToolHost`，启动子进程并管理请求、超时和关闭 |\n| `host-entry.mjs` | 子进程入口，加载插件模块并执行工具 |\n| `protocol.ts` | 宿主与子进程间的注册、调用、取消和日志消息约定 |\n| `guard.ts` | 调用保护、参数与资源限制，以及审计事件 |\n| `status.ts` | 记录和读取本地工具运行状态 |\n| `__test__/` | 宿主协议、插件数据、实际插件和插件开发流程测试 |\n\n启用时创建宿主并捕获注册结果，调用时先通过保护检查，再把请求交给子进程，收到结果后按请求编号返回。进程和待处理请求由宿主持有，插件持久数据由授权的数据目录保存。\n\n`tool-host.ts` 与 `host-entry.mjs` 保持相邻，构建时将进程入口复制到发布目录。迁移本目录时需要同时检查构建脚本和桌面打包引用。新增进程协议或保护规则放在这里，测试放在同层 `__test__/`。\n\n官方插件由 `vykor-plugins` 仓库独立测试和发布。需要用真实“研究与写作”插件检查宿主兼容性时，设置测试变量 `VYKOR_OFFICIAL_PLUGINS_DIR` 指向其 `plugins` 目录，再运行 `__test__/knowledge-work.test.ts`。未设置时…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 40.71"
+          },
+          {
+            "path": "packages/server/src/application/visual-tools/README.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 27,
+            "readLine": 14,
+            "text": "# 图像工具接入\n\n提供图片生成、图片转文字、远程图片读取与取消处理。\n\n## 入口与流程\n\n工具工厂校验请求并调用图像能力；远程图片读取器检查地址与重定向；取消范围辅助函数将宿主取消接到当前工具调用。\n\n## 状态归属\n\n生成文件和读取结果由工具及其宿主保存，取消监听只属于当前调用并在结束时释放。\n\n## 主要文件\n\n| 文件 | 主要接口或用途 |\n| --- | --- |\n| [daemon-image-generation-tool.ts](./daemon-image-generation-tool.ts) | `DaemonImageGenerationToolOptions`、`createDaemonImageGenerationTool` |\n| [daemon-image-to-text-tool.ts](./daemon-image-to-text-tool.ts) | `createDaemonImageToTextTool` |\n| [index.ts](./index.ts) | 汇总本分类的公开接口 |\n| [remote-image-source.ts](./remote-image-source.ts) | `ImportedImageSource`、`downloadRemoteImage`、`isPublicAddress` |\n| [tool-abort-scope.ts](./tool-abort-scope.ts) | `createToolAbortScope` |\n\n## 测试与维护\n\n图像工具组装、下载规则和取消衔接放在这里，附件授权读取放在 attachments/tools。\n\n测试放在本分类同层的 `__test__/`；覆盖多个子分类的测试放在共同上层的 `__test__/`。迁移文件时同步导入、公开入口、文档链接与旧引用清单。",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 40.68"
+          },
+          {
+            "path": "docs/plugin-system.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 1,
+            "readLine": 1,
+            "text": "",
+            "truncated": false,
+            "evidence": "native_locator_only",
+            "notice": "score 40.54"
+          }
+        ],
+        "truncated": false,
+        "note": "片段已核对当前原文；需要补读时以 readLine 为中心，Read offset=max(1,readLine-12)、limit=25。未知行号先 Grep；证据不足继续 Grep/Read。"
+      },
+      "beforeScore": {
+        "fileHit": true,
+        "evidenceHit": false,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "docs/plugin-marketplace.md",
+          "docs/superpowers/specs/2026-10-02-native-plugin-ui-design.md",
+          "packages/agent-runtime/src/node/plugins/native-tools/README.md",
+          "packages/server/src/application/visual-tools/README.md"
+        ],
+        "evidenceFiles": []
+      },
+      "parserAndLocationOnlyScore": {
+        "fileHit": true,
+        "evidenceHit": false,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "docs/plugin-marketplace.md",
+          "docs/superpowers/specs/2026-10-02-native-plugin-ui-design.md",
+          "packages/agent-runtime/src/node/plugins/native-tools/README.md",
+          "packages/server/src/application/visual-tools/README.md",
+          "docs/plugin-system.md"
+        ],
+        "evidenceFiles": []
+      },
+      "afterScore": {
+        "fileHit": true,
+        "evidenceHit": true,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "docs/plugin-marketplace.md",
+          "docs/superpowers/specs/2026-10-02-native-plugin-ui-design.md",
+          "packages/agent-runtime/src/node/plugins/native-tools/README.md",
+          "packages/server/src/application/visual-tools/README.md",
+          "docs/plugin-system.md"
+        ],
+        "evidenceFiles": [
+          "packages/agent-runtime/src/node/plugins/native-tools/README.md"
+        ]
+      }
+    },
+    {
+      "taskId": "docs-attachment-routing",
+      "before": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "packages/coordinator/src/definitions/builtin.ts",
+            "line": 527,
+            "startLine": 527,
+            "endLine": 532,
+            "text": "export function getAgentDefinition(\n  name: string,\n  agents: readonly AgentDefinition[] = getBuiltinAgentDefinitions(),\n): AgentDefinition | undefined {\n  return agents.find((agent) => agent.name === name);\n}",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 64.45"
+          }
+        ],
+        "truncated": true,
+        "note": "保留 XERJ 原生排序与片段，正文已与当前项目文件核对；索引仍可能遗漏新文件，证据不足时继续 Grep/Read。"
+      },
+      "after": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "packages/services/src/session-runtime/__test__/store.test.ts",
+            "line": 59,
+            "startLine": 59,
+            "endLine": 77,
+            "readLine": 68,
+            "text": "function createReadyAttachment(\n  store: SessionStore,\n  id: string,\n  sizeBytes = 100,\n): void {\n  store.attachments.createImportingAttachment({\n    id,\n    displayName: `${id}.png`,\n    declaredMediaType: \"image/png\",\n    stagingName: `${id}.part`,\n    createdAt: 10,\n  });\n  store.attachments.markAttachmentReady(id, {\n    sha256: \"a\".repeat(64),\n    sizeBytes,\n    mediaType: \"image/png\",\n    updatedAt: 11,\n  });\n}",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 69.80"
+          },
+          {
+            "path": "packages/server/src/application/session/execution/session-run-executor.ts",
+            "line": 60,
+            "startLine": 60,
+            "endLine": 102,
+            "readLine": 81,
+            "text": "export interface SessionRunExecutorContext {\n  data: Pick<\n    SessionStore,\n    | \"conversations\"\n    | \"conversationTransactions\"\n    | \"permissions\"\n    | \"runs\"\n    | \"sessions\"\n    | \"transaction\"\n  >;\n  attachments: Pick<\n    SessionStore[\"attachments\"],\n    | \"acquireAttachmentLeases\"\n    | \"renewAttachmentLeases\"\n    | \"releaseAttachmentLeases\"\n  >;\n  goals: Pick<GoalOperations, \"getGoal\">;\n  checkGoalExecution?(goalId: string, objectiveVersion: number): void;\n  checkGoalRunExecution?(\n    goalId: string,\n    objectiveVersion: number,\n    runId: string,\n    boundary: string,\n    tool?: { toolName: string; toolAttemptId: string },\n  ): void;\n  readGoalSnapshot?(\n    goalId: string,\n    objectiveVersion: number,\n    runId: string,\n  ): Promise<GoalReadSnapshot>;\n  submitGoalUpdate?(\n    goalId: string,\n    objectiveVersion: number,\n    runId: string,\n    input: Record<string, unknown>,\n  ): Promise<{ recorded: true }>;\n  agentPool: Pick<\n    AgentPool,\n    \"configured\" | \"acquireHostedSession\" | \"close\" | \"closeIfStale\"\n  >;\n  events: Pick<SessionEventPublisher, \"checkpoint\" | \"publishSince\">;\n  transcriptProjection: Pick<\n    Session",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 67.54"
+          },
+          {
+            "path": "packages/coordinator/src/definitions/builtin.ts",
+            "line": 527,
+            "startLine": 527,
+            "endLine": 532,
+            "readLine": 529,
+            "text": "export function getAgentDefinition(\n  name: string,\n  agents: readonly AgentDefinition[] = getBuiltinAgentDefinitions(),\n): AgentDefinition | undefined {\n  return agents.find((agent) => agent.name === name);\n}",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 64.45"
+          },
+          {
+            "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+            "line": 47,
+            "startLine": 47,
+            "endLine": 70,
+            "readLine": 58,
+            "text": "  async route(\n    input: RouteAttachmentBatchInput,\n  ): Promise<NativeAttachmentRouteResult> {\n    const attachments = [...input.attachments].sort(\n      (left, right) => left.seq - right.seq,\n    );\n    const assetIds = attachments.map((item) => item.assetId);\n    throwIfAborted(input.signal, assetIds);\n\n    const nativeImageAvailable =\n      input.modelCapabilities.image === \"native\" &&\n      input.providerCapabilities.image === \"native\";\n    const availableTools = new Set(input.availableTools ?? []);\n    const decisions: AttachmentRoutingDecision[] = attachments.map((attachment) => {\n      const common = {\n        assetId: attachment.assetId,\n        intent: attachment.intent,\n        mediaType: attachment.mediaType,\n      };\n      const kind = classifyAttachmentCandidate(attachment);\n      const format=officeFormat(attachment.displayName);\n      if(format && attachment.mediaType===OFFICE_MEDIA_TYPES[format]) {\n        if(!availableTools.has(\"Read\"))return {...common,route:\"blocked\",reason:\"attachment_document_unsupported\"};\n        return {...common,route:\"text_resource\",complete:false,resourceUri:attachmentResourceUri(attachment.assetId,attachment.disp",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 61.73"
+          },
+          {
+            "path": "packages/server/src/application/session/execution/__test__/session-run-executor.test.ts",
+            "line": 896,
+            "startLine": 896,
+            "endLine": 911,
+            "readLine": 903,
+            "text": "function autoSelectionFixture(pluginId: string | null = \"office\") {\n  const candidates = pluginId === null ? [] : [\"office\", \"knowledge\"].map(pluginId => ({ pluginId,\n    displayName: pluginId, description: pluginId, version: \"1\", behaviorDigest: `${pluginId}-digest` }));\n  const store = createStore({ metadata: { pluginScope: { scopeVersion: 2, source: \"auto\",\n    pluginIds: candidates.map(candidate => candidate.pluginId), candidates } } });\n  const controller = new AbortController();\n  const registry = new ToolRegistry();\n  for (const [name, owner] of [[\"Public\", undefined], [\"Office\", \"office\"], [\"Knowledge\", \"knowledge\"]] as const) {\n    registry.register({ name, description: name, inputSchema: {}, execute: async () => ({ content: [] }) }, owner ? { kind: \"plugin\", id: owner } : { kind: \"builtin\" });\n  }\n  let requests = 0;\n  const preparationFailures = new Set<string>();\n  const observed: unknown[][] = [];\n  const executor = new SessionRunExecutor({\n    data: store.data, attachments: store.attachments, goals: store.goals,\n    agentPool: { configured: true, acquireHostedSession: async function(...args:any[]){return hostedAgentFixture(await (this.acquireSession as",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 58.71"
+          }
+        ],
+        "truncated": false,
+        "note": "片段已核对当前原文；需要补读时以 readLine 为中心，Read offset=max(1,readLine-12)、limit=25。未知行号先 Grep；证据不足继续 Grep/Read。"
+      },
+      "beforeScore": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [
+          "packages/coordinator/src/definitions/builtin.ts"
+        ],
+        "evidenceFiles": []
+      },
+      "parserAndLocationOnlyScore": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [
+          "packages/services/src/session-runtime/__test__/store.test.ts",
+          "packages/server/src/application/session/execution/session-run-executor.ts",
+          "packages/coordinator/src/definitions/builtin.ts",
+          "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "packages/server/src/application/session/execution/__test__/session-run-executor.test.ts"
+        ],
+        "evidenceFiles": []
+      },
+      "afterScore": {
+        "fileHit": false,
+        "evidenceHit": false,
+        "relevantFilesFound": 0,
+        "relevantFilesTotal": 1,
+        "fileRecall": 0,
+        "topFiles": [
+          "packages/services/src/session-runtime/__test__/store.test.ts",
+          "packages/server/src/application/session/execution/session-run-executor.ts",
+          "packages/coordinator/src/definitions/builtin.ts",
+          "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "packages/server/src/application/session/execution/__test__/session-run-executor.test.ts"
+        ],
+        "evidenceFiles": []
+      }
+    },
+    {
+      "taskId": "docs-compaction",
+      "before": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "packages/core/src/engine/compaction/README.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 19,
+            "text": "# 历史消息压缩\n\n当长对话接近模型的上下文容量时，缩减旧消息，同时尽量保留最近工具调用和继续任务所需的信息。\n\n| 文件 | 用途 |\n| --- | --- |\n| `compact-service.ts` | `CompactService` 入口，选择压缩步骤、处理重试并报告进度 |\n| `compact-types.ts` | 压缩来源、进度、检查点、补充上下文和摘要客户端接口 |\n| `compact-messages.ts` | 估算消息大小，清理旧工具输出、截断长内容并保护工具调用与结果的配对 |\n| `compact-prompt.ts` | 构造摘要提示，提取近期文件与工具工作记录 |\n| `compact-summary.ts` | 收集和格式化模型摘要，识别上下文超长错误 |\n| `compact-continuity.ts` | 保留继续任务所需的原文片段，管理压缩前后的衔接信息 |\n| `__test__/` | 压缩阶段、回退、取消与上下文保留测试 |\n\n`QueryEngine` 在模型请求前调用自动压缩，也可通过 `compact()` 手动触发。服务先清理旧工具输出和截短长文本，再按需请求模型摘要；没有摘要客户端或摘要失败时，使用简单压缩作为后备处理。压缩结果交回引擎替换历史。\n\n压缩阈值、连续失败次数和检查点保存在 `CompactService` 实例中。摘要客户端与额外任务上下文由调用方注入。新增压缩规则放在对应文件，测试放在同层 `__test__/`；完整设计见 [上下文压缩说明](../../../../../docs/compact-service-design.md)。\n\n日常续做的…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 58.54"
+          },
+          {
+            "path": "packages/core/src/engine/README.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 22,
+            "text": "# 查询执行\n\n`QueryEngine` 是模型与工具循环的入口。它接收用户消息，维护当前历史，组织压缩、模型请求、工具调用和结束处理，并通过 `submitMessage()` 的异步事件流将进度与结果交给调用方。\n\n## 文件与子目录\n\n| 位置 | 用途 |\n| --- | --- |\n| `query-engine.ts` | 查询循环、请求配置应用、历史维护、手动工具执行与压缩入口 |\n| `turn-context.ts` | 固定本轮请求的消息与工具列表，拼接系统提示和记忆提醒 |\n| `index.ts` | `@vykor/core/engine` 公开入口 |\n| [model/](./model/README.md) | 执行模型请求、处理流式响应和重试 |\n| [tools/](./tools/README.md) | 准备、授权和执行工具调用 |\n| [results/](./results/README.md) | 保存有容量上限的 SDK 结果引用，统一文本分页和字面检索 |\n| [compaction/](./compaction/README.md) | 缩减历史消息并保留继续任务所需的线索 |\n| [trajectory/](./trajectory/README.md) | 根据工具结果生成后续行动提示 |\n| [usage/](./usage/README.md) | 累计模型请求用量 |\n| `__test__/` | 查询循环、请求配置、记忆注入、目标上下文等整体流程测试 |\n\n## 状态与调用关系\n\n`QueryEngine` 实例保存消息历史、当前模型和提示词、最近工具结果以及累计用量。每轮先准备历史和请求，再调用 `model/`；出现工具调用时交给 `tools/`，将结果写入历史后继续。`compaction/` 返回缩减后的历史，由引…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 54.50"
+          },
+          {
+            "path": "docs/superpowers/specs/2026-08-29-conversation-attachments-stage-7-design.md",
+            "line": 25,
+            "startLine": 25,
+            "endLine": 64,
+            "text": "没有足够信息找到它们。\n\n### 附件目录\n\n压缩前由 session application 层查询当前会话的持久附件引用和 representation，生成有上限的结构化附件目录。每项至少包含：\n\n- `assetId`；\n- 来源 input ID 和会话内顺序；\n- 显示名称、MIME、大小和附件意图；\n- 当前可用状态；\n- 资源 URI；\n- 已完成 representation 的类型、处理器、处理器版本和有界预览；\n- 推荐的继续访问方式，例如 `Read attachment://...` 或 `ImageToText`。\n\n目录只记录仍被会话引用的资产。同一个 asset 在多个 input 中出现时保留来源关系，但在摘要 prompt 中可以合并重复的资源说明。\n\n### 压缩规则\n\n运行流程：\n\n```text\n持久附件引用\n    ↓\n查询资产与已完成 representation\n    ↓\n生成有界附件目录\n    ↓\nCompactService 把目录加入摘要 prompt\n    ↓\n摘要保留资源身份和继续访问方式\n    ↓\n原 input attachment refs 保持不变\n```\n\n- 不向摘要请求传入 Blob、Base64 或完整大文本。\n- 已有 OCR 可以作为 OCR 预览出现，并明确标注来源、处理器和版本。\n- 没有 OCR 的图片只说明可以调用 `ImageToText`，不得描述图片内容。\n- 文本只放短预览；完整内容继续通过 `attachment://` 分段读取。\n- 被删除、缺失或损坏的资产保留名称和错误状态，不能声称其仍然可读。\n- 目录总项数、单项预览和总字符数都有硬上限；超限…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 51.91"
+          },
+          {
+            "path": "packages/core/src/engine/compaction/compact-service.ts",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 31,
+            "text": "/**\n * CompactService —— 对话上下文压缩服务\n *\n * 长会话中工具输出、文件内容会迅速占满模型 context window。本服务在\n * QueryEngine 每轮调用模型前自动触发（也可由 `/compact` 手动触发），\n * 按「先便宜后昂贵」的分层策略缩小历史，同时尽量保留任务连续性信息。\n *\n * 压缩阶梯（autoCompact）：\n *   1. microCompact      —— 清空旧工具结果正文（零模型调用）\n *   2. tryContextCollapse —— 对超长文本做头尾截断（零模型调用）\n *   3. llmCompact         —— 用 LLM 把旧消息摘要成一条 summary\n *   4. simpleCompact      —— 无 client / LLM 失败时的占位兜底\n *\n * 对齐 Python vykor v0.1.9 services/compact。\n */\nimport type { Message, ToolUseBlock } from \"@vykor/agent-contracts\";\nimport type { HookExecutor as IHookExecutor } from \"@vykor/agent-contracts\";\nimport { DEFAULT_VISION_IMAGE_TOKEN_ESTIMATE } from \"../../constants/vision-tokens\";\nimport { isAgentExecutionLimitError } from \"@vykor/agent-contracts\";\nimport { isModelAttemptControlFailure } from \"../model/model-attempt-control\";\nimport {\n  createCompactBoundaryMarker,\n  estimateMessageTokens,\n  microCompactMessages,\n  replaceImagesWithPlaceholders,\n  simpleCompactMessages,\n  splitMessagesPreservingToolPairs,\n  truncateHeadForPtlRetry,\n  tryContextCollapseMessages,\n} from \"./compact-messages\";\nimport { buildCompactPrompt, deriveWorkLog, extractRecentFiles } from \"./com",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 51.86"
+          }
+        ],
+        "truncated": true,
+        "note": "保留 XERJ 原生排序与片段，正文已与当前项目文件核对；索引仍可能遗漏新文件，证据不足时继续 Grep/Read。"
+      },
+      "after": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "packages/core/src/engine/compaction/README.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 19,
+            "readLine": 10,
+            "text": "# 历史消息压缩\n\n当长对话接近模型的上下文容量时，缩减旧消息，同时尽量保留最近工具调用和继续任务所需的信息。\n\n| 文件 | 用途 |\n| --- | --- |\n| `compact-service.ts` | `CompactService` 入口，选择压缩步骤、处理重试并报告进度 |\n| `compact-types.ts` | 压缩来源、进度、检查点、补充上下文和摘要客户端接口 |\n| `compact-messages.ts` | 估算消息大小，清理旧工具输出、截断长内容并保护工具调用与结果的配对 |\n| `compact-prompt.ts` | 构造摘要提示，提取近期文件与工具工作记录 |\n| `compact-summary.ts` | 收集和格式化模型摘要，识别上下文超长错误 |\n| `compact-continuity.ts` | 保留继续任务所需的原文片段，管理压缩前后的衔接信息 |\n| `__test__/` | 压缩阶段、回退、取消与上下文保留测试 |\n\n`QueryEngine` 在模型请求前调用自动压缩，也可通过 `compact()` 手动触发。服务先清理旧工具输出和截短长文本，再按需请求模型摘要；没有摘要客户端或摘要失败时，使用简单压缩作为后备处理。压缩结果交回引擎替换历史。\n\n压缩阈值、连续失败次数和检查点保存在 `CompactService` 实例中。摘要客户端与额外任务上下文由调用方注入。新增压缩规则放在对应文件，测试放在同层 `__test__/`；完整设计见 [上下文压缩说明](../../../../../docs/compact-service-design.md)。\n\n日常续做的…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 58.54"
+          },
+          {
+            "path": "packages/core/src/engine/README.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 22,
+            "readLine": 11,
+            "text": "# 查询执行\n\n`QueryEngine` 是模型与工具循环的入口。它接收用户消息，维护当前历史，组织压缩、模型请求、工具调用和结束处理，并通过 `submitMessage()` 的异步事件流将进度与结果交给调用方。\n\n## 文件与子目录\n\n| 位置 | 用途 |\n| --- | --- |\n| `query-engine.ts` | 查询循环、请求配置应用、历史维护、手动工具执行与压缩入口 |\n| `turn-context.ts` | 固定本轮请求的消息与工具列表，拼接系统提示和记忆提醒 |\n| `index.ts` | `@vykor/core/engine` 公开入口 |\n| [model/](./model/README.md) | 执行模型请求、处理流式响应和重试 |\n| [tools/](./tools/README.md) | 准备、授权和执行工具调用 |\n| [results/](./results/README.md) | 保存有容量上限的 SDK 结果引用，统一文本分页和字面检索 |\n| [compaction/](./compaction/README.md) | 缩减历史消息并保留继续任务所需的线索 |\n| [trajectory/](./trajectory/README.md) | 根据工具结果生成后续行动提示 |\n| [usage/](./usage/README.md) | 累计模型请求用量 |\n| `__test__/` | 查询循环、请求配置、记忆注入、目标上下文等整体流程测试 |\n\n## 状态与调用关系\n\n`QueryEngine` 实例保存消息历史、当前模型和提示词、最近工具结果以及累计用量。每轮先准备历史和请求，再调用 `model/`；出现工具调用时交给 `tools/`，将结果写入历史后继续。`compaction/` 返回缩减后的历史，由引…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 54.50"
+          },
+          {
+            "path": "docs/superpowers/specs/2026-08-29-conversation-attachments-stage-7-design.md",
+            "line": 25,
+            "startLine": 25,
+            "endLine": 64,
+            "readLine": 44,
+            "text": "没有足够信息找到它们。\n\n### 附件目录\n\n压缩前由 session application 层查询当前会话的持久附件引用和 representation，生成有上限的结构化附件目录。每项至少包含：\n\n- `assetId`；\n- 来源 input ID 和会话内顺序；\n- 显示名称、MIME、大小和附件意图；\n- 当前可用状态；\n- 资源 URI；\n- 已完成 representation 的类型、处理器、处理器版本和有界预览；\n- 推荐的继续访问方式，例如 `Read attachment://...` 或 `ImageToText`。\n\n目录只记录仍被会话引用的资产。同一个 asset 在多个 input 中出现时保留来源关系，但在摘要 prompt 中可以合并重复的资源说明。\n\n### 压缩规则\n\n运行流程：\n\n```text\n持久附件引用\n    ↓\n查询资产与已完成 representation\n    ↓\n生成有界附件目录\n    ↓\nCompactService 把目录加入摘要 prompt\n    ↓\n摘要保留资源身份和继续访问方式\n    ↓\n原 input attachment refs 保持不变\n```\n\n- 不向摘要请求传入 Blob、Base64 或完整大文本。\n- 已有 OCR 可以作为 OCR 预览出现，并明确标注来源、处理器和版本。\n- 没有 OCR 的图片只说明可以调用 `ImageToText`，不得描述图片内容。\n- 文本只放短预览；完整内容继续通过 `attachment://` 分段读取。\n- 被删除、缺失或损坏的资产保留名称和错误状态，不能声称其仍然可读。\n- 目录总项数、单项预览和总字符数都有硬上限；超限…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 51.91"
+          },
+          {
+            "path": "packages/core/src/engine/compaction/compact-service.ts",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 31,
+            "readLine": 16,
+            "text": "/**\n * CompactService —— 对话上下文压缩服务\n *\n * 长会话中工具输出、文件内容会迅速占满模型 context window。本服务在\n * QueryEngine 每轮调用模型前自动触发（也可由 `/compact` 手动触发），\n * 按「先便宜后昂贵」的分层策略缩小历史，同时尽量保留任务连续性信息。\n *\n * 压缩阶梯（autoCompact）：\n *   1. microCompact      —— 清空旧工具结果正文（零模型调用）\n *   2. tryContextCollapse —— 对超长文本做头尾截断（零模型调用）\n *   3. llmCompact         —— 用 LLM 把旧消息摘要成一条 summary\n *   4. simpleCompact      —— 无 client / LLM 失败时的占位兜底\n *\n * 对齐 Python vykor v0.1.9 services/compact。\n */\nimport type { Message, ToolUseBlock } from \"@vykor/agent-contracts\";\nimport type { HookExecutor as IHookExecutor } from \"@vykor/agent-contracts\";\nimport { DEFAULT_VISION_IMAGE_TOKEN_ESTIMATE } from \"../../constants/vision-tokens\";\nimport { isAgentExecutionLimitError } from \"@vykor/agent-contracts\";\nimport { isModelAttemptControlFailure } from \"../model/model-attempt-control\";\nimport {\n  createCompactBoundaryMarker,\n  estimateMessageTokens,\n  microCompactMessages,\n  replaceImagesWithPlaceholders,\n  simpleCompactMessages,\n  splitMessagesPreservingToolPairs,\n  truncateHeadForPtlRetry,\n  tryContextCollapseMessages,\n} from \"./compact-messages\";\nimport { buildCompactPrompt, deriveWorkLog, extractRecentFiles } from \"./com",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 51.86"
+          },
+          {
+            "path": "docs/codex-prompt-system-research.md",
+            "line": 96,
+            "startLine": 96,
+            "endLine": 96,
+            "readLine": 96,
+            "text": "",
+            "truncated": false,
+            "evidence": "native_locator_only",
+            "notice": "score 50.66"
+          }
+        ],
+        "truncated": false,
+        "note": "片段已核对当前原文；需要补读时以 readLine 为中心，Read offset=max(1,readLine-12)、limit=25。未知行号先 Grep；证据不足继续 Grep/Read。"
+      },
+      "beforeScore": {
+        "fileHit": true,
+        "evidenceHit": false,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/core/src/engine/compaction/README.md",
+          "packages/core/src/engine/README.md",
+          "docs/superpowers/specs/2026-08-29-conversation-attachments-stage-7-design.md",
+          "packages/core/src/engine/compaction/compact-service.ts"
+        ],
+        "evidenceFiles": []
+      },
+      "parserAndLocationOnlyScore": {
+        "fileHit": true,
+        "evidenceHit": false,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/core/src/engine/compaction/README.md",
+          "packages/core/src/engine/README.md",
+          "docs/superpowers/specs/2026-08-29-conversation-attachments-stage-7-design.md",
+          "packages/core/src/engine/compaction/compact-service.ts",
+          "docs/codex-prompt-system-research.md"
+        ],
+        "evidenceFiles": []
+      },
+      "afterScore": {
+        "fileHit": true,
+        "evidenceHit": true,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/core/src/engine/compaction/README.md",
+          "packages/core/src/engine/README.md",
+          "docs/superpowers/specs/2026-08-29-conversation-attachments-stage-7-design.md",
+          "packages/core/src/engine/compaction/compact-service.ts",
+          "docs/codex-prompt-system-research.md"
+        ],
+        "evidenceFiles": [
+          "packages/core/src/engine/compaction/README.md"
+        ]
+      }
+    }
+  ]
+}

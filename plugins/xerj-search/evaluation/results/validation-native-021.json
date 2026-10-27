@@ -1,0 +1,461 @@
+{
+  "checkedAt": "2026-10-27T08:57:53.312Z",
+  "taskSetSha256": "eb61b3d0cab800b4ff6ba5a66f62f7f476cfcf7fe2f8f03f5804d0073c5fb1d9",
+  "sameGold": true,
+  "verifiedRows": 96,
+  "noNewModelApiCalls": true,
+  "unchangedBudgets": {
+    "timeoutMs": 1500,
+    "hitMaxBytes": 1500,
+    "normalResponseMaxBytes": 8192,
+    "batchResponseMaxBytes": 16384,
+    "readContextLines": 12,
+    "readMaxBytesPerFile": 4096
+  },
+  "before": {
+    "samples": 48,
+    "fileHitAt5": 0.6875,
+    "evidenceHitAt5": 0.3125,
+    "meanRelevantFileRecallAt5": 0.65625,
+    "medianSearchMs": 243.208000000006,
+    "p95SearchMs": 639.8397000000041,
+    "medianSearchAndReadMs": 263.2355499999976,
+    "meanSearchBytes": 3821.6875,
+    "meanReadBytes": 4030.875,
+    "meanRetrievedBytes": 7852.5625,
+    "fallbackSamples": 0,
+    "xerjSamples": 48,
+    "timeoutSamples": 0,
+    "truncatedSamples": 42,
+    "hitTruncatedSamples": 21,
+    "truncatedHitCount": 60,
+    "errorSamples": 0
+  },
+  "after": {
+    "samples": 48,
+    "fileHitAt5": 0.6875,
+    "evidenceHitAt5": 0.625,
+    "meanRelevantFileRecallAt5": 0.65625,
+    "medianSearchMs": 168.51924999999756,
+    "p95SearchMs": 528.4914999999983,
+    "medianSearchAndReadMs": 178.02584999999817,
+    "meanSearchBytes": 5119.75,
+    "meanReadBytes": 6213.6875,
+    "meanRetrievedBytes": 11333.4375,
+    "fallbackSamples": 0,
+    "xerjSamples": 48,
+    "timeoutSamples": 0,
+    "truncatedSamples": 12,
+    "hitTruncatedSamples": 21,
+    "truncatedHitCount": 60,
+    "errorSamples": 0
+  },
+  "baseline": {
+    "samples": 48,
+    "fileHitAt5": 0.9375,
+    "evidenceHitAt5": 0.625,
+    "meanRelevantFileRecallAt5": 0.9375,
+    "medianSearchMs": 1930.789200000001,
+    "p95SearchMs": 2670.818299999999,
+    "medianSearchAndReadMs": 1940.0580499999996,
+    "meanSearchBytes": 10351.6875,
+    "meanReadBytes": 5243.6875,
+    "meanRetrievedBytes": 15595.375,
+    "fallbackSamples": 0,
+    "xerjSamples": 0,
+    "timeoutSamples": 0,
+    "truncatedSamples": 3,
+    "hitTruncatedSamples": 0,
+    "truncatedHitCount": 0,
+    "errorSamples": 0
+  },
+  "pluginRetrievedBytesIncreasePercent": 44.327886597527886,
+  "pluginRetrievedBytesBelowCurrentBaselinePercent": 27.328214294302,
+  "perTask": [
+    {
+      "id": "symbol-grep",
+      "beforeFile": [
+        true,
+        true,
+        true
+      ],
+      "afterFile": [
+        true,
+        true,
+        true
+      ],
+      "beforeEvidence": [
+        true,
+        true,
+        true
+      ],
+      "afterEvidence": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "symbol-next-time",
+      "beforeFile": [
+        true,
+        true,
+        true
+      ],
+      "afterFile": [
+        true,
+        true,
+        true
+      ],
+      "beforeEvidence": [
+        true,
+        true,
+        true
+      ],
+      "afterEvidence": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "symbol-plugin-activation",
+      "beforeFile": [
+        true,
+        true,
+        true
+      ],
+      "afterFile": [
+        true,
+        true,
+        true
+      ],
+      "beforeEvidence": [
+        true,
+        true,
+        true
+      ],
+      "afterEvidence": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "symbol-continuity",
+      "beforeFile": [
+        true,
+        true,
+        true
+      ],
+      "afterFile": [
+        true,
+        true,
+        true
+      ],
+      "beforeEvidence": [
+        true,
+        true,
+        true
+      ],
+      "afterEvidence": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "english-shell-logs",
+      "beforeFile": [
+        true,
+        true,
+        true
+      ],
+      "afterFile": [
+        true,
+        true,
+        true
+      ],
+      "beforeEvidence": [
+        false,
+        false,
+        false
+      ],
+      "afterEvidence": [
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": "english-cancel-host",
+      "beforeFile": [
+        true,
+        true,
+        true
+      ],
+      "afterFile": [
+        true,
+        true,
+        true
+      ],
+      "beforeEvidence": [
+        false,
+        false,
+        false
+      ],
+      "afterEvidence": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "english-image-route",
+      "beforeFile": [
+        false,
+        false,
+        false
+      ],
+      "afterFile": [
+        false,
+        false,
+        false
+      ],
+      "beforeEvidence": [
+        false,
+        false,
+        false
+      ],
+      "afterEvidence": [
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": "english-timezone",
+      "beforeFile": [
+        true,
+        true,
+        true
+      ],
+      "afterFile": [
+        true,
+        true,
+        true
+      ],
+      "beforeEvidence": [
+        false,
+        false,
+        false
+      ],
+      "afterEvidence": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "chinese-tool-outcome",
+      "beforeFile": [
+        true,
+        true,
+        true
+      ],
+      "afterFile": [
+        true,
+        true,
+        true
+      ],
+      "beforeEvidence": [
+        false,
+        false,
+        false
+      ],
+      "afterEvidence": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "chinese-plugin-guard",
+      "beforeFile": [
+        false,
+        false,
+        false
+      ],
+      "afterFile": [
+        false,
+        false,
+        false
+      ],
+      "beforeEvidence": [
+        false,
+        false,
+        false
+      ],
+      "afterEvidence": [
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": "chinese-plugin-data",
+      "beforeFile": [
+        false,
+        false,
+        false
+      ],
+      "afterFile": [
+        false,
+        false,
+        false
+      ],
+      "beforeEvidence": [
+        false,
+        false,
+        false
+      ],
+      "afterEvidence": [
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": "chinese-schedule-history",
+      "beforeFile": [
+        false,
+        false,
+        false
+      ],
+      "afterFile": [
+        false,
+        false,
+        false
+      ],
+      "beforeEvidence": [
+        false,
+        false,
+        false
+      ],
+      "afterEvidence": [
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": "docs-plugin-process",
+      "beforeFile": [
+        true,
+        true,
+        true
+      ],
+      "afterFile": [
+        true,
+        true,
+        true
+      ],
+      "beforeEvidence": [
+        false,
+        false,
+        false
+      ],
+      "afterEvidence": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "docs-attachment-routing",
+      "beforeFile": [
+        false,
+        false,
+        false
+      ],
+      "afterFile": [
+        false,
+        false,
+        false
+      ],
+      "beforeEvidence": [
+        false,
+        false,
+        false
+      ],
+      "afterEvidence": [
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": "docs-compaction",
+      "beforeFile": [
+        true,
+        true,
+        true
+      ],
+      "afterFile": [
+        true,
+        true,
+        true
+      ],
+      "beforeEvidence": [
+        false,
+        false,
+        false
+      ],
+      "afterEvidence": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "docs-token-estimate",
+      "beforeFile": [
+        true,
+        true,
+        true
+      ],
+      "afterFile": [
+        true,
+        true,
+        true
+      ],
+      "beforeEvidence": [
+        true,
+        true,
+        true
+      ],
+      "afterEvidence": [
+        true,
+        true,
+        true
+      ]
+    }
+  ],
+  "batchTimeouts": [
+    {
+      "taskIds": [
+        "english-shell-logs",
+        "english-cancel-host",
+        "english-image-route",
+        "english-timezone"
+      ],
+      "reason": "timeout",
+      "elapsedMs": 1514.0442
+    }
+  ],
+  "hashes": {
+    "retrieval": "de27e1a49be5459affce35efac3b202f1d78f77667ec56e64866ab7e2dd69a0f",
+    "ablation": "063cc622692a6f43a5afc2bd24573b7e7551f3d91fb2f02fa8861466ca717ba8",
+    "hostSmoke": "c2a930828a0192d4b3f0069ed7fec00129601c06b1f8d446651f37df68a05e5f"
+  }
+}

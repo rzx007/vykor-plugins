@@ -1,0 +1,845 @@
+{
+  "warning": "Post-hoc diagnostic interventions; selected after examining failures. Not a new benchmark or model result. Queries are manual semantic rewrites, no gold identifiers injected. Native rendering parser repaired only in this offline prototype.",
+  "description": "Single live confirmation of the already-selected diagnostic interventions at the unchanged 1500ms deadline, 2000-word MCP budget, 1500-byte hit cap and 8192-byte final cap. Parser repair is prototype only.",
+  "newModelRequests": 0,
+  "rows": [
+    {
+      "taskId": "english-image-route",
+      "variant": "query-rewrite",
+      "params": {
+        "corpus": "current",
+        "mode": "bm25",
+        "query": "native image input image to text model provider capabilities",
+        "k": 5,
+        "full": 1200,
+        "max_tokens": 2000
+      },
+      "timeoutMs": 1500,
+      "searchMs": 241.1021,
+      "outputBytes": 6355,
+      "native": {
+        "content": [
+          {
+            "type": "text",
+            "text": "\n─── packages/server/src/application/attachments/routing/__test__/attachment-capabilities.test.ts:5  (score 92.23)\n    [no symbol match; showing 1,188 of 3,234 chars from offset 888, window centred on the match]\n    vi.stubEnv(\"VYKOR_DISABLE_MODELS_FETCH\", \"1\");\r\n    const catalog = await createModelCatalogService().load();\r\n    const models = catalog.codex?.models ?? {};\r\n\r\n    expect(Object.fromEntries(\r\n      Object.entries(models).map(([id, model]) => [\r\n        id,\r\n        modelInputCapabilities(model).image,\r\n      ]),\r\n    )).toEqual({\r\n      \"gpt-6-astra\": \"native\",\r\n      \"gpt-5.6-sol\": \"native\",\r\n      \"gpt-5.6-terra\": \"native\",\r\n      \"gpt-5.6-luna\": \"native\",\r\n      \"gpt-5.5\": \"native\",\r\n    });\r\n  });\r\n\r\n  it(\"requires both the model and adapter to declare native image input\", () => {\r\n    expect(resolveEffectiveImageSupport(\r\n      { image: \"native\" },\r\n      { image: \"native\", imageMediaTypes: [\"image/png\"] },\r\n    )).toBe(\"native\");\r\n    expect(resolveEffectiveImageSupport(\r\n      { image: \"native\" },\r\n      { image: \"unknown\", imageMediaTypes: [] },\r\n    )).toBe(\"unknown\");\r\n    expect(resolveEffectiveImageSupport(\r\n      { image: \"unknown\" },\r\n      { image: \"native\", imageMediaTypes: [\"image/png\"] },\r\n    )).toBe(\"unknown\");\r\n    expect(resolveEffectiveImageSupport(\r\n      { image: \"unsupported\" },\r\n      { image: \"native\", imageMediaTypes: [\"image/png\"] },\r\n\n─── packages/server/src/application/attachments/routing/__test__/attachment-capability-router.test.ts:7  (score 90.17)\n    [function harness @ line 28 — 581 of 13,969 chars]\nfunction harness() {\r\n  const resolveReadyContentPath = vi.fn(async (assetId: string) => ({\r\n    assetId,\r\n    path: `D:/daemon/blobs/${assetId}`,\r\n    mediaType: \"image/png\",\r\n    sizeBytes: 4,\r\n  }));\r\n  const readReadyText = vi.fn(async (assetId: string) => ({\r\n    assetId,\r\n    displayName: `${assetId}.txt`,\r\n    mediaType: \"text/plain\",\r\n    encoding: \"utf-8\" as const,\r\n    text: \"hello from attachment\",\r\n  }));\r\n  return {\r\n    resolveReadyContentPath,\r\n    readReadyText,\r\n    router: new AttachmentCapabilityRouter({ resolveReadyContentPath, readReadyText }),\r\n  };\r\n}\r\n\n─── packages/server/src/application/attachments/routing/attachment-routing-types.ts:24  (score 88.75)\n    [interface RouteAttachmentBatchInput @ line 34 — 464 of 2,198 chars]\nexport interface RouteAttachmentBatchInput {\r\n  text: string;\r\n  attachments: readonly SessionInputAttachmentRecord[];\r\n  modelCapabilities: ModelInputCapabilities;\r\n  providerCapabilities: ProviderInputCapabilities;\r\n  /** Actual tools left after the Agent's allow/deny filters. */\r\n  availableTools?: readonly string[];\r\n  /** Whether the daemon installed the local OCR service for this Agent. */\r\n  attachmentOcrAvailable?: boolean;\r\n  signal?: AbortSignal;\r\n}\r\n\n─── docs/superpowers/plans/2026-08-28-conversation-attachments-stage-4.md:75  (score 86.39)\n    [no symbol match; showing 1,146 of 1,710 chars from offset 556, window centred on the match]\n- 修改：`apps/desktop/src/renderer/src/components/desktop/settings-page/custom-provider-dialog.tsx`\r\n- 修改：`apps/desktop/src/renderer/src/components/desktop/conversation-page/model-picker.tsx`\r\n\r\n- [ ] **步骤 1：先写失败测试，固定三态规则和自定义配置往返**\r\n\r\n核心断言必须包含：\r\n\r\n```ts\r\nexpect(modelInputCapabilities({ modalities: { input: [\"text\", \"image\"] } })).toEqual({ image: \"native\" });\r\nexpect(modelInputCapabilities({ modalities: { input: [\"text\"] } })).toEqual({ image: \"unsupported\" });\r\nexpect(modelInputCapabilities({})).toEqual({ image: \"unknown\" });\r\nexpect(resolveEffectiveImageSupport({ image: \"native\" }, { image: \"unknown\", imageMediaTypes: [] }))\r\n  .toBe(\"unknown\");\r\n```\r\n\r\n自定义模型表单测试必须验证 `imageInputSupport` 的 `native`、`unsupported`、`unknown` 都能保存并从 snapshot 恢复；字段缺失时规范化为 `unknown`，不能根据 `gpt-4o` 等 ID 自动改成 native。\r\n\r\n- [ ] **步骤 2：运行定向测试，确认因字段和解析器不存在而失败**\r\n\r\n```powershell\r\npnpm --filter @vykor/server test -- attachment-capabilities default-application-services\r\npnpm --filter @vykor/desktop exec vitest run custom-provider-form provider-service --maxWorkers=1\r\n```\r\n\r\n预期：新增断言 FAIL，错误指向 `inputCapabilities` / `imageInputSupport` 或解析函数尚不存在；既有纯文本模型字段测试不能被删除。\r\n\r\n\n─── packages/server/src/application/attachments/routing/attachment-capability-router.ts:47  (score 85.99)\n    [method route @ line 47 — 1,247 of 11,872 chars]\n  async route(\r\n    input: RouteAttachmentBatchInput,\r\n  ): Promise<NativeAttachmentRouteResult> {\r\n    const attachments = [...input.attachments].sort(\r\n      (left, right) => left.seq - right.seq,\r\n    );\r\n    const assetIds = attachments.map((item) => item.assetId);\r\n    throwIfAborted(input.signal, assetIds);\r\n\r\n    const nativeImageAvailable =\r\n      input.modelCapabilities.image === \"native\" &&\r\n      input.providerCapabilities.image === \"native\";\r\n    const availableTools = new Set(input.availableTools ?? []);\r\n    const decisions: AttachmentRoutingDecision[] = attachments.map((attachment) => {\r\n      const common = {\r\n        assetId: attachment.assetId,\r\n        intent: attachment.intent,\r\n        mediaType: attachment.mediaType,\r\n      };\r\n      const kind = classifyAttachmentCandidate(attachment);\r\n      const format=officeFormat(attachment.displayName);\r\n      if(format && attachment.mediaType===OFFICE_MEDIA_TYPES[format]) {\r\n        if(!availableTools.has(\"Read\"))return {...common,route:\"blocked\",reason:\"attachment_document_unsupported\"};\r\n        return {...common,route:\"text_resource\",complete:false,resourceUri:attachmentResourceUri(attachment.assetId,attachment.disp\n    ... [method route truncated at 1200 chars]\n\n5 passages from 'current'\nCite file:line for anything you rely on.\n"
+          }
+        ],
+        "isError": false
+      },
+      "output": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "packages/server/src/application/attachments/routing/__test__/attachment-capabilities.test.ts",
+            "line": 24,
+            "startLine": 24,
+            "endLine": 57,
+            "text": "    vi.stubEnv(\"VYKOR_DISABLE_MODELS_FETCH\", \"1\");\n    const catalog = await createModelCatalogService().load();\n    const models = catalog.codex?.models ?? {};\n\n    expect(Object.fromEntries(\n      Object.entries(models).map(([id, model]) => [\n        id,\n        modelInputCapabilities(model).image,\n      ]),\n    )).toEqual({\n      \"gpt-6-astra\": \"native\",\n      \"gpt-5.6-sol\": \"native\",\n      \"gpt-5.6-terra\": \"native\",\n      \"gpt-5.6-luna\": \"native\",\n      \"gpt-5.5\": \"native\",\n    });\n  });\n\n  it(\"requires both the model and adapter to declare native image input\", () => {\n    expect(resolveEffectiveImageSupport(\n      { image: \"native\" },\n      { image: \"native\", imageMediaTypes: [\"image/png\"] },\n    )).toBe(\"native\");\n    expect(resolveEffectiveImageSupport(\n      { image: \"native\" },\n      { image: \"unknown\", imageMediaTypes: [] },\n    )).toBe(\"unknown\");\n    expect(resolveEffectiveImageSupport(\n      { image: \"unknown\" },\n      { image: \"native\", imageMediaTypes: [\"image/png\"] },\n    )).toBe(\"unknown\");\n    expect(resolveEffectiveImageSupport(\n      { image: \"unsupported\" },\n      { image: \"native\", imageMediaTypes: [\"image/png\"] },",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 92.23"
+          },
+          {
+            "path": "packages/server/src/application/attachments/routing/__test__/attachment-capability-router.test.ts",
+            "line": 28,
+            "startLine": 28,
+            "endLine": 47,
+            "text": "function harness() {\n  const resolveReadyContentPath = vi.fn(async (assetId: string) => ({\n    assetId,\n    path: `D:/daemon/blobs/${assetId}`,\n    mediaType: \"image/png\",\n    sizeBytes: 4,\n  }));\n  const readReadyText = vi.fn(async (assetId: string) => ({\n    assetId,\n    displayName: `${assetId}.txt`,\n    mediaType: \"text/plain\",\n    encoding: \"utf-8\" as const,\n    text: \"hello from attachment\",\n  }));\n  return {\n    resolveReadyContentPath,\n    readReadyText,\n    router: new AttachmentCapabilityRouter({ resolveReadyContentPath, readReadyText }),\n  };\n}",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 90.17"
+          },
+          {
+            "path": "packages/server/src/application/attachments/routing/attachment-routing-types.ts",
+            "line": 34,
+            "startLine": 34,
+            "endLine": 44,
+            "text": "export interface RouteAttachmentBatchInput {\n  text: string;\n  attachments: readonly SessionInputAttachmentRecord[];\n  modelCapabilities: ModelInputCapabilities;\n  providerCapabilities: ProviderInputCapabilities;\n  /** Actual tools left after the Agent's allow/deny filters. */\n  availableTools?: readonly string[];\n  /** Whether the daemon installed the local OCR service for this Agent. */\n  attachmentOcrAvailable?: boolean;\n  signal?: AbortSignal;\n}",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 88.75"
+          },
+          {
+            "path": "docs/superpowers/plans/2026-08-28-conversation-attachments-stage-4.md",
+            "line": 83,
+            "startLine": 83,
+            "endLine": 107,
+            "text": "- 修改：`apps/desktop/src/renderer/src/components/desktop/settings-page/custom-provider-dialog.tsx`\n- 修改：`apps/desktop/src/renderer/src/components/desktop/conversation-page/model-picker.tsx`\n\n- [ ] **步骤 1：先写失败测试，固定三态规则和自定义配置往返**\n\n核心断言必须包含：\n\n```ts\nexpect(modelInputCapabilities({ modalities: { input: [\"text\", \"image\"] } })).toEqual({ image: \"native\" });\nexpect(modelInputCapabilities({ modalities: { input: [\"text\"] } })).toEqual({ image: \"unsupported\" });\nexpect(modelInputCapabilities({})).toEqual({ image: \"unknown\" });\nexpect(resolveEffectiveImageSupport({ image: \"native\" }, { image: \"unknown\", imageMediaTypes: [] }))\n  .toBe(\"unknown\");\n```\n\n自定义模型表单测试必须验证 `imageInputSupport` 的 `native`、`unsupported`、`unknown` 都能保存并从 snapshot 恢复；字段缺失时规范化为 `unknown`，不能根据 `gpt-4o` 等 ID 自动改成 native。\n\n- [ ] **步骤 2：运行定向测试，确认因字段和解析器不存在而失败**\n\n```powershell\npnpm --filter @vykor/server test -- attachment-capabilities default-application-services\npnpm --filter @vykor/desktop exec vitest run custom-provider-form provider-service --maxWorkers=1\n```\n\n预期：新增断言 FAIL，错误指向 `inputCapabilities` / `imageInputSupport` 或解析函数尚不存在；既有纯文本模型字段测试不能被删除。",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 86.39"
+          },
+          {
+            "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+            "line": 47,
+            "startLine": 47,
+            "endLine": 70,
+            "text": "  async route(\n    input: RouteAttachmentBatchInput,\n  ): Promise<NativeAttachmentRouteResult> {\n    const attachments = [...input.attachments].sort(\n      (left, right) => left.seq - right.seq,\n    );\n    const assetIds = attachments.map((item) => item.assetId);\n    throwIfAborted(input.signal, assetIds);\n\n    const nativeImageAvailable =\n      input.modelCapabilities.image === \"native\" &&\n      input.providerCapabilities.image === \"native\";\n    const availableTools = new Set(input.availableTools ?? []);\n    const decisions: AttachmentRoutingDecision[] = attachments.map((attachment) => {\n      const common = {\n        assetId: attachment.assetId,\n        intent: attachment.intent,\n        mediaType: attachment.mediaType,\n      };\n      const kind = classifyAttachmentCandidate(attachment);\n      const format=officeFormat(attachment.displayName);\n      if(format && attachment.mediaType===OFFICE_MEDIA_TYPES[format]) {\n        if(!availableTools.has(\"Read\"))return {...common,route:\"blocked\",reason:\"attachment_document_unsupported\"};\n        return {...common,route:\"text_resource\",complete:false,resourceUri:attachmentResourceUri(attachment.assetId,attachment.disp",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 85.99"
+          }
+        ],
+        "truncated": false,
+        "note": "保留 XERJ 原生排序与片段，正文已与当前项目文件核对；索引仍可能遗漏新文件，证据不足时继续 Grep/Read。"
+      },
+      "score": {
+        "fileHit": true,
+        "evidenceHit": true,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/server/src/application/attachments/routing/__test__/attachment-capabilities.test.ts",
+          "packages/server/src/application/attachments/routing/__test__/attachment-capability-router.test.ts",
+          "packages/server/src/application/attachments/routing/attachment-routing-types.ts",
+          "docs/superpowers/plans/2026-08-28-conversation-attachments-stage-4.md",
+          "packages/server/src/application/attachments/routing/attachment-capability-router.ts"
+        ],
+        "evidenceFiles": [
+          "packages/server/src/application/attachments/routing/attachment-capability-router.ts"
+        ]
+      },
+      "evidence": [
+        {
+          "path": "packages/server/src/application/attachments/routing/__test__/attachment-capabilities.test.ts",
+          "startLine": 12,
+          "endLine": 36,
+          "text": "});\n\ndescribe(\"attachment input capabilities\", () => {\n  it(\"maps explicit model input modalities without guessing from the model name\", () => {\n    expect(modelInputCapabilities({ modalities: { input: [\"text\", \"image\"] } }))\n      .toEqual({ image: \"native\" });\n    expect(modelInputCapabilities({ modalities: { input: [\"text\"] } }))\n      .toEqual({ image: \"unsupported\" });\n    expect(modelInputCapabilities({ id: \"gpt-4o\" })).toEqual({ image: \"unknown\" });\n  });\n\n  it(\"publishes explicit image support for every Codex subscription model\", async () => {\n    vi.stubEnv(\"VYKOR_DISABLE_MODELS_FETCH\", \"1\");\n    const catalog = await createModelCatalogService().load();\n    const models = catalog.codex?.models ?? {};\n\n    expect(Object.fromEntries(\n      Object.entries(models).map(([id, model]) => [\n        id,\n        modelInputCapabilities(model).image,\n      ]),\n    )).toEqual({\n      \"gpt-6-astra\": \"native\",\n      \"gpt-5.6-sol\": \"native\",\n      \"gpt-5.6-terra\": \"native\",",
+          "bytes": 981,
+          "truncated": false
+        },
+        {
+          "path": "packages/server/src/application/attachments/routing/__test__/attachment-capability-router.test.ts",
+          "startLine": 16,
+          "endLine": 40,
+          "text": "    assetId,\n    seq,\n    intent: \"auto\",\n    displayName: `${assetId}.png`,\n    mediaType: \"image/png\",\n    sizeBytes: 4,\n    metadata: {},\n    createdAt: 1,\n    ...overrides,\n  };\n}\n\nfunction harness() {\n  const resolveReadyContentPath = vi.fn(async (assetId: string) => ({\n    assetId,\n    path: `D:/daemon/blobs/${assetId}`,\n    mediaType: \"image/png\",\n    sizeBytes: 4,\n  }));\n  const readReadyText = vi.fn(async (assetId: string) => ({\n    assetId,\n    displayName: `${assetId}.txt`,\n    mediaType: \"text/plain\",\n    encoding: \"utf-8\" as const,\n    text: \"hello from attachment\",",
+          "bytes": 585,
+          "truncated": false
+        },
+        {
+          "path": "packages/server/src/application/attachments/routing/attachment-routing-types.ts",
+          "startLine": 22,
+          "endLine": 46,
+          "text": "  | \"attachment_routing_aborted\";\n\nexport interface AttachmentRoutingDecision {\n  assetId: string;\n  intent: SessionInputAttachmentRecord[\"intent\"];\n  mediaType: string;\n  route: \"native_image\" | \"image_to_text_tool\" | \"text_inline\" | \"text_resource\" | \"blocked\";\n  reason?: AttachmentRoutingErrorCode;\n  complete?: boolean;\n  resourceUri?: string;\n}\n\nexport interface RouteAttachmentBatchInput {\n  text: string;\n  attachments: readonly SessionInputAttachmentRecord[];\n  modelCapabilities: ModelInputCapabilities;\n  providerCapabilities: ProviderInputCapabilities;\n  /** Actual tools left after the Agent's allow/deny filters. */\n  availableTools?: readonly string[];\n  /** Whether the daemon installed the local OCR service for this Agent. */\n  attachmentOcrAvailable?: boolean;\n  signal?: AbortSignal;\n}\n\nexport interface NativeAttachmentRouteResult {",
+          "bytes": 853,
+          "truncated": false
+        },
+        {
+          "path": "docs/superpowers/plans/2026-08-28-conversation-attachments-stage-4.md",
+          "startLine": 71,
+          "endLine": 95,
+          "text": "- 修改：`packages/api/src/providers/registry.ts`\n- 修改：`packages/api/src/index.ts`\n- 修改：`packages/server/src/application/settings-api.ts`\n- 修改：`packages/server/src/application/default-services/model-service.ts`\n- 修改：`packages/server/src/application/default-services/provider-service.ts`\n- 修改：`packages/server/src/application/__test__/default-application-services.test.ts`\n- 修改：`apps/desktop/src/shared/provider-types.ts`\n- 修改：`apps/desktop/src/shared/session-types.ts`\n- 修改：`apps/desktop/src/main/features/provider/provider-service.ts`\n- 修改：`apps/desktop/src/main/features/provider/provider-service.test.ts`\n- 修改：`apps/desktop/src/renderer/src/components/desktop/settings-page/custom-provider-form.ts`\n- 修改：`apps/desktop/src/renderer/src/components/desktop/settings-page/custom-provider-form.test.ts`\n- 修改：`apps/desktop/src/renderer/src/components/desktop/settings-page/custom-provider-dialog.tsx`\n- 修改：`apps/desktop/src/renderer/src/components/desktop/conversation-page/model-picker.tsx`\n\n- [ ] **步骤 1：先写失败测试，固定三态规则和自定义配置往返**\n\n核心断言必须包含：\n\n```ts\nexpect(modelInputCapabilities({ modalities: { input: [\"text\", \"image\"] } })).toEqual({ image: \"native\" });\nexpect(modelInputCapabilities({ modalities: { input: [\"text\"] } })).toEqual({ image: \"unsupported\" });\nexpect(modelInputCapabilities({})).toEqual({ image: \"unknown\" });\nexpect(resolveEffectiveImageSupport({ image: \"native\" }, { image: \"unknown\", imageMediaTypes: [] }))\n  .toBe(\"unknown\");",
+          "bytes": 1587,
+          "truncated": false
+        },
+        {
+          "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "startLine": 35,
+          "endLine": 59,
+          "text": "}\n\nexport interface AttachmentCapabilityRouterOptions {\n  resolveReadyContentPath(\n    assetId: string,\n  ): Promise<ResolvedAttachmentContentPath>;\n  readReadyText(assetId: string, options?: { signal?: AbortSignal }): Promise<ReadyAttachmentText>;\n}\n\nexport class AttachmentCapabilityRouter {\n  constructor(private readonly options: AttachmentCapabilityRouterOptions) {}\n\n  async route(\n    input: RouteAttachmentBatchInput,\n  ): Promise<NativeAttachmentRouteResult> {\n    const attachments = [...input.attachments].sort(\n      (left, right) => left.seq - right.seq,\n    );\n    const assetIds = attachments.map((item) => item.assetId);\n    throwIfAborted(input.signal, assetIds);\n\n    const nativeImageAvailable =\n      input.modelCapabilities.image === \"native\" &&\n      input.providerCapabilities.image === \"native\";\n    const availableTools = new Set(input.availableTools ?? []);",
+          "bytes": 883,
+          "truncated": false
+        }
+      ]
+    },
+    {
+      "taskId": "english-image-route",
+      "variant": "typescript-filter",
+      "params": {
+        "corpus": "current",
+        "query": "Choose native image input or the image to text tool based on model and provider capabilities",
+        "k": 5,
+        "full": 1200,
+        "mode": "bm25",
+        "max_tokens": 2000,
+        "lang": "typescript"
+      },
+      "timeoutMs": 1500,
+      "searchMs": 221.1898,
+      "outputBytes": 5652,
+      "native": {
+        "content": [
+          {
+            "type": "text",
+            "text": "\n─── packages/server/src/application/session/execution/__test__/session-run-executor.test.ts:495  (score 81.55)\n    [function createStore @ line 930 — 1,255 of 51,741 chars]\nfunction createStore(options: {\r\n  attachments?: ReturnType<typeof attachment>[];\r\n  metadata?: Record<string, unknown>;\r\n  items?: Array<{ type: \"text\"; text: string } | { type: \"skill\"; name: string; path: string }>;\r\n} = {}) {\r\n  const run = { id: \"run-1\", sessionId: \"s1\", inputId: \"input-1\", status: \"pending\" };\r\n  const getSession = vi.fn(() => ({\r\n    id: \"s1\",\r\n    cwd: \"/repo\",\r\n    model: \"gpt-test\",\r\n    metadata: { runtime: { model: \"gpt-test\" } },\r\n  }));\r\n  const getInput = vi.fn(() => ({\r\n    id: \"input-1\",\r\n    sessionId: \"s1\",\r\n    content: \"hello\",\r\n    items: options.items ?? [{ type: \"text\", text: \"hello\" }],\r\n    attachments: options.attachments ?? [],\r\n    delivery: \"queue\",\r\n    metadata: options.metadata ?? { requestedBy: \"test\", traceId: \"trace-1\" },\r\n  }));\r\n  const getRun = vi.fn(() => run);\r\n  const appendEvent = vi.fn();\r\n  const updateRun = vi.fn((id, update) => Object.assign(run, update, { id, metadata: { ...(run as any).metadata, ...update.metadata } }));\r\n  const data = {\r\n    transaction: <T>(work: () => T) => work(),\r\n    sessions: { get: getSession },\r\n    conversations: {\r\n      getInput,\r\n      listMessages: vi.fn(() => []),\r\n      listMessagePa\n    ... [function createStore truncated at 1200 chars]\n\n─── packages/server/src/application/attachments/routing/attachment-capabilities.ts:15  (score 80.67)\n    [function supportsNativeImageInput @ line 15 — 1,268 of 4,181 chars]\nexport function supportsNativeImageInput(\r\n  context: {\r\n    requestConfiguration?: { model: string; provider?: string; apiFormat?: Settings[\"apiFormat\"] };\r\n    settings?: Settings;\r\n  },\r\n  catalog: ModelsDevCatalog,\r\n): boolean {\r\n  const request = context.requestConfiguration;\r\n  if (!request) return false;\r\n\r\n  const providerName = request.provider ?? context.settings?.provider;\r\n  const customProvider = context.settings?.customProviders?.find((item) => item.id === providerName);\r\n  const backend = customProvider\r\n    ? \"openai_compat\"\r\n    : providerName\r\n      ? findByName(providerName)?.backendType\r\n      : request.apiFormat === \"openai\"\r\n        ? \"openai_compat\"\r\n        : request.apiFormat === \"anthropic\"\r\n          ? \"anthropic\"\r\n          : undefined;\r\n  if (!backend) return false;\r\n\r\n  const provider = providerName ? readCatalogProvider(catalog, providerName) : undefined;\r\n  const model = Object.entries(provider?.models ?? {}).find(([id, value]) =>\r\n    (value.id ?? id) === request.model,\r\n  )?.[1];\r\n  const customModel = customProvider?.models.find((item) => item.id === request.model);\r\n  const modelSupport: InputSupport = model\r\n    ? modelInputCapabilities(model).i\n    ... [function supportsNativeImageInput truncated at 1200 chars]\n\n─── packages/api/src/providers/registry.ts:5  (score 74.81)\n    [function providerInputCapabilities @ line 28 — 187 of 10,453 chars]\nexport function providerInputCapabilities(\r\n  _backendType: BackendType,\r\n): ProviderInputCapabilities {\r\n  return { image: \"native\", imageMediaTypes: [...NATIVE_IMAGE_MEDIA_TYPES] };\r\n}\r\n\n─── packages/server/src/application/attachments/routing/attachment-routing-types.ts:24  (score 70.26)\n    [interface RouteAttachmentBatchInput @ line 34 — 464 of 2,198 chars]\nexport interface RouteAttachmentBatchInput {\r\n  text: string;\r\n  attachments: readonly SessionInputAttachmentRecord[];\r\n  modelCapabilities: ModelInputCapabilities;\r\n  providerCapabilities: ProviderInputCapabilities;\r\n  /** Actual tools left after the Agent's allow/deny filters. */\r\n  availableTools?: readonly string[];\r\n  /** Whether the daemon installed the local OCR service for this Agent. */\r\n  attachmentOcrAvailable?: boolean;\r\n  signal?: AbortSignal;\r\n}\r\n\n─── packages/server/src/application/attachments/routing/attachment-capability-router.ts:47  (score 70.03)\n    [method route @ line 47 — 1,247 of 11,872 chars]\n  async route(\r\n    input: RouteAttachmentBatchInput,\r\n  ): Promise<NativeAttachmentRouteResult> {\r\n    const attachments = [...input.attachments].sort(\r\n      (left, right) => left.seq - right.seq,\r\n    );\r\n    const assetIds = attachments.map((item) => item.assetId);\r\n    throwIfAborted(input.signal, assetIds);\r\n\r\n    const nativeImageAvailable =\r\n      input.modelCapabilities.image === \"native\" &&\r\n      input.providerCapabilities.image === \"native\";\r\n    const availableTools = new Set(input.availableTools ?? []);\r\n    const decisions: AttachmentRoutingDecision[] = attachments.map((attachment) => {\r\n      const common = {\r\n        assetId: attachment.assetId,\r\n        intent: attachment.intent,\r\n        mediaType: attachment.mediaType,\r\n      };\r\n      const kind = classifyAttachmentCandidate(attachment);\r\n      const format=officeFormat(attachment.displayName);\r\n      if(format && attachment.mediaType===OFFICE_MEDIA_TYPES[format]) {\r\n        if(!availableTools.has(\"Read\"))return {...common,route:\"blocked\",reason:\"attachment_document_unsupported\"};\r\n        return {...common,route:\"text_resource\",complete:false,resourceUri:attachmentResourceUri(attachment.assetId,attachment.disp\n    ... [method route truncated at 1200 chars]\n\n5 passages from 'current'\nCite file:line for anything you rely on.\n"
+          }
+        ],
+        "isError": false
+      },
+      "output": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "packages/server/src/application/session/execution/__test__/session-run-executor.test.ts",
+            "line": 930,
+            "startLine": 930,
+            "endLine": 960,
+            "text": "function createStore(options: {\n  attachments?: ReturnType<typeof attachment>[];\n  metadata?: Record<string, unknown>;\n  items?: Array<{ type: \"text\"; text: string } | { type: \"skill\"; name: string; path: string }>;\n} = {}) {\n  const run = { id: \"run-1\", sessionId: \"s1\", inputId: \"input-1\", status: \"pending\" };\n  const getSession = vi.fn(() => ({\n    id: \"s1\",\n    cwd: \"/repo\",\n    model: \"gpt-test\",\n    metadata: { runtime: { model: \"gpt-test\" } },\n  }));\n  const getInput = vi.fn(() => ({\n    id: \"input-1\",\n    sessionId: \"s1\",\n    content: \"hello\",\n    items: options.items ?? [{ type: \"text\", text: \"hello\" }],\n    attachments: options.attachments ?? [],\n    delivery: \"queue\",\n    metadata: options.metadata ?? { requestedBy: \"test\", traceId: \"trace-1\" },\n  }));\n  const getRun = vi.fn(() => run);\n  const appendEvent = vi.fn();\n  const updateRun = vi.fn((id, update) => Object.assign(run, update, { id, metadata: { ...(run as any).metadata, ...update.metadata } }));\n  const data = {\n    transaction: <T>(work: () => T) => work(),\n    sessions: { get: getSession },\n    conversations: {\n      getInput,\n      listMessages: vi.fn(() => []),\n      listMessagePa",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 81.55"
+          },
+          {
+            "path": "packages/server/src/application/attachments/routing/attachment-capabilities.ts",
+            "line": 15,
+            "startLine": 15,
+            "endLine": 44,
+            "text": "export function supportsNativeImageInput(\n  context: {\n    requestConfiguration?: { model: string; provider?: string; apiFormat?: Settings[\"apiFormat\"] };\n    settings?: Settings;\n  },\n  catalog: ModelsDevCatalog,\n): boolean {\n  const request = context.requestConfiguration;\n  if (!request) return false;\n\n  const providerName = request.provider ?? context.settings?.provider;\n  const customProvider = context.settings?.customProviders?.find((item) => item.id === providerName);\n  const backend = customProvider\n    ? \"openai_compat\"\n    : providerName\n      ? findByName(providerName)?.backendType\n      : request.apiFormat === \"openai\"\n        ? \"openai_compat\"\n        : request.apiFormat === \"anthropic\"\n          ? \"anthropic\"\n          : undefined;\n  if (!backend) return false;\n\n  const provider = providerName ? readCatalogProvider(catalog, providerName) : undefined;\n  const model = Object.entries(provider?.models ?? {}).find(([id, value]) =>\n    (value.id ?? id) === request.model,\n  )?.[1];\n  const customModel = customProvider?.models.find((item) => item.id === request.model);\n  const modelSupport: InputSupport = model\n    ? modelInputCapabilities(model).i",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 80.67"
+          },
+          {
+            "path": "packages/api/src/providers/registry.ts",
+            "line": 28,
+            "startLine": 28,
+            "endLine": 32,
+            "text": "export function providerInputCapabilities(\n  _backendType: BackendType,\n): ProviderInputCapabilities {\n  return { image: \"native\", imageMediaTypes: [...NATIVE_IMAGE_MEDIA_TYPES] };\n}",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 74.81"
+          },
+          {
+            "path": "packages/server/src/application/attachments/routing/attachment-routing-types.ts",
+            "line": 34,
+            "startLine": 34,
+            "endLine": 44,
+            "text": "export interface RouteAttachmentBatchInput {\n  text: string;\n  attachments: readonly SessionInputAttachmentRecord[];\n  modelCapabilities: ModelInputCapabilities;\n  providerCapabilities: ProviderInputCapabilities;\n  /** Actual tools left after the Agent's allow/deny filters. */\n  availableTools?: readonly string[];\n  /** Whether the daemon installed the local OCR service for this Agent. */\n  attachmentOcrAvailable?: boolean;\n  signal?: AbortSignal;\n}",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 70.26"
+          },
+          {
+            "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+            "line": 47,
+            "startLine": 47,
+            "endLine": 70,
+            "text": "  async route(\n    input: RouteAttachmentBatchInput,\n  ): Promise<NativeAttachmentRouteResult> {\n    const attachments = [...input.attachments].sort(\n      (left, right) => left.seq - right.seq,\n    );\n    const assetIds = attachments.map((item) => item.assetId);\n    throwIfAborted(input.signal, assetIds);\n\n    const nativeImageAvailable =\n      input.modelCapabilities.image === \"native\" &&\n      input.providerCapabilities.image === \"native\";\n    const availableTools = new Set(input.availableTools ?? []);\n    const decisions: AttachmentRoutingDecision[] = attachments.map((attachment) => {\n      const common = {\n        assetId: attachment.assetId,\n        intent: attachment.intent,\n        mediaType: attachment.mediaType,\n      };\n      const kind = classifyAttachmentCandidate(attachment);\n      const format=officeFormat(attachment.displayName);\n      if(format && attachment.mediaType===OFFICE_MEDIA_TYPES[format]) {\n        if(!availableTools.has(\"Read\"))return {...common,route:\"blocked\",reason:\"attachment_document_unsupported\"};\n        return {...common,route:\"text_resource\",complete:false,resourceUri:attachmentResourceUri(attachment.assetId,attachment.disp",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 70.03"
+          }
+        ],
+        "truncated": false,
+        "note": "保留 XERJ 原生排序与片段，正文已与当前项目文件核对；索引仍可能遗漏新文件，证据不足时继续 Grep/Read。"
+      },
+      "score": {
+        "fileHit": true,
+        "evidenceHit": true,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/server/src/application/session/execution/__test__/session-run-executor.test.ts",
+          "packages/server/src/application/attachments/routing/attachment-capabilities.ts",
+          "packages/api/src/providers/registry.ts",
+          "packages/server/src/application/attachments/routing/attachment-routing-types.ts",
+          "packages/server/src/application/attachments/routing/attachment-capability-router.ts"
+        ],
+        "evidenceFiles": [
+          "packages/server/src/application/attachments/routing/attachment-capability-router.ts"
+        ]
+      },
+      "evidence": [
+        {
+          "path": "packages/server/src/application/session/execution/__test__/session-run-executor.test.ts",
+          "startLine": 918,
+          "endLine": 942,
+          "text": "        pluginIds: new Set([\"office\", \"knowledge\"]),\n        pluginPreparationErrors: new Map([...preparationFailures].map(pluginId => [pluginId, [`prepare failed: ${pluginId}`]])),\n      }, id),\n      submitMessage: (_content: unknown, options: any) => { observed.push([[...options.preparation.fixtureView.pluginIds], ...options.preparation.fixtureView.tools.keys()]); return completedHandle(); },\n    }), close: async () => {}, closeIfStale: async () => {} } as any,\n    events: { checkpoint: () => 1, publishSince: () => {} },\n    transcriptProjection: { finalizeRunParts: () => {} } as any, traceIdForRun: () => \"trace-1\", log: () => {},\n  });\n  return { store, controller, observed, preparationFailures, get requests() { return requests; },\n    execute: () => executor.execute({ sessionId: \"s1\", inputId: \"input-1\", runId: \"run-1\" }, { signal: controller.signal, registerHandle: async () => {} }) };\n}\n\nfunction createStore(options: {\n  attachments?: ReturnType<typeof attachment>[];\n  metadata?: Record<string, unknown>;\n  items?: Array<{ type: \"text\"; text: string } | { type: \"skill\"; name: string; path: string }>;\n} = {}) {\n  const run = { id: \"run-1\", sessionId: \"s1\", inputId: \"input-1\", status: \"pending\" };\n  const getSession = vi.fn(() => ({\n    id: \"s1\",\n    cwd: \"/repo\",\n    model: \"gpt-test\",\n    metadata: { runtime: { model: \"gpt-test\" } },\n  }));\n  const getInput = vi.fn(() => ({",
+          "bytes": 1402,
+          "truncated": false
+        },
+        {
+          "path": "packages/server/src/application/attachments/routing/attachment-capabilities.ts",
+          "startLine": 3,
+          "endLine": 27,
+          "text": "  ModelsDevModel,\n  ProviderInputCapabilities,\n} from \"@vykor/api\";\nimport {\n  findByName,\n  providerInputCapabilities,\n} from \"@vykor/api\";\nimport type { Settings, InputSupport, ModelInputCapabilities } from \"@vykor/host-config\";\nimport type { SessionRuntimeConfig } from \"@vykor/domain-contracts/sessions\";\nimport type { ModelProviderInfo } from \"../../settings-api.js\";\nimport { readCatalogProvider } from \"../../default-services/models/catalog-provider-mapping.js\";\n\nexport function supportsNativeImageInput(\n  context: {\n    requestConfiguration?: { model: string; provider?: string; apiFormat?: Settings[\"apiFormat\"] };\n    settings?: Settings;\n  },\n  catalog: ModelsDevCatalog,\n): boolean {\n  const request = context.requestConfiguration;\n  if (!request) return false;\n\n  const providerName = request.provider ?? context.settings?.provider;\n  const customProvider = context.settings?.customProviders?.find((item) => item.id === providerName);\n  const backend = customProvider",
+          "bytes": 982,
+          "truncated": false
+        },
+        {
+          "path": "packages/api/src/providers/registry.ts",
+          "startLine": 16,
+          "endLine": 40,
+          "text": "\nexport type NativeImageMediaType = (typeof NATIVE_IMAGE_MEDIA_TYPES)[number];\n\nexport function assertNativeImageMediaType(\n  mediaType: string,\n): asserts mediaType is NativeImageMediaType {\n  if (!(NATIVE_IMAGE_MEDIA_TYPES as readonly string[]).includes(mediaType)) {\n    throw new Error(`Unsupported image media type: ${mediaType}`);\n  }\n}\n\n/** Capabilities of the request adapter, independent from any concrete model. */\nexport function providerInputCapabilities(\n  _backendType: BackendType,\n): ProviderInputCapabilities {\n  return { image: \"native\", imageMediaTypes: [...NATIVE_IMAGE_MEDIA_TYPES] };\n}\n\nexport interface ProviderConfig {\n  apiKey: string;\n  baseURL?: string;\n  model?: string;\n  headers?: Record<string, string>;\n}\n",
+          "bytes": 737,
+          "truncated": false
+        },
+        {
+          "path": "packages/server/src/application/attachments/routing/attachment-routing-types.ts",
+          "startLine": 22,
+          "endLine": 46,
+          "text": "  | \"attachment_routing_aborted\";\n\nexport interface AttachmentRoutingDecision {\n  assetId: string;\n  intent: SessionInputAttachmentRecord[\"intent\"];\n  mediaType: string;\n  route: \"native_image\" | \"image_to_text_tool\" | \"text_inline\" | \"text_resource\" | \"blocked\";\n  reason?: AttachmentRoutingErrorCode;\n  complete?: boolean;\n  resourceUri?: string;\n}\n\nexport interface RouteAttachmentBatchInput {\n  text: string;\n  attachments: readonly SessionInputAttachmentRecord[];\n  modelCapabilities: ModelInputCapabilities;\n  providerCapabilities: ProviderInputCapabilities;\n  /** Actual tools left after the Agent's allow/deny filters. */\n  availableTools?: readonly string[];\n  /** Whether the daemon installed the local OCR service for this Agent. */\n  attachmentOcrAvailable?: boolean;\n  signal?: AbortSignal;\n}\n\nexport interface NativeAttachmentRouteResult {",
+          "bytes": 853,
+          "truncated": false
+        },
+        {
+          "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+          "startLine": 35,
+          "endLine": 59,
+          "text": "}\n\nexport interface AttachmentCapabilityRouterOptions {\n  resolveReadyContentPath(\n    assetId: string,\n  ): Promise<ResolvedAttachmentContentPath>;\n  readReadyText(assetId: string, options?: { signal?: AbortSignal }): Promise<ReadyAttachmentText>;\n}\n\nexport class AttachmentCapabilityRouter {\n  constructor(private readonly options: AttachmentCapabilityRouterOptions) {}\n\n  async route(\n    input: RouteAttachmentBatchInput,\n  ): Promise<NativeAttachmentRouteResult> {\n    const attachments = [...input.attachments].sort(\n      (left, right) => left.seq - right.seq,\n    );\n    const assetIds = attachments.map((item) => item.assetId);\n    throwIfAborted(input.signal, assetIds);\n\n    const nativeImageAvailable =\n      input.modelCapabilities.image === \"native\" &&\n      input.providerCapabilities.image === \"native\";\n    const availableTools = new Set(input.availableTools ?? []);",
+          "bytes": 883,
+          "truncated": false
+        }
+      ]
+    },
+    {
+      "taskId": "chinese-plugin-guard",
+      "variant": "query-rewrite",
+      "params": {
+        "corpus": "current",
+        "mode": "bm25",
+        "query": "native plugin tool input validation concurrent calls limit",
+        "k": 5,
+        "full": 1200,
+        "max_tokens": 2000
+      },
+      "timeoutMs": 1500,
+      "searchMs": 180.44780000000003,
+      "outputBytes": 6817,
+      "native": {
+        "content": [
+          {
+            "type": "text",
+            "text": "\n─── packages/agent-runtime/src/node/plugins/native-tools/guard.ts:27  (score 110.44)\n    [method run @ line 27 — 1,245 of 7,700 chars]\n  async run(\r\n    toolName: string,\r\n    inputSchema: Record<string, unknown>,\r\n    input: Record<string, unknown>,\r\n    context: ToolContext,\r\n    call: () => Promise<ToolResult>,\r\n  ): Promise<ToolResult> {\r\n    const started = Date.now();\r\n    const cwd = context.cwd;\r\n    const inputSummary = summarizeInput(input);\r\n    let errorCode: string | undefined;\r\n    let status: NativeToolAuditEvent[\"status\"] = \"failed\";\r\n    try {\r\n      const maxConcurrentCalls = this.options.maxConcurrentCalls ?? 4;\r\n      if (this.activeCalls >= maxConcurrentCalls) {\r\n        throw new NativeToolHostError(\r\n          \"tool_concurrency_limit\",\r\n          `Native Tool ${toolName} has reached its concurrency limit (${maxConcurrentCalls}). Retry after another call finishes.`,\r\n        );\r\n      }\r\n      const validation = validateJsonSchemaInput(inputSchema, input);\r\n      if (validation) {\r\n        throw new NativeToolHostError(\r\n          \"tool_input_invalid\",\r\n          `Native Tool ${toolName} input is invalid: ${validation}`,\r\n        );\r\n      }\r\n      this.activeCalls += 1;\r\n      try {\r\n        const result = await call();\r\n        status = \"completed\";\r\n        return result;\r\n      } finally \n    ... [method run truncated at 1200 chars]\n\n─── packages/agent-runtime/src/node/plugins/native-tools/__test__/tool-host.test.ts:320  (score 93.10)\n    [function writePlugin @ line 28 — 594 of 20,191 chars]\nfunction writePlugin(moduleSource: string, id = \"dev.vykor.runtime-tool\") {\r\n  const root = mkdtempSync(join(tmpdir(), \"vykor-native-tool-\"));\r\n  roots.push(root);\r\n  mkdirSync(join(root, \".vykor-plugin\"), { recursive: true });\r\n  mkdirSync(join(root, \"tools\"), { recursive: true });\r\n  writeFileSync(join(root, \".vykor-plugin\", \"plugin.json\"), JSON.stringify({\r\n    schemaVersion: 1,\r\n    id,\r\n    name: id.split(\".\").at(-1),\r\n    version: \"1.0.0\",\r\n    components: { tools: [\"./tools/index.mjs\"] },\r\n  }));\r\n  writeFileSync(join(root, \"tools\", \"index.mjs\"), moduleSource);\r\n  return root;\r\n}\r\n\n─── packages/agent-runtime/src/node/plugins/native-tools/activate.ts:16  (score 58.72)\n    [function activateNativePluginTools @ line 16 — 1,269 of 8,644 chars]\nexport async function activateNativePluginTools(\r\n  plugin: LoadedNativePlugin,\r\n  context: {\r\n    cwd: string;\r\n    settings?: import(\"@vykor/host-config\").Settings;\r\n    dataRoot?: string;\r\n    environmentKind?: \"local\" | \"wsl\";\r\n    toolRegistry: IToolRegistry;\r\n    addCleanup(cleanup: () => Promise<void> | void, cleanupSync?: () => void): void;\r\n    onLog?: (message: string) => void;\r\n    onAudit?: (event: NativeToolAuditEvent) => void;\r\n    callTimeoutMs?: number;\r\n    cancellationGraceMs?: number;\r\n    maxConcurrentCalls?: number;\r\n    outputMaxBytes?: number;\r\n    logMessageMaxChars?: number;\r\n  },\r\n): Promise<NativeToolActivationResult> {\r\n  if (!plugin.components.tools?.value?.length) {\r\n    return { pluginId: plugin.manifest.id, state: \"inactive\", toolNames: [], diagnostics: [] };\r\n  }\r\n  if (context.environmentKind && context.environmentKind !== \"local\") {\r\n    return {\r\n      pluginId: plugin.manifest.id,\r\n      state: \"inactive\",\r\n      toolNames: [],\r\n      diagnostics: [{\r\n        severity: \"warning\",\r\n        phase: \"activate\",\r\n        code: \"native_tools_unavailable_in_environment\",\r\n        message: \"Native Plugin Tools are unavailable outside the local execution\n    ... [function activateNativePluginTools truncated at 1200 chars]\n\n─── packages/agent-runtime/src/node/plugins/__test__/coordinator-plugin-delegation.test.ts:137  (score 52.10, weak)\n    [function fixture @ line 31 — 1,251 of 17,916 chars]\nasync function fixture(options: {\r\n  child?: Partial<AgentChildSpawnInput>;\r\n  hostToolCeiling?: string[];\r\n  disallowedTools?: string[];\r\n  workerScript?: ScriptStep[];\r\n  parentScript?: ScriptStep[];\r\n  manyTools?: boolean;\r\n  coordinatorSearch?: boolean;\r\n  childIdleTtlMs?: number;\r\n  beforeSpawn?: (root: string) => Promise<void>;\r\n  onRunCapabilities?: VykorAgentOptions[\"onRunCapabilities\"];\r\n} = {}) {\r\n  const root = mkdtempSync(join(tmpdir(), \"coordinator-plugin-delegation-\"));\r\n  roots.push(root);\r\n  vi.stubEnv(\"VYKOR_CONFIG_DIR\", join(root, \"config\"));\r\n  const marker = join(root, \"native-calls.jsonl\");\r\n  const mcpMarker = join(root, \"mcp-calls.jsonl\");\r\n  for (const [id, names] of [[pluginId, [\"NativeWork\", \"HostDenied\", \"NativeDenied\", ...(options.manyTools ? Array.from({ length: 20 }, (_, i) => `Extra${i}`) : [])]], [foreignId, [\"ForeignWork\"]]] as const) {\r\n    const source = join(root, id);\r\n    mkdirSync(join(source, \".vykor-plugin\"), { recursive: true });\r\n    writeFileSync(join(source, \".vykor-plugin/plugin.json\"), JSON.stringify({\r\n      schemaVersion: 1, id, name: id.split(\".\").at(-1), version: \"1.0.0\",\r\n      components: { tools: [\"./tools.mjs\"], ...(id === plug\n    ... [function fixture truncated at 1200 chars]\n\n─── packages/plugins/src/installation/installer.ts:18  (score 51.92, weak)\n    [function installNativePlugin @ line 57 — 1,263 of 7,766 chars]\nasync function installNativePlugin(input: InstallLocalNativePluginInput): Promise<InstallLocalNativePluginResult> {\r\n  const suppliedScope = (input as { scope?: unknown }).scope;\r\n  if (suppliedScope !== \"user\") return { status: \"blocked\", diagnostics: [{\r\n    severity: \"error\", phase: \"install\", code: \"plugin_scope_not_supported\",\r\n    message: `Native Plugins can only be installed for the user; received scope '${String(suppliedScope)}'`,\r\n  }] };\r\n  const sourcePath = await realpath(resolve(input.sourcePath));\r\n  const validation = await validateNativePlugin(sourcePath);\r\n  if (validation.status === \"invalid\" || !validation.plugin) return { status: \"invalid\", diagnostics: validation.diagnostics };\r\n  const requested = requestedPluginPermissions(validation.plugin.manifest);\r\n  const approved = [...new Set(input.approvedPermissions)].sort();\r\n  const unknown = approved.filter((permission) => !requested.includes(permission));\r\n  const missing = requested.filter((permission) => !approved.includes(permission));\r\n  if (unknown.length || missing.length) return { status: \"blocked\", diagnostics: [{\r\n    severity: \"error\", phase: \"install\", code: \"plugin_permissions_not_approved\",\r\n    mes\n    ... [function installNativePlugin truncated at 1200 chars]\n\n5 passages from 'current'\nCite file:line for anything you rely on.\n"
+          }
+        ],
+        "isError": false
+      },
+      "output": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "packages/agent-runtime/src/node/plugins/native-tools/guard.ts",
+            "line": 27,
+            "startLine": 27,
+            "endLine": 59,
+            "text": "  async run(\n    toolName: string,\n    inputSchema: Record<string, unknown>,\n    input: Record<string, unknown>,\n    context: ToolContext,\n    call: () => Promise<ToolResult>,\n  ): Promise<ToolResult> {\n    const started = Date.now();\n    const cwd = context.cwd;\n    const inputSummary = summarizeInput(input);\n    let errorCode: string | undefined;\n    let status: NativeToolAuditEvent[\"status\"] = \"failed\";\n    try {\n      const maxConcurrentCalls = this.options.maxConcurrentCalls ?? 4;\n      if (this.activeCalls >= maxConcurrentCalls) {\n        throw new NativeToolHostError(\n          \"tool_concurrency_limit\",\n          `Native Tool ${toolName} has reached its concurrency limit (${maxConcurrentCalls}). Retry after another call finishes.`,\n        );\n      }\n      const validation = validateJsonSchemaInput(inputSchema, input);\n      if (validation) {\n        throw new NativeToolHostError(\n          \"tool_input_invalid\",\n          `Native Tool ${toolName} input is invalid: ${validation}`,\n        );\n      }\n      this.activeCalls += 1;\n      try {\n        const result = await call();\n        status = \"completed\";\n        return result;\n      } finally",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 110.44"
+          },
+          {
+            "path": "packages/agent-runtime/src/node/plugins/native-tools/__test__/tool-host.test.ts",
+            "line": 28,
+            "startLine": 28,
+            "endLine": 42,
+            "text": "function writePlugin(moduleSource: string, id = \"dev.vykor.runtime-tool\") {\n  const root = mkdtempSync(join(tmpdir(), \"vykor-native-tool-\"));\n  roots.push(root);\n  mkdirSync(join(root, \".vykor-plugin\"), { recursive: true });\n  mkdirSync(join(root, \"tools\"), { recursive: true });\n  writeFileSync(join(root, \".vykor-plugin\", \"plugin.json\"), JSON.stringify({\n    schemaVersion: 1,\n    id,\n    name: id.split(\".\").at(-1),\n    version: \"1.0.0\",\n    components: { tools: [\"./tools/index.mjs\"] },\n  }));\n  writeFileSync(join(root, \"tools\", \"index.mjs\"), moduleSource);\n  return root;\n}",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 93.10"
+          },
+          {
+            "path": "packages/agent-runtime/src/node/plugins/native-tools/activate.ts",
+            "line": 16,
+            "startLine": 16,
+            "endLine": 46,
+            "text": "export async function activateNativePluginTools(\n  plugin: LoadedNativePlugin,\n  context: {\n    cwd: string;\n    settings?: import(\"@vykor/host-config\").Settings;\n    dataRoot?: string;\n    environmentKind?: \"local\" | \"wsl\";\n    toolRegistry: IToolRegistry;\n    addCleanup(cleanup: () => Promise<void> | void, cleanupSync?: () => void): void;\n    onLog?: (message: string) => void;\n    onAudit?: (event: NativeToolAuditEvent) => void;\n    callTimeoutMs?: number;\n    cancellationGraceMs?: number;\n    maxConcurrentCalls?: number;\n    outputMaxBytes?: number;\n    logMessageMaxChars?: number;\n  },\n): Promise<NativeToolActivationResult> {\n  if (!plugin.components.tools?.value?.length) {\n    return { pluginId: plugin.manifest.id, state: \"inactive\", toolNames: [], diagnostics: [] };\n  }\n  if (context.environmentKind && context.environmentKind !== \"local\") {\n    return {\n      pluginId: plugin.manifest.id,\n      state: \"inactive\",\n      toolNames: [],\n      diagnostics: [{\n        severity: \"warning\",\n        phase: \"activate\",\n        code: \"native_tools_unavailable_in_environment\",\n        message: \"Native Plugin Tools are unavailable outside the local execution",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 58.72"
+          },
+          {
+            "path": "packages/agent-runtime/src/node/plugins/__test__/coordinator-plugin-delegation.test.ts",
+            "line": 31,
+            "startLine": 31,
+            "endLine": 53,
+            "text": "async function fixture(options: {\n  child?: Partial<AgentChildSpawnInput>;\n  hostToolCeiling?: string[];\n  disallowedTools?: string[];\n  workerScript?: ScriptStep[];\n  parentScript?: ScriptStep[];\n  manyTools?: boolean;\n  coordinatorSearch?: boolean;\n  childIdleTtlMs?: number;\n  beforeSpawn?: (root: string) => Promise<void>;\n  onRunCapabilities?: VykorAgentOptions[\"onRunCapabilities\"];\n} = {}) {\n  const root = mkdtempSync(join(tmpdir(), \"coordinator-plugin-delegation-\"));\n  roots.push(root);\n  vi.stubEnv(\"VYKOR_CONFIG_DIR\", join(root, \"config\"));\n  const marker = join(root, \"native-calls.jsonl\");\n  const mcpMarker = join(root, \"mcp-calls.jsonl\");\n  for (const [id, names] of [[pluginId, [\"NativeWork\", \"HostDenied\", \"NativeDenied\", ...(options.manyTools ? Array.from({ length: 20 }, (_, i) => `Extra${i}`) : [])]], [foreignId, [\"ForeignWork\"]]] as const) {\n    const source = join(root, id);\n    mkdirSync(join(source, \".vykor-plugin\"), { recursive: true });\n    writeFileSync(join(source, \".vykor-plugin/plugin.json\"), JSON.stringify({\n      schemaVersion: 1, id, name: id.split(\".\").at(-1), version: \"1.0.0\",\n      components: { tools: [\"./tools.mjs\"], ...(id === plug",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 52.10, weak"
+          },
+          {
+            "path": "packages/plugins/src/installation/installer.ts",
+            "line": 57,
+            "startLine": 57,
+            "endLine": 72,
+            "text": "async function installNativePlugin(input: InstallLocalNativePluginInput): Promise<InstallLocalNativePluginResult> {\n  const suppliedScope = (input as { scope?: unknown }).scope;\n  if (suppliedScope !== \"user\") return { status: \"blocked\", diagnostics: [{\n    severity: \"error\", phase: \"install\", code: \"plugin_scope_not_supported\",\n    message: `Native Plugins can only be installed for the user; received scope '${String(suppliedScope)}'`,\n  }] };\n  const sourcePath = await realpath(resolve(input.sourcePath));\n  const validation = await validateNativePlugin(sourcePath);\n  if (validation.status === \"invalid\" || !validation.plugin) return { status: \"invalid\", diagnostics: validation.diagnostics };\n  const requested = requestedPluginPermissions(validation.plugin.manifest);\n  const approved = [...new Set(input.approvedPermissions)].sort();\n  const unknown = approved.filter((permission) => !requested.includes(permission));\n  const missing = requested.filter((permission) => !approved.includes(permission));\n  if (unknown.length || missing.length) return { status: \"blocked\", diagnostics: [{\n    severity: \"error\", phase: \"install\", code: \"plugin_permissions_not_approved\",\n    mes",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 51.92, weak"
+          }
+        ],
+        "truncated": false,
+        "note": "保留 XERJ 原生排序与片段，正文已与当前项目文件核对；索引仍可能遗漏新文件，证据不足时继续 Grep/Read。"
+      },
+      "score": {
+        "fileHit": true,
+        "evidenceHit": false,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/agent-runtime/src/node/plugins/native-tools/guard.ts",
+          "packages/agent-runtime/src/node/plugins/native-tools/__test__/tool-host.test.ts",
+          "packages/agent-runtime/src/node/plugins/native-tools/activate.ts",
+          "packages/agent-runtime/src/node/plugins/__test__/coordinator-plugin-delegation.test.ts",
+          "packages/plugins/src/installation/installer.ts"
+        ],
+        "evidenceFiles": []
+      },
+      "evidence": [
+        {
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/guard.ts",
+          "startLine": 15,
+          "endLine": 39,
+          "text": "\nexport interface NativeToolCallGuardOptions {\n  pluginId: string;\n  maxConcurrentCalls?: number;\n  onAudit?: (event: NativeToolAuditEvent) => void;\n}\n\nexport class NativeToolCallGuard {\n  private activeCalls = 0;\n\n  constructor(private readonly options: NativeToolCallGuardOptions) {}\n\n  async run(\n    toolName: string,\n    inputSchema: Record<string, unknown>,\n    input: Record<string, unknown>,\n    context: ToolContext,\n    call: () => Promise<ToolResult>,\n  ): Promise<ToolResult> {\n    const started = Date.now();\n    const cwd = context.cwd;\n    const inputSummary = summarizeInput(input);\n    let errorCode: string | undefined;\n    let status: NativeToolAuditEvent[\"status\"] = \"failed\";\n    try {",
+          "bytes": 706,
+          "truncated": false
+        },
+        {
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/__test__/tool-host.test.ts",
+          "startLine": 16,
+          "endLine": 40,
+          "text": "  for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true });\n});\n\nclass TestRegistry implements IToolRegistry {\n  private readonly tools = new Map<string, ToolDefinition>();\n  register(tool: ToolDefinition): void { this.tools.set(tool.name, tool); }\n  unregister(name: string): boolean { return this.tools.delete(name); }\n  get(name: string): ToolDefinition | undefined { return this.tools.get(name); }\n  getAll(): ToolDefinition[] { return [...this.tools.values()]; }\n  has(name: string): boolean { return this.tools.has(name); }\n}\n\nfunction writePlugin(moduleSource: string, id = \"dev.vykor.runtime-tool\") {\n  const root = mkdtempSync(join(tmpdir(), \"vykor-native-tool-\"));\n  roots.push(root);\n  mkdirSync(join(root, \".vykor-plugin\"), { recursive: true });\n  mkdirSync(join(root, \"tools\"), { recursive: true });\n  writeFileSync(join(root, \".vykor-plugin\", \"plugin.json\"), JSON.stringify({\n    schemaVersion: 1,\n    id,\n    name: id.split(\".\").at(-1),\n    version: \"1.0.0\",\n    components: { tools: [\"./tools/index.mjs\"] },\n  }));\n  writeFileSync(join(root, \"tools\", \"index.mjs\"), moduleSource);",
+          "bytes": 1121,
+          "truncated": false
+        },
+        {
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/activate.ts",
+          "startLine": 4,
+          "endLine": 28,
+          "text": "import { formatNativeToolAuditEvent, NativeToolCallGuard, type NativeToolAuditEvent } from \"./guard.js\";\nimport { NativeToolHost, NativeToolHostError, type NativeToolHostState } from \"./tool-host.js\";\nimport { beginNativeToolRuntimeStatus } from \"./status.js\";\n\nexport interface NativeToolActivationResult {\n  pluginId: string;\n  state: NativeToolHostState;\n  toolNames: string[];\n  diagnostics: PluginDiagnostic[];\n  host?: NativeToolHost;\n}\n\nexport async function activateNativePluginTools(\n  plugin: LoadedNativePlugin,\n  context: {\n    cwd: string;\n    settings?: import(\"@vykor/host-config\").Settings;\n    dataRoot?: string;\n    environmentKind?: \"local\" | \"wsl\";\n    toolRegistry: IToolRegistry;\n    addCleanup(cleanup: () => Promise<void> | void, cleanupSync?: () => void): void;\n    onLog?: (message: string) => void;\n    onAudit?: (event: NativeToolAuditEvent) => void;\n    callTimeoutMs?: number;\n    cancellationGraceMs?: number;",
+          "bytes": 940,
+          "truncated": false
+        },
+        {
+          "path": "packages/agent-runtime/src/node/plugins/__test__/coordinator-plugin-delegation.test.ts",
+          "startLine": 19,
+          "endLine": 43,
+          "text": "  for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true });\n  vi.unstubAllEnvs();\n});\nconst settings: Settings = {\n  model: \"scripted-client-only\", apiFormat: \"anthropic\", maxTurns: 8,\n  permission: { mode: \"full_auto\" }, sandbox: { enabled: false }, memory: { enabled: false },\n};\nconst pluginId = \"test.coordinator\";\nconst foreignId = \"test.foreign\";\nconst mcpTool = \"mcp__ready__ping\";\ntype ScriptStep = string | { name: string; input: Record<string, unknown> };\n\nasync function fixture(options: {\n  child?: Partial<AgentChildSpawnInput>;\n  hostToolCeiling?: string[];\n  disallowedTools?: string[];\n  workerScript?: ScriptStep[];\n  parentScript?: ScriptStep[];\n  manyTools?: boolean;\n  coordinatorSearch?: boolean;\n  childIdleTtlMs?: number;\n  beforeSpawn?: (root: string) => Promise<void>;\n  onRunCapabilities?: VykorAgentOptions[\"onRunCapabilities\"];\n} = {}) {\n  const root = mkdtempSync(join(tmpdir(), \"coordinator-plugin-delegation-\"));",
+          "bytes": 969,
+          "truncated": false
+        },
+        {
+          "path": "packages/plugins/src/installation/installer.ts",
+          "startLine": 45,
+          "endLine": 69,
+          "text": "  storePath?: string;\n  origin?: \"native\" | \"converted\";\n  sourceFormat?: string;\n  link?: boolean;\n}\nexport type InstallLocalNativePluginResult =\n  | { status: \"installed\"; record: InstalledPluginRecord; diagnostics: PluginDiagnostic[] }\n  | { status: \"blocked\" | \"invalid\"; diagnostics: PluginDiagnostic[] };\n\nexport async function installLocalNativePlugin(input: InstallLocalNativePluginInput): Promise<InstallLocalNativePluginResult> {\n  return withPluginInstallationLock(input.storePath ?? getInstalledPluginStorePath(), () => installNativePlugin(input));\n}\nasync function installNativePlugin(input: InstallLocalNativePluginInput): Promise<InstallLocalNativePluginResult> {\n  const suppliedScope = (input as { scope?: unknown }).scope;\n  if (suppliedScope !== \"user\") return { status: \"blocked\", diagnostics: [{\n    severity: \"error\", phase: \"install\", code: \"plugin_scope_not_supported\",\n    message: `Native Plugins can only be installed for the user; received scope '${String(suppliedScope)}'`,\n  }] };\n  const sourcePath = await realpath(resolve(input.sourcePath));\n  const validation = await validateNativePlugin(sourcePath);\n  if (validation.status === \"invalid\" || !validation.plugin) return { status: \"invalid\", diagnostics: validation.diagnostics };\n  const requested = requestedPluginPermissions(validation.plugin.manifest);\n  const approved = [...new Set(input.approvedPermissions)].sort();\n  const unknown = approved.filter((permission) => !requested.includes(permission));\n  const missing = requested.filter((permission) => !approved.includes(permission));",
+          "bytes": 1574,
+          "truncated": false
+        }
+      ]
+    },
+    {
+      "taskId": "chinese-plugin-data",
+      "variant": "english-short",
+      "params": {
+        "corpus": "current",
+        "query": "native plugin process data directory per plugin id",
+        "k": 5,
+        "full": 1200,
+        "mode": "bm25",
+        "max_tokens": 2000
+      },
+      "timeoutMs": 1500,
+      "searchMs": 204.4031,
+      "outputBytes": 7508,
+      "native": {
+        "content": [
+          {
+            "type": "text",
+            "text": "\n─── packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts:34  (score 63.42)\n    [method start @ line 62 — 1,247 of 13,417 chars]\n  async start(): Promise<NativeToolRegistration[]> {\r\n    if (this.child) throw new NativeToolHostError(\"tool_protocol_error\", \"Native Tool Host is already started\");\r\n    const entries = this.plugin.components.tools?.value ?? [];\r\n    if (entries.length === 0) return [];\r\n    this.generation = randomUUID();\r\n    this.state = \"starting\";\r\n    const hostEntry = new URL(\"./host-entry.mjs\", import.meta.url);\r\n    const inheritedEnv = [\"PATH\", \"Path\", \"SystemRoot\", \"WINDIR\", \"ComSpec\", \"PATHEXT\", \"TEMP\", \"TMP\", \"TMPDIR\", \"LANG\"]\r\n      .reduce<NodeJS.ProcessEnv>((result, key) => {\r\n        if (process.env[key] !== undefined) result[key] = process.env[key];\r\n        return result;\r\n      }, {});\r\n    const child = fork(hostEntry, [], {\r\n      stdio: [\"ignore\", \"pipe\", \"pipe\", \"ipc\"],\r\n      serialization: \"advanced\",\r\n      // Do not leak daemon API keys or other ambient secrets into third-party code.\r\n      env: buildNativeToolHostEnvironment(inheritedEnv, process.versions.electron),\r\n    });\r\n    this.child = child;\r\n    child.on(\"message\", (message) => this.handleMessage(message));\r\n    child.on(\"error\", (error) => this.handleCrash(new NativeToolHostError(\"tool_host_spawn_failed\", er\n    ... [method start truncated at 1200 chars]\n\n─── apps/cli/src/commands/main.ts:415  (score 60.03)\n    [function loadSkillsThreeSources @ line 415 — 1,266 of 18,659 chars]\nexport async function loadSkillsThreeSources(\r\n  skillRegistry: SkillRegistry,\r\n  cwd: string,\r\n  settings?: Settings,\r\n) {\r\n  skillRegistry.registerBundled();\r\n  const pluginContributions: { plugins: Awaited<ReturnType<typeof loadNativePlugin>>[]; warnings: string[] } = { plugins: [], warnings: [] };\r\n  if (settings && (settings.plugins?.enabled ?? true)) {\r\n    const records = await discoverInstalledNativePlugins({ cwd });\r\n    for (const record of records) {\r\n      const verification = await verifyInstalledNativePlugin(record);\r\n      if (verification.status !== \"valid\") {\r\n        pluginContributions.warnings.push(...verification.diagnostics.map((item) => `${record.id}: ${item.message}`));\r\n        continue;\r\n      }\r\n      const loaded = await loadNativePlugin(verification.plugin);\r\n      pluginContributions.plugins.push(loaded);\r\n      pluginContributions.warnings.push(...loaded.diagnostics.map((item) => item.message));\r\n      for (const skill of loaded.components.skills?.value ?? []) skillRegistry.register(skill);\r\n    }\r\n  }\r\n  // 插件贡献插在 bundled 之后、user/project 之前：bundled < plugin < user < project\r\n  // （register 覆盖语义）。信任门控告警直接打到 stderr，三模式一致。\r\n  for (const warning of plugi\n    ... [function loadSkillsThreeSources truncated at 1200 chars]\n\n─── packages/server/src/application/daemon-application.ts:50  (score 59.78)\n    [method constructor @ line 291 — 1,253 of 61,753 chars]\n  constructor(private readonly options: DaemonApplicationOptions) {\r\n    const { store } = options;\r\n    this.store = store;\r\n    const executionOwner = options.executionOwner ?? new ExecutionRuntimeOwner();\r\n    this.executionOwner = executionOwner;\r\n    this.notes = createNoteApplicationService({ notes: store.notes, readiness: () => this.diagnosticState });\r\n    this.mcpRuntimes = new McpRuntimeConnectionCoordinator();\r\n    this.mcpOAuth = new McpOAuthApplicationService({ coordinator: this.mcpRuntimes });\r\n    this.mcpOAuthOperations = new McpOAuthOperationService({ application: this.mcpOAuth });\r\n    this.modelCatalog = createModelCatalogService();\r\n    // 同一份会话库同时只允许一个 daemon 当主人。心跳断了，别人才能接管。\r\n    this.ownerLease = store.acquireApplicationOwner({\r\n      ownerId: options.ownerId ?? `daemon:${process.pid}:${randomUUID()}`,\r\n      pid: process.pid,\r\n      staleAfterMs: options.ownerStaleAfterMs ?? 30_000,\r\n      canTakeOver: (current) => !(options.ownerProcessAlive ?? isProcessAlive)(current.pid),\r\n    });\r\n    this.ownerHeartbeat = setInterval(() => {\r\n      try {\r\n        this.ownerLease = store.heartbeatApplicationOwner(this.ownerLease);\r\n      } catch (error) {\r\n        clearI\n    ... [method constructor truncated at 1200 chars]\n\n─── packages/server/src/application/__test__/default-application-services.test.ts:26  (score 57.75)\n    [no symbol match; showing 1,200 of 43,503 chars from offset 7,050, window centred on the match]\n= \"plugin\")).toBe(true);\r\n  });\r\n\r\n  it(\"updates daemon.autoStart without restarting live agent runtimes\", async () => {\r\n    const ref = {\r\n      current: {\r\n        model: \"m\",\r\n        apiFormat: \"anthropic\" as const,\r\n        maxTurns: 50,\r\n        permission: { mode: \"default\" as const },\r\n        daemon: { autoStart: false },\r\n      },\r\n    };\r\n    const settings = createDefaultSettingsService(ref);\r\n\r\n    const result = await settings.patch({\r\n      path: \"daemon.autoStart\",\r\n      value: \"true\",\r\n    });\r\n\r\n    expect(ref.current.daemon.autoStart).toBe(true);\r\n    expect(result.restartRuntimes).toBe(false);\r\n  });\r\n\r\n  it(\"updates the plugin master switch and requests runtime restart\", async () => {\r\n    const ref = {\r\n      current: {\r\n        model: \"m\",\r\n        apiFormat: \"anthropic\" as const,\r\n        maxTurns: 50,\r\n        permission: { mode: \"default\" as const },\r\n        plugins: { enabled: true },\r\n      },\r\n    };\r\n    const settings = createDefaultSettingsService(ref);\r\n\r\n    const result = await settings.patch({\r\n      path: \"plugins.enabled\",\r\n      value: \"false\",\r\n    });\r\n\r\n    expect(ref.current.plugins.enabled).toBe(false);\r\n    expect(result.restartRuntim\n\n─── packages/agent-runtime/src/node/plugins/native-tools/__test__/knowledge-work.test.ts:11  (score 51.73)\n    [function withKnowledge @ line 20 — 1,257 of 10,675 chars]\nasync function withKnowledge(run: (tool: ToolDefinition, cwd: string, registry: TestRegistry, metadata: Record<string, unknown>) => Promise<void>) {\r\n  const cwd = mkdtempSync(join(tmpdir(), \"vykor-knowledge-work-\"));\r\n  const trustDirectory = mkdtempSync(join(tmpdir(), \"vykor-evidence-trust-\"));\r\n  const metadata = { dataRoot: trustDirectory };\r\n  const registry = new TestRegistry();\r\n  const cleanups: Array<() => Promise<void> | void> = [];\r\n  try {\r\n    const validation = await validateNativePlugin(pluginRoot);\r\n    expect(validation.status, JSON.stringify(validation.diagnostics)).toBe(\"valid\");\r\n    expect(requestedPluginPermissions(validation.plugin!.manifest)).toEqual(expect.arrayContaining([\r\n      \"filesystem:read\", \"network:api.openalex.org\", \"tool:filesystem:read\", \"tool:network:api.openalex.org\",\r\n    ]));\r\n    const plugin = await loadNativePlugin(validation.plugin!);\r\n    expect(plugin.diagnostics.filter(item => item.severity === \"error\")).toEqual([]);\r\n    const activation = await activateNativePluginTools(plugin, {\r\n      cwd, dataRoot: trustDirectory, toolRegistry: registry, addCleanup: cleanup => cleanups.push(cleanup),\r\n    });\r\n    expect(activation.state, JSON.s\n    ... [function withKnowledge truncated at 1200 chars]\n\n5 passages from 'current'\nCite file:line for anything you rely on.\n"
+          }
+        ],
+        "isError": false
+      },
+      "output": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+            "line": 62,
+            "startLine": 62,
+            "endLine": 82,
+            "text": "  async start(): Promise<NativeToolRegistration[]> {\n    if (this.child) throw new NativeToolHostError(\"tool_protocol_error\", \"Native Tool Host is already started\");\n    const entries = this.plugin.components.tools?.value ?? [];\n    if (entries.length === 0) return [];\n    this.generation = randomUUID();\n    this.state = \"starting\";\n    const hostEntry = new URL(\"./host-entry.mjs\", import.meta.url);\n    const inheritedEnv = [\"PATH\", \"Path\", \"SystemRoot\", \"WINDIR\", \"ComSpec\", \"PATHEXT\", \"TEMP\", \"TMP\", \"TMPDIR\", \"LANG\"]\n      .reduce<NodeJS.ProcessEnv>((result, key) => {\n        if (process.env[key] !== undefined) result[key] = process.env[key];\n        return result;\n      }, {});\n    const child = fork(hostEntry, [], {\n      stdio: [\"ignore\", \"pipe\", \"pipe\", \"ipc\"],\n      serialization: \"advanced\",\n      // Do not leak daemon API keys or other ambient secrets into third-party code.\n      env: buildNativeToolHostEnvironment(inheritedEnv, process.versions.electron),\n    });\n    this.child = child;\n    child.on(\"message\", (message) => this.handleMessage(message));\n    child.on(\"error\", (error) => this.handleCrash(new NativeToolHostError(\"tool_host_spawn_failed\", er",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 63.42"
+          },
+          {
+            "path": "apps/cli/src/commands/main.ts",
+            "line": 415,
+            "startLine": 415,
+            "endLine": 438,
+            "text": "export async function loadSkillsThreeSources(\n  skillRegistry: SkillRegistry,\n  cwd: string,\n  settings?: Settings,\n) {\n  skillRegistry.registerBundled();\n  const pluginContributions: { plugins: Awaited<ReturnType<typeof loadNativePlugin>>[]; warnings: string[] } = { plugins: [], warnings: [] };\n  if (settings && (settings.plugins?.enabled ?? true)) {\n    const records = await discoverInstalledNativePlugins({ cwd });\n    for (const record of records) {\n      const verification = await verifyInstalledNativePlugin(record);\n      if (verification.status !== \"valid\") {\n        pluginContributions.warnings.push(...verification.diagnostics.map((item) => `${record.id}: ${item.message}`));\n        continue;\n      }\n      const loaded = await loadNativePlugin(verification.plugin);\n      pluginContributions.plugins.push(loaded);\n      pluginContributions.warnings.push(...loaded.diagnostics.map((item) => item.message));\n      for (const skill of loaded.components.skills?.value ?? []) skillRegistry.register(skill);\n    }\n  }\n  // 插件贡献插在 bundled 之后、user/project 之前：bundled < plugin < user < project\n  // （register 覆盖语义）。信任门控告警直接打到 stderr，三模式一致。\n  for (const warning of plugi",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 60.03"
+          },
+          {
+            "path": "packages/server/src/application/daemon-application.ts",
+            "line": 291,
+            "startLine": 291,
+            "endLine": 312,
+            "text": "  constructor(private readonly options: DaemonApplicationOptions) {\n    const { store } = options;\n    this.store = store;\n    const executionOwner = options.executionOwner ?? new ExecutionRuntimeOwner();\n    this.executionOwner = executionOwner;\n    this.notes = createNoteApplicationService({ notes: store.notes, readiness: () => this.diagnosticState });\n    this.mcpRuntimes = new McpRuntimeConnectionCoordinator();\n    this.mcpOAuth = new McpOAuthApplicationService({ coordinator: this.mcpRuntimes });\n    this.mcpOAuthOperations = new McpOAuthOperationService({ application: this.mcpOAuth });\n    this.modelCatalog = createModelCatalogService();\n    // 同一份会话库同时只允许一个 daemon 当主人。心跳断了，别人才能接管。\n    this.ownerLease = store.acquireApplicationOwner({\n      ownerId: options.ownerId ?? `daemon:${process.pid}:${randomUUID()}`,\n      pid: process.pid,\n      staleAfterMs: options.ownerStaleAfterMs ?? 30_000,\n      canTakeOver: (current) => !(options.ownerProcessAlive ?? isProcessAlive)(current.pid),\n    });\n    this.ownerHeartbeat = setInterval(() => {\n      try {\n        this.ownerLease = store.heartbeatApplicationOwner(this.ownerLease);\n      } catch (error) {\n        clearI",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 59.78"
+          },
+          {
+            "path": "packages/server/src/application/__test__/default-application-services.test.ts",
+            "line": 159,
+            "startLine": 159,
+            "endLine": 201,
+            "text": "= \"plugin\")).toBe(true);\n  });\n\n  it(\"updates daemon.autoStart without restarting live agent runtimes\", async () => {\n    const ref = {\n      current: {\n        model: \"m\",\n        apiFormat: \"anthropic\" as const,\n        maxTurns: 50,\n        permission: { mode: \"default\" as const },\n        daemon: { autoStart: false },\n      },\n    };\n    const settings = createDefaultSettingsService(ref);\n\n    const result = await settings.patch({\n      path: \"daemon.autoStart\",\n      value: \"true\",\n    });\n\n    expect(ref.current.daemon.autoStart).toBe(true);\n    expect(result.restartRuntimes).toBe(false);\n  });\n\n  it(\"updates the plugin master switch and requests runtime restart\", async () => {\n    const ref = {\n      current: {\n        model: \"m\",\n        apiFormat: \"anthropic\" as const,\n        maxTurns: 50,\n        permission: { mode: \"default\" as const },\n        plugins: { enabled: true },\n      },\n    };\n    const settings = createDefaultSettingsService(ref);\n\n    const result = await settings.patch({\n      path: \"plugins.enabled\",\n      value: \"false\",\n    });\n\n    expect(ref.current.plugins.enabled).toBe(false);\n    expect(result.restartRuntim",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 57.75"
+          },
+          {
+            "path": "packages/agent-runtime/src/node/plugins/native-tools/__test__/knowledge-work.test.ts",
+            "line": 20,
+            "startLine": 20,
+            "endLine": 37,
+            "text": "async function withKnowledge(run: (tool: ToolDefinition, cwd: string, registry: TestRegistry, metadata: Record<string, unknown>) => Promise<void>) {\n  const cwd = mkdtempSync(join(tmpdir(), \"vykor-knowledge-work-\"));\n  const trustDirectory = mkdtempSync(join(tmpdir(), \"vykor-evidence-trust-\"));\n  const metadata = { dataRoot: trustDirectory };\n  const registry = new TestRegistry();\n  const cleanups: Array<() => Promise<void> | void> = [];\n  try {\n    const validation = await validateNativePlugin(pluginRoot);\n    expect(validation.status, JSON.stringify(validation.diagnostics)).toBe(\"valid\");\n    expect(requestedPluginPermissions(validation.plugin!.manifest)).toEqual(expect.arrayContaining([\n      \"filesystem:read\", \"network:api.openalex.org\", \"tool:filesystem:read\", \"tool:network:api.openalex.org\",\n    ]));\n    const plugin = await loadNativePlugin(validation.plugin!);\n    expect(plugin.diagnostics.filter(item => item.severity === \"error\")).toEqual([]);\n    const activation = await activateNativePluginTools(plugin, {\n      cwd, dataRoot: trustDirectory, toolRegistry: registry, addCleanup: cleanup => cleanups.push(cleanup),\n    });\n    expect(activation.state, JSON.s",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 51.73"
+          }
+        ],
+        "truncated": false,
+        "note": "保留 XERJ 原生排序与片段，正文已与当前项目文件核对；索引仍可能遗漏新文件，证据不足时继续 Grep/Read。"
+      },
+      "score": {
+        "fileHit": true,
+        "evidenceHit": false,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "apps/cli/src/commands/main.ts",
+          "packages/server/src/application/daemon-application.ts",
+          "packages/server/src/application/__test__/default-application-services.test.ts",
+          "packages/agent-runtime/src/node/plugins/native-tools/__test__/knowledge-work.test.ts"
+        ],
+        "evidenceFiles": []
+      },
+      "evidence": [
+        {
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+          "startLine": 50,
+          "endLine": 74,
+          "text": "  private child: ChildProcess | undefined;\n  private pending = new Map<string, PendingRequest>();\n  private stopping = false;\n  private outputBytes = { stdout: 0, stderr: 0, ipc: 0 };\n  private outputLimitNotified = new Set<\"stdout\" | \"stderr\" | \"ipc\">();\n  state: NativeToolHostState = \"inactive\";\n\n  constructor(\n    readonly plugin: LoadedNativePlugin,\n    private readonly options: NativeToolHostOptions = {},\n  ) {}\n\n  async start(): Promise<NativeToolRegistration[]> {\n    if (this.child) throw new NativeToolHostError(\"tool_protocol_error\", \"Native Tool Host is already started\");\n    const entries = this.plugin.components.tools?.value ?? [];\n    if (entries.length === 0) return [];\n    this.generation = randomUUID();\n    this.state = \"starting\";\n    const hostEntry = new URL(\"./host-entry.mjs\", import.meta.url);\n    const inheritedEnv = [\"PATH\", \"Path\", \"SystemRoot\", \"WINDIR\", \"ComSpec\", \"PATHEXT\", \"TEMP\", \"TMP\", \"TMPDIR\", \"LANG\"]\n      .reduce<NodeJS.ProcessEnv>((result, key) => {\n        if (process.env[key] !== undefined) result[key] = process.env[key];\n        return result;\n      }, {});\n    const child = fork(hostEntry, [], {",
+          "bytes": 1150,
+          "truncated": false
+        },
+        {
+          "path": "apps/cli/src/commands/main.ts",
+          "startLine": 403,
+          "endLine": 427,
+          "text": " * 3. 创建 SkillLoader(registry)\n       ↓\n * 4. 调用 loadFromDirectory(\"/path/to/skills\")\n       ↓\n * 5. 对每个 .md 文件：\n       ├─ readFile() 读取内容\n       ├─ parseSkillMarkdown() 解析元数据\n       ├─ 构建 SkillDefinition 对象\n       └─ registry.register() 注册到内存\n       ↓\n  * 6. 通过 registry.get(name) 查询和使用技能\n */\nexport async function loadSkillsThreeSources(\n  skillRegistry: SkillRegistry,\n  cwd: string,\n  settings?: Settings,\n) {\n  skillRegistry.registerBundled();\n  const pluginContributions: { plugins: Awaited<ReturnType<typeof loadNativePlugin>>[]; warnings: string[] } = { plugins: [], warnings: [] };\n  if (settings && (settings.plugins?.enabled ?? true)) {\n    const records = await discoverInstalledNativePlugins({ cwd });\n    for (const record of records) {\n      const verification = await verifyInstalledNativePlugin(record);\n      if (verification.status !== \"valid\") {\n        pluginContributions.warnings.push(...verification.diagnostics.map((item) => `${record.id}: ${item.message}`));",
+          "bytes": 1080,
+          "truncated": false
+        },
+        {
+          "path": "packages/server/src/application/daemon-application.ts",
+          "startLine": 279,
+          "endLine": 303,
+          "text": "  private readonly localOcr: LocalOcrService;\n  private readonly startupRecovery: Promise<void>;\n  createMaintenanceService(host: Pick<MaintenanceApplicationContext, \"logs\" | \"settings\"> & { beforeClose?(): void } = {}) {\n    return createMaintenanceApplicationService({ store: this.store, control: this.control, commands: this.commands, terminals: this.terminals, ...host, readiness: () => this.diagnosticState, closeApplication: () => { host.beforeClose?.(); return this.close(); } });\n  }\n  private closePromise?: Promise<void>;\n  private releaseContextUsageLiveAssembler?: () => void;\n  private readyState: \"starting\" | \"ready\" | \"failed\" | \"closing\" | \"closed\" = \"starting\";\n  get diagnosticState() { return { phase: this.readyState, accepting: this.readyState === \"ready\" && this.operationGate.accepting }; }\n  private ownerLease: ApplicationOwnerLease;\n  private readonly ownerHeartbeat: ReturnType<typeof setInterval>;\n\n  constructor(private readonly options: DaemonApplicationOptions) {\n    const { store } = options;\n    this.store = store;\n    const executionOwner = options.executionOwner ?? new ExecutionRuntimeOwner();\n    this.executionOwner = executionOwner;\n    this.notes = createNoteApplicationService({ notes: store.notes, readiness: () => this.diagnosticState });\n    this.mcpRuntimes = new McpRuntimeConnectionCoordinator();\n    this.mcpOAuth = new McpOAuthApplicationService({ coordinator: this.mcpRuntimes });\n    this.mcpOAuthOperations = new McpOAuthOperationService({ application: this.mcpOAuth });\n    this.modelCatalog = createModelCatalogService();\n    // 同一份会话库同时只允许一个 daemon 当主人。心跳断了，别人才能接管。\n    this.ownerLease = store.acquireApplicationOwner({\n      ownerId: options.ownerId ?? `daemon:${process.pid}:${randomUUID()}`,",
+          "bytes": 1810,
+          "truncated": false
+        },
+        {
+          "path": "packages/server/src/application/__test__/default-application-services.test.ts",
+          "startLine": 147,
+          "endLine": 171,
+          "text": "    const context = createDefaultContextService({\n      current: { model: \"m\", apiFormat: \"anthropic\", maxTurns: 50, permission: { mode: \"default\" } } as never,\n    });\n\n    const status = await context.status({ cwd: temporaryDirectory });\n    expect(status.report).toContain(\"unreadable\");\n    expect(status.report).not.toContain(\"{incomplete-json\");\n  });\n\n  it(\"keeps persona inspection limited to built-in and user definitions\", async () => {\n    const result = await createDefaultAgentPersonaService().list();\n    expect(result.agents.map((agent) => agent.name)).toContain(\"worker\");\n    expect(result.agents.every((agent) => agent.source !== \"plugin\")).toBe(true);\n  });\n\n  it(\"updates daemon.autoStart without restarting live agent runtimes\", async () => {\n    const ref = {\n      current: {\n        model: \"m\",\n        apiFormat: \"anthropic\" as const,\n        maxTurns: 50,\n        permission: { mode: \"default\" as const },\n        daemon: { autoStart: false },\n      },\n    };",
+          "bytes": 985,
+          "truncated": false
+        },
+        {
+          "path": "packages/agent-runtime/src/node/plugins/native-tools/__test__/knowledge-work.test.ts",
+          "startLine": 8,
+          "endLine": 32,
+          "text": "import { describe, expect, it } from \"vitest\";\nimport { activateNativePluginTools } from \"../activate.js\";\nimport { createWebFetchTool } from \"@vykor/tools\";\nimport { createRunCapabilityView } from \"../../run-capability-view.js\";\n\n// Optional compatibility coverage against an explicit official-source checkout.\n// Normal host tests do not require the marketplace repository.\nconst officialPlugins = process.env.VYKOR_OFFICIAL_PLUGINS_DIR;\nconst pluginRoot = officialPlugins ? resolve(officialPlugins, \"knowledge-work\") : \"\";\n\nclass TestRegistry extends ToolRegistry {}\n\nasync function withKnowledge(run: (tool: ToolDefinition, cwd: string, registry: TestRegistry, metadata: Record<string, unknown>) => Promise<void>) {\n  const cwd = mkdtempSync(join(tmpdir(), \"vykor-knowledge-work-\"));\n  const trustDirectory = mkdtempSync(join(tmpdir(), \"vykor-evidence-trust-\"));\n  const metadata = { dataRoot: trustDirectory };\n  const registry = new TestRegistry();\n  const cleanups: Array<() => Promise<void> | void> = [];\n  try {\n    const validation = await validateNativePlugin(pluginRoot);\n    expect(validation.status, JSON.stringify(validation.diagnostics)).toBe(\"valid\");\n    expect(requestedPluginPermissions(validation.plugin!.manifest)).toEqual(expect.arrayContaining([\n      \"filesystem:read\", \"network:api.openalex.org\", \"tool:filesystem:read\", \"tool:network:api.openalex.org\",\n    ]));\n    const plugin = await loadNativePlugin(validation.plugin!);",
+          "bytes": 1451,
+          "truncated": false
+        }
+      ]
+    },
+    {
+      "taskId": "chinese-schedule-history",
+      "variant": "english-short",
+      "params": {
+        "corpus": "current",
+        "query": "schedule execution history create run storage",
+        "k": 5,
+        "full": 1200,
+        "mode": "bm25",
+        "max_tokens": 2000
+      },
+      "timeoutMs": 1500,
+      "searchMs": 194.87789999999984,
+      "outputBytes": 6263,
+      "native": {
+        "content": [
+          {
+            "type": "text",
+            "text": "\n─── packages/protocol/src/requests/requests.ts:204  (score 63.80)\n    [function parseScheduleFields @ line 374 — 1,263 of 17,911 chars]\nfunction parseScheduleFields(\r\n  body: JsonRecord,\r\n): Partial<CreateScheduledTaskInput> {\r\n  const id = optionalString(body, \"id\");\r\n  const name = optionalString(body, \"name\");\r\n  const description = optionalString(body, \"description\");\r\n  const prompt = optionalString(body, \"prompt\");\r\n  const recurrence = optionalString(body, \"recurrence\");\r\n  const recurrenceFormat = optionalEnum(body, \"recurrenceFormat\", [\r\n    \"rrule\",\r\n    \"once\",\r\n  ] as const);\r\n  const timezone = optionalString(body, \"timezone\");\r\n  const status = optionalEnum(body, \"status\", [\r\n    \"active\",\r\n    \"paused\",\r\n    \"completed\",\r\n  ] as const);\r\n  const destination = optionalEnum(body, \"destination\", [\r\n    \"standalone\",\r\n    \"chat\",\r\n  ] as const);\r\n  const sessionId = optionalString(body, \"sessionId\");\r\n  const projectPaths = optionalStringArray(body, \"projectPaths\");\r\n  const executionMode = optionalEnum(body, \"executionMode\", [\r\n    \"local\",\r\n    \"worktree\",\r\n  ] as const);\r\n  const model = optionalString(body, \"model\");\r\n  const effort = optionalString(body, \"effort\");\r\n  const skillNames = optionalStringArray(body, \"skillNames\");\r\n  const pluginNames = optionalStringArray(body, \"pluginNames\");\r\n  const\n    ... [function parseScheduleFields truncated at 1200 chars]\n\n─── packages/server/src/daemon/__test__/scheduled-task-service.test.ts:519  (score 59.51)\n    [function createHarness @ line 22 — 915 of 28,314 chars]\nfunction createHarness(\r\n  execute = vi.fn(async (\r\n    _task: ScheduledTaskRecord,\r\n    _run: ScheduledRunRecord,\r\n    reportSessionReady: (sessionId: string) => void,\r\n  ) => {\r\n    reportSessionReady(\"scheduled-session\");\r\n    return {\r\n      sessionId: \"scheduled-session\",\r\n      runId: \"agent-run\",\r\n      summary: \"Agent completed the scheduled work.\",\r\n    };\r\n  }),\r\n) {\r\n  const dir = mkdtempSync(join(tmpdir(), \"vk-scheduled-service-\"));\r\n  const store = new SessionStore({ path: join(dir, \"store.db\") });\r\n  store.sessions.create({\r\n    id: \"scheduled-session\",\r\n    cwd: process.cwd(),\r\n    model: \"test-model\",\r\n  });\r\n  const service = new ScheduledTaskService({\r\n    schedules: store.schedules,\r\n    execute,\r\n  });\r\n  cleanups.push(async () => {\r\n    await service.shutdown();\r\n    store.close();\r\n    rmSync(dir, { recursive: true, force: true });\r\n  });\r\n  return { execute, service, store };\r\n}\r\n\n─── packages/services/src/session-runtime/__test__/store.test.ts:1078  (score 55.24)\n    [function createReadyAttachment @ line 59 — 438 of 126,074 chars]\nfunction createReadyAttachment(\r\n  store: SessionStore,\r\n  id: string,\r\n  sizeBytes = 100,\r\n): void {\r\n  store.attachments.createImportingAttachment({\r\n    id,\r\n    displayName: `${id}.png`,\r\n    declaredMediaType: \"image/png\",\r\n    stagingName: `${id}.part`,\r\n    createdAt: 10,\r\n  });\r\n  store.attachments.markAttachmentReady(id, {\r\n    sha256: \"a\".repeat(64),\r\n    sizeBytes,\r\n    mediaType: \"image/png\",\r\n    updatedAt: 11,\r\n  });\r\n}\r\n\n─── packages/client/src/index.ts:94  (score 41.17)\n    [no symbol match; showing 1,200 of 8,420 chars from offset 2,700, window centred on the match]\nor,\r\n} from \"./state/index.js\";\r\nexport type {\r\n  SessionSyncControllerOptions,\r\n  SyncConnectionStatus,\r\n} from \"./state/index.js\";\r\nexport {\r\n  LOCAL_COMMAND_DETAILS,\r\n  LOCAL_COMMAND_NAMES,\r\n  dispatchSessionCommand,\r\n  hasActiveRun,\r\n  mergeCommandDetails,\r\n  parseSlashLine,\r\n  resolveSessionCwd,\r\n} from \"./commands/index.js\";\r\nexport { isPluginIconSource, isPluginWebUrl, readRuntimeMetadata } from \"@vykor/protocol\";\r\nexport type { SessionRuntimeConfig, SessionRuntimeConfigPatch } from \"@vykor/protocol\";\r\nexport type {\r\n  PresentationReadRequest,\r\n  SessionCommandHost,\r\n  SessionCommandOutcome,\r\n  SlashLine,\r\n} from \"./commands/index.js\";\r\nexport type {\r\n  AdmitClientPromptInput,\r\n  AgentPersonaInfo,\r\n  AttachmentStorageGcResult,\r\n  AttachmentStorageIssue,\r\n  AttachmentStorageRepairResult,\r\n  AttachmentStorageReport,\r\n  AuthStatus,\r\n  CommandCatalogEntry,\r\n  CommandKind,\r\n  CommandSelection,\r\n  CommandSource,\r\n  CompactSessionResponse,\r\n  CancelQueuedClientPromptInput,\r\n  CancelQueuedPromptResponse,\r\n  CreateBackgroundShellInput,\r\n  CreateBackgroundShellResult,\r\n  CreateScheduledTaskInput,\r\n  AdmitPromptAttachmentInput,\r\n  CreateClientSessionInput,\r\n  EditLatestClientPromptInpu\n\n─── packages/services/src/schedules/schedule-repository.ts:27  (score 41.16)\n    [method updateTask @ line 80 — 1,252 of 9,906 chars]\n  updateTask(id: string, patch: UpdateScheduledTaskInput): ScheduledTaskRecord {\r\n    return this.storage.database.connection.transaction(() => {\r\n      this.storage.assertWritable();\r\n      const current = this.getTask(id);\r\n      if (!current) throw new Error(`Scheduled task not found: ${id}`);\r\n      const updated = {\r\n        ...current,\r\n        ...withoutUndefined(patch),\r\n        updatedAt: Date.now(),\r\n      } as ScheduledTaskRecord;\r\n      if (patch.lastRunAt === null) delete updated.lastRunAt;\r\n      if (patch.nextRunAt === null) delete updated.nextRunAt;\r\n      this.database.update(scheduledTasks).set({\r\n        name: updated.name,\r\n        description: updated.description ?? null,\r\n        prompt: updated.prompt,\r\n        recurrence: updated.recurrence,\r\n        recurrenceFormat: updated.recurrenceFormat,\r\n        timezone: updated.timezone,\r\n        status: updated.status,\r\n        destination: updated.destination,\r\n        sessionId: updated.sessionId ?? null,\r\n        projectPathsJson: encode(updated.projectPaths),\r\n        executionMode: updated.executionMode,\r\n        model: updated.model ?? null,\r\n        effort: updated.effort ?? null,\r\n        skillNamesJson: en\n    ... [method updateTask truncated at 1200 chars]\n\n5 passages from 'current'\nCite file:line for anything you rely on.\n"
+          }
+        ],
+        "isError": false
+      },
+      "output": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "packages/protocol/src/requests/requests.ts",
+            "line": 374,
+            "startLine": 374,
+            "endLine": 406,
+            "text": "function parseScheduleFields(\n  body: JsonRecord,\n): Partial<CreateScheduledTaskInput> {\n  const id = optionalString(body, \"id\");\n  const name = optionalString(body, \"name\");\n  const description = optionalString(body, \"description\");\n  const prompt = optionalString(body, \"prompt\");\n  const recurrence = optionalString(body, \"recurrence\");\n  const recurrenceFormat = optionalEnum(body, \"recurrenceFormat\", [\n    \"rrule\",\n    \"once\",\n  ] as const);\n  const timezone = optionalString(body, \"timezone\");\n  const status = optionalEnum(body, \"status\", [\n    \"active\",\n    \"paused\",\n    \"completed\",\n  ] as const);\n  const destination = optionalEnum(body, \"destination\", [\n    \"standalone\",\n    \"chat\",\n  ] as const);\n  const sessionId = optionalString(body, \"sessionId\");\n  const projectPaths = optionalStringArray(body, \"projectPaths\");\n  const executionMode = optionalEnum(body, \"executionMode\", [\n    \"local\",\n    \"worktree\",\n  ] as const);\n  const model = optionalString(body, \"model\");\n  const effort = optionalString(body, \"effort\");\n  const skillNames = optionalStringArray(body, \"skillNames\");\n  const pluginNames = optionalStringArray(body, \"pluginNames\");\n  const",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 63.80"
+          },
+          {
+            "path": "packages/server/src/daemon/__test__/scheduled-task-service.test.ts",
+            "line": 22,
+            "startLine": 22,
+            "endLine": 53,
+            "text": "function createHarness(\n  execute = vi.fn(async (\n    _task: ScheduledTaskRecord,\n    _run: ScheduledRunRecord,\n    reportSessionReady: (sessionId: string) => void,\n  ) => {\n    reportSessionReady(\"scheduled-session\");\n    return {\n      sessionId: \"scheduled-session\",\n      runId: \"agent-run\",\n      summary: \"Agent completed the scheduled work.\",\n    };\n  }),\n) {\n  const dir = mkdtempSync(join(tmpdir(), \"vk-scheduled-service-\"));\n  const store = new SessionStore({ path: join(dir, \"store.db\") });\n  store.sessions.create({\n    id: \"scheduled-session\",\n    cwd: process.cwd(),\n    model: \"test-model\",\n  });\n  const service = new ScheduledTaskService({\n    schedules: store.schedules,\n    execute,\n  });\n  cleanups.push(async () => {\n    await service.shutdown();\n    store.close();\n    rmSync(dir, { recursive: true, force: true });\n  });\n  return { execute, service, store };\n}",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 59.51"
+          },
+          {
+            "path": "packages/services/src/session-runtime/__test__/store.test.ts",
+            "line": 59,
+            "startLine": 59,
+            "endLine": 77,
+            "text": "function createReadyAttachment(\n  store: SessionStore,\n  id: string,\n  sizeBytes = 100,\n): void {\n  store.attachments.createImportingAttachment({\n    id,\n    displayName: `${id}.png`,\n    declaredMediaType: \"image/png\",\n    stagingName: `${id}.part`,\n    createdAt: 10,\n  });\n  store.attachments.markAttachmentReady(id, {\n    sha256: \"a\".repeat(64),\n    sizeBytes,\n    mediaType: \"image/png\",\n    updatedAt: 11,\n  });\n}",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 55.24"
+          },
+          {
+            "path": "packages/client/src/index.ts",
+            "line": 69,
+            "startLine": 69,
+            "endLine": 112,
+            "text": "or,\n} from \"./state/index.js\";\nexport type {\n  SessionSyncControllerOptions,\n  SyncConnectionStatus,\n} from \"./state/index.js\";\nexport {\n  LOCAL_COMMAND_DETAILS,\n  LOCAL_COMMAND_NAMES,\n  dispatchSessionCommand,\n  hasActiveRun,\n  mergeCommandDetails,\n  parseSlashLine,\n  resolveSessionCwd,\n} from \"./commands/index.js\";\nexport { isPluginIconSource, isPluginWebUrl, readRuntimeMetadata } from \"@vykor/protocol\";\nexport type { SessionRuntimeConfig, SessionRuntimeConfigPatch } from \"@vykor/protocol\";\nexport type {\n  PresentationReadRequest,\n  SessionCommandHost,\n  SessionCommandOutcome,\n  SlashLine,\n} from \"./commands/index.js\";\nexport type {\n  AdmitClientPromptInput,\n  AgentPersonaInfo,\n  AttachmentStorageGcResult,\n  AttachmentStorageIssue,\n  AttachmentStorageRepairResult,\n  AttachmentStorageReport,\n  AuthStatus,\n  CommandCatalogEntry,\n  CommandKind,\n  CommandSelection,\n  CommandSource,\n  CompactSessionResponse,\n  CancelQueuedClientPromptInput,\n  CancelQueuedPromptResponse,\n  CreateBackgroundShellInput,\n  CreateBackgroundShellResult,\n  CreateScheduledTaskInput,\n  AdmitPromptAttachmentInput,\n  CreateClientSessionInput,\n  EditLatestClientPromptInpu",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 41.17"
+          },
+          {
+            "path": "packages/services/src/schedules/schedule-repository.ts",
+            "line": 80,
+            "startLine": 80,
+            "endLine": 106,
+            "text": "  updateTask(id: string, patch: UpdateScheduledTaskInput): ScheduledTaskRecord {\n    return this.storage.database.connection.transaction(() => {\n      this.storage.assertWritable();\n      const current = this.getTask(id);\n      if (!current) throw new Error(`Scheduled task not found: ${id}`);\n      const updated = {\n        ...current,\n        ...withoutUndefined(patch),\n        updatedAt: Date.now(),\n      } as ScheduledTaskRecord;\n      if (patch.lastRunAt === null) delete updated.lastRunAt;\n      if (patch.nextRunAt === null) delete updated.nextRunAt;\n      this.database.update(scheduledTasks).set({\n        name: updated.name,\n        description: updated.description ?? null,\n        prompt: updated.prompt,\n        recurrence: updated.recurrence,\n        recurrenceFormat: updated.recurrenceFormat,\n        timezone: updated.timezone,\n        status: updated.status,\n        destination: updated.destination,\n        sessionId: updated.sessionId ?? null,\n        projectPathsJson: encode(updated.projectPaths),\n        executionMode: updated.executionMode,\n        model: updated.model ?? null,\n        effort: updated.effort ?? null,\n        skillNamesJson: en",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 41.16"
+          }
+        ],
+        "truncated": false,
+        "note": "保留 XERJ 原生排序与片段，正文已与当前项目文件核对；索引仍可能遗漏新文件，证据不足时继续 Grep/Read。"
+      },
+      "score": {
+        "fileHit": true,
+        "evidenceHit": false,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 2,
+        "fileRecall": 0.5,
+        "topFiles": [
+          "packages/protocol/src/requests/requests.ts",
+          "packages/server/src/daemon/__test__/scheduled-task-service.test.ts",
+          "packages/services/src/session-runtime/__test__/store.test.ts",
+          "packages/client/src/index.ts",
+          "packages/services/src/schedules/schedule-repository.ts"
+        ],
+        "evidenceFiles": []
+      },
+      "evidence": [
+        {
+          "path": "packages/protocol/src/requests/requests.ts",
+          "startLine": 362,
+          "endLine": 386,
+          "text": "    minimum: 1,\n  });\n  const stopWhenCompleted = optionalBoolean(body, \"stopWhenCompleted\");\n  const expiresAt = optionalNumber(body, \"expiresAt\");\n  return {\n    ...(runOnce !== undefined ? { runOnce } : {}),\n    ...(maxRuns !== undefined ? { maxRuns: maxRuns as number } : {}),\n    ...(stopWhenCompleted !== undefined ? { stopWhenCompleted } : {}),\n    ...(expiresAt !== undefined ? { expiresAt: expiresAt as number } : {}),\n  };\n}\n\nfunction parseScheduleFields(\n  body: JsonRecord,\n): Partial<CreateScheduledTaskInput> {\n  const id = optionalString(body, \"id\");\n  const name = optionalString(body, \"name\");\n  const description = optionalString(body, \"description\");\n  const prompt = optionalString(body, \"prompt\");\n  const recurrence = optionalString(body, \"recurrence\");\n  const recurrenceFormat = optionalEnum(body, \"recurrenceFormat\", [\n    \"rrule\",\n    \"once\",\n  ] as const);\n  const timezone = optionalString(body, \"timezone\");",
+          "bytes": 936,
+          "truncated": false
+        },
+        {
+          "path": "packages/server/src/daemon/__test__/scheduled-task-service.test.ts",
+          "startLine": 10,
+          "endLine": 34,
+          "text": "  ScheduledTaskService,\n  type ScheduleOperations,\n} from \"../scheduled-task-service.js\";\nimport { DaemonApplication } from \"../../application/daemon-application.js\";\n\nconst cleanups: Array<() => Promise<void> | void> = [];\n\nafterEach(async () => {\n  while (cleanups.length > 0) await cleanups.pop()!();\n  vi.useRealTimers();\n});\n\nfunction createHarness(\n  execute = vi.fn(async (\n    _task: ScheduledTaskRecord,\n    _run: ScheduledRunRecord,\n    reportSessionReady: (sessionId: string) => void,\n  ) => {\n    reportSessionReady(\"scheduled-session\");\n    return {\n      sessionId: \"scheduled-session\",\n      runId: \"agent-run\",\n      summary: \"Agent completed the scheduled work.\",\n    };\n  }),",
+          "bytes": 693,
+          "truncated": false
+        },
+        {
+          "path": "packages/services/src/session-runtime/__test__/store.test.ts",
+          "startLine": 47,
+          "endLine": 71,
+          "text": "    test(store, path);\n  } finally {\n    store.close();\n    rmSync(dir, {\n      recursive: true,\n      force: true,\n      maxRetries: 5,\n      retryDelay: 50,\n    });\n  }\n}\n\nfunction createReadyAttachment(\n  store: SessionStore,\n  id: string,\n  sizeBytes = 100,\n): void {\n  store.attachments.createImportingAttachment({\n    id,\n    displayName: `${id}.png`,\n    declaredMediaType: \"image/png\",\n    stagingName: `${id}.part`,\n    createdAt: 10,\n  });\n  store.attachments.markAttachmentReady(id, {",
+          "bytes": 495,
+          "truncated": false
+        },
+        {
+          "path": "packages/client/src/index.ts",
+          "startLine": 57,
+          "endLine": 81,
+          "text": "  selectSessionInputs,\n  selectSessionMessagesWithParts,\n  selectSessionModelRetry,\n  selectSessionModelUsage,\n  selectSessionOrderedMessages,\n  selectSessionParts,\n  selectSessionPermissions,\n  selectSessionRuns,\n  selectSessionTasks,\n  selectVisibleSessionMessagesWithParts,\n  SessionSyncController,\n  syncEvents,\n  UnsupportedSessionEventSchemaVersionError,\n} from \"./state/index.js\";\nexport type {\n  SessionSyncControllerOptions,\n  SyncConnectionStatus,\n} from \"./state/index.js\";\nexport {\n  LOCAL_COMMAND_DETAILS,\n  LOCAL_COMMAND_NAMES,\n  dispatchSessionCommand,\n  hasActiveRun,\n  mergeCommandDetails,\n  parseSlashLine,",
+          "bytes": 624,
+          "truncated": false
+        },
+        {
+          "path": "packages/services/src/schedules/schedule-repository.ts",
+          "startLine": 68,
+          "endLine": 92,
+          "text": "    return row ? scheduledTaskFromRow(row) : undefined;\n  }\n  listTasks(\n    options: { status?: ScheduledTaskRecord[\"status\"] } = {},\n  ): ScheduledTaskRecord[] {\n    return this.database\n      .select().from(scheduledTasks)\n      .where(options.status ? eq(scheduledTasks.status, options.status) : undefined)\n      .orderBy(desc(scheduledTasks.createdAt))\n      .all()\n      .map(scheduledTaskFromRow);\n  }\n  updateTask(id: string, patch: UpdateScheduledTaskInput): ScheduledTaskRecord {\n    return this.storage.database.connection.transaction(() => {\n      this.storage.assertWritable();\n      const current = this.getTask(id);\n      if (!current) throw new Error(`Scheduled task not found: ${id}`);\n      const updated = {\n        ...current,\n        ...withoutUndefined(patch),\n        updatedAt: Date.now(),\n      } as ScheduledTaskRecord;\n      if (patch.lastRunAt === null) delete updated.lastRunAt;\n      if (patch.nextRunAt === null) delete updated.nextRunAt;\n      this.database.update(scheduledTasks).set({",
+          "bytes": 1018,
+          "truncated": false
+        }
+      ]
+    },
+    {
+      "taskId": "docs-attachment-routing",
+      "variant": "query-rewrite",
+      "params": {
+        "corpus": "current",
+        "mode": "bm25",
+        "query": "查找附件输入能力路由和状态归属的说明文档",
+        "k": 5,
+        "full": 1200,
+        "max_tokens": 2000
+      },
+      "timeoutMs": 1500,
+      "searchMs": 225.1525999999999,
+      "outputBytes": 7223,
+      "native": {
+        "content": [
+          {
+            "type": "text",
+            "text": "\n─── packages/server/src/application/attachments/routing/README.md:1  (score 36.85)\n# 附件输入方式选择\n\n结合模型与运行能力，决定图片等附件采用哪种输入方式。\n\n## 入口与流程\n\n能力函数归一化模型声明，`AttachmentCapabilityRouter` 按有效能力生成路由结果或明确错误，交给会话输入处理继续组装。\n\n## 状态归属\n\n判断依赖当前模型与附件信息；结果属于当前输入，不维护长期缓存。\n\n## 主要文件\n\n| 文件 | 主要接口或用途 |\n| --- | --- |\n| [attachment-capabilities.ts](./attachment-capabilities.ts) | `supportsNativeImageInput`、`modelInputCapabilities`、`normalizeInputSupport`、`resolveEffectiveImageSupport` 等 |\n| [attachment-capability-router.ts](./attachment-capability-router.ts) | `ReadyAttachmentText`、`AttachmentCapabilityRouterOptions`、`AttachmentCapabilityRouter` |\n| [attachment-routing-types.ts](./attachment-routing-types.ts) | `AttachmentRoutingErrorCode`、`AttachmentRoutingDecision`、`RouteAttachmentBatchInput`、`NativeAttachmentRouteResult` 等 |\n\n## 测试与维护\n\n新增附件类型的能力判断与路由规则放在这里，并在同层测试覆盖支持和拒绝情况。\n\n测试放在本分类同层的 `__test__/`；覆盖多个子分类的测试放在共同上层的 `__test__/`。迁移文件时同步导入、公开入口、文档链接与旧引用清单。\n\n─── docs/superpowers/specs/2026-08-27-conversation-attachments-roadmap-design.md:1630  (score 35.49)\n归档、可执行文件和主动内容不会因为上传而自动执行。\n18. GC 在删除前必须检查引用、lease、活跃 mount 和 Provider 删除协调状态。\n\n## 完整完成标准\n\n路线全部完成时，应满足以下结果：\n\n- Desktop 和远程 Client 均可稳定上传、恢复、预览和发送附件。\n- 图片、PDF、文本、代码、结构化数据、普通文件和文件夹都有明确且一致的处理语义。\n- 支持图片的主模型接收原生图片；不支持图片的主模型收到附件资源和工具提示，并能主动调用 `ImageToText` 获得 `light-ocr` 本地结果。\n- `ImageToText` 只使用本地 OCR 服务、错误分类、缓存和审计，不包含远程视觉模型能力。\n- Provider 原生能力、OCR、文档提取和工具挂载的路由可被诊断和解释。\n- queue、steer、edit、retry、replay、fork、interrupt、restart 和 compact 全部保留正确附件行为。\n- 附件存储具备配额、去重、备份、恢复、GC、远端缓存和安全检查。\n- 不支持的模型或文件类型得到明确降级或错误，不存在静默丢失附件。\n- 全部协议、迁移、Provider contract、Desktop E2E、安全、故障注入和 soak tests 通过。\n\n## 后续工作方式\n\n本文通过审查后，从阶段 1 开始编写独立实现计划。每份实现计划只覆盖一个阶段，包含准确文件、失败测试、最小实现、验证命令和 commit 边界。阶段完成并验收后，更新本文的阶段状态与任何已经批准的设计调整，再为下一阶段编写计划。\n\n## OCR 选型依据\n\n- [`light-ocr` 中文说明](https://github.com/arcships/light-ocr/blob/main/README.zh-CN.md)\n- [`light-ocr` Node.js API](https://github.com/arcships/light-ocr/blob/main/packages/light-ocr/README.md)\n- [`light-ocr` 0.5.7 发布记录](https://github.com/arcships/light-ocr/blob/main/docs/releases/npm-0.5.7.en.md)\n- [`light-ocr` Apache-2.0 许可证与第三方归属](https://github.com/arcships/light-ocr/blob/main/LICENSE)\n\n─── docs/superpowers/specs/2026-08-28-conversation-attachments-stage-5-design.md:9  (score 33.88)\nPDF/Word/代码提取、文件夹遍历和任意文件挂载，这些仍属于阶段 6。旧 `ImageToText` 的 `prompt`、远程 Provider 请求、Data URL、`visionModel` 和自由 URL 直传全部删除，不提供兼容层。\n\n## 运行流程\n\n1. `SessionRunExecutor` 取得运行时真实模型能力和该 Agent 实际可见的工具目录。\n2. `AttachmentCapabilityRouter` 对每个图片决定 `native_image` 或 `image_to_text_tool`。原生路径保持阶段 4 行为；OCR 路径生成纯文本资源说明，包含附件 ID、文件名、MIME、大小和只能调用 `ImageToText` 提取文字的边界提示。\n3. OCR 路径只有在 `ImageToText` 实际可见、附件是受支持图片且 OCR 宿主已安装时才允许运行。工具被 allow/deny 排除时，在调用 Provider 前明确失败。\n4. 主 Agent 调用 `ImageToText({ attachment_id })`。工具本身只校验输入并调用宿主能力，不读取设置、密钥或模型信息。\n5. 宿主将 `attachment_id`、`image_path` 或 `image_url` 统一变成 Attachment Service 中的 ready asset，再交给 `LocalOcrService`。路径按会话 cwd 解析；URL 仅允许 HTTP(S)，逐次解析 DNS、阻止私网/环回/链路本地地址、限制重定向、响应大小、MIME 和总超时。\n6. `LocalOcrService` 通过资产哈希、处理器版本、模型档位、locale、归一化版本和有效参数生成缓存键。命中 completed representation 直接复用；否则创建 running representation，读取只读 Blob，归一化图片并调用长生命周期 light-ocr engine。\n7. 工具结果作为正常 `tool_use/tool_result` 出现在 transcript；结果 metadata 带 asset ID、representation ID 和 processor。零行结果返回 `no_text_detected` 成功状态，绝不补写图片描述。\n\n## 组件边界\n\n### `LightOcrEngine`\n\n─── docs/superpowers/specs/2026-08-27-conversation-attachments-roadmap-design.md:98  (score 33.88)\n附件顺序和意图属于消息语义\n\n附件顺序、用户指定的使用意图、显示名称和消息文字共同构成 prompt。幂等比较、编辑和重试必须包含这些字段。\n\n## 术语与附件类别\n\n### Attachment Asset\n\n由 daemon 管理的不可变文件资产，包含稳定 ID、内容哈希、MIME、大小、存储位置和生命周期状态。\n\n### Attachment Reference\n\n一条 `SessionInput` 对某个资产的有序引用。引用包含 `intent`，说明希望系统如何使用附件。\n\n### Representation\n\n由附件派生的可复用内容，例如 OCR 文本、文本提取结果、PDF 页面图、缩略图或归档清单。\n\n### Provider Cache\n\n资产上传到 OpenAI、Anthropic 或其他 Provider 后得到的远程文件记录。它受账号、workspace、过期时间和 Provider 删除规则约束。\n\n### Workspace Resource\n\n当前 daemon 可访问的工作区文件或目录引用。它可以选择实时读取，也可以在发送时固化为不可变快照。\n\n### Intent\n\n附件引用的处理意图：\n\n```ts\ntype AttachmentIntent =\n  | \"auto\"\n  | \"vision\"\n  | \"ocr\"\n  | \"document\"\n  | \"tool_resource\"\n  | \"workspace_reference\"\n```\n\n- `auto`：系统根据 MIME、模型能力和运行上下文选择。\n- `vision`：优先交给原生支持图片的主模型；主模型不支持时只能通过 `ImageToText` 提取文字，不能承诺保留非文字视觉语义。\n- `ocr`：强调忠实提取可见文字，同时保留必要的布局说明。\n- `document`：优先使用 Provider 原生文档能力，不支持时使用文档提取管线。\n- `tool_resource`：把文件作为 Agent 可读取的只读资源，不直接塞进模型上下文。\n- `workspace_reference`：引用 daemon 可访问的工作区路径，并携带实时或快照语义。\n\n## 总体架构\n\n─── packages/services/src/attachments/README.md:1  (score 33.42)\n    [passage omitted: over the max_tokens 2000 budget — locator only]\n5 passages from 'current'\nCite file:line for anything you rely on.\n[token budget: 4/5 passages full, 1 locator-only, 0 deduped (identical locator and passage), 0 dropped; counted as standard-uax29-words, max_tokens 2000]\n"
+          }
+        ],
+        "isError": false
+      },
+      "output": {
+        "status": "ok",
+        "backend": "xerj",
+        "nativeTool": "xerj_code_search",
+        "hits": [
+          {
+            "path": "packages/server/src/application/attachments/routing/README.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 25,
+            "text": "# 附件输入方式选择\n\n结合模型与运行能力，决定图片等附件采用哪种输入方式。\n\n## 入口与流程\n\n能力函数归一化模型声明，`AttachmentCapabilityRouter` 按有效能力生成路由结果或明确错误，交给会话输入处理继续组装。\n\n## 状态归属\n\n判断依赖当前模型与附件信息；结果属于当前输入，不维护长期缓存。\n\n## 主要文件\n\n| 文件 | 主要接口或用途 |\n| --- | --- |\n| [attachment-capabilities.ts](./attachment-capabilities.ts) | `supportsNativeImageInput`、`modelInputCapabilities`、`normalizeInputSupport`、`resolveEffectiveImageSupport` 等 |\n| [attachment-capability-router.ts](./attachment-capability-router.ts) | `ReadyAttachmentText`、`AttachmentCapabilityRouterOptions`、`AttachmentCapabilityRouter` |\n| [attachment-routing-types.ts](./attachment-routing-types.ts) | `AttachmentRoutingErrorCode`、`AttachmentRoutingDecision`、`RouteAttachmentBatchInput`、`NativeAttachmentRouteResult` 等 |\n\n## 测试与维护\n\n新增附件类型的能力判断与路由规则放在这里，并在同层测试覆盖支持和拒绝情况。\n\n测试放在本分类同层的 `__test__/`；覆盖多个子分类的测试放在共同上层的 `__test__/`。迁移文件时同步导入、公开入口、文档链接与旧引用清单。",
+            "truncated": false,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 36.85"
+          },
+          {
+            "path": "docs/superpowers/specs/2026-08-27-conversation-attachments-roadmap-design.md",
+            "line": 1630,
+            "startLine": 1630,
+            "endLine": 1649,
+            "text": "归档、可执行文件和主动内容不会因为上传而自动执行。\n18. GC 在删除前必须检查引用、lease、活跃 mount 和 Provider 删除协调状态。\n\n## 完整完成标准\n\n路线全部完成时，应满足以下结果：\n\n- Desktop 和远程 Client 均可稳定上传、恢复、预览和发送附件。\n- 图片、PDF、文本、代码、结构化数据、普通文件和文件夹都有明确且一致的处理语义。\n- 支持图片的主模型接收原生图片；不支持图片的主模型收到附件资源和工具提示，并能主动调用 `ImageToText` 获得 `light-ocr` 本地结果。\n- `ImageToText` 只使用本地 OCR 服务、错误分类、缓存和审计，不包含远程视觉模型能力。\n- Provider 原生能力、OCR、文档提取和工具挂载的路由可被诊断和解释。\n- queue、steer、edit、retry、replay、fork、interrupt、restart 和 compact 全部保留正确附件行为。\n- 附件存储具备配额、去重、备份、恢复、GC、远端缓存和安全检查。\n- 不支持的模型或文件类型得到明确降级或错误，不存在静默丢失附件。\n- 全部协议、迁移、Provider contract、Desktop E2E、安全、故障注入和 soak tests 通过。\n\n## 后续工作方式\n\n本文通过审查后，从阶段 1 开始编写独立实现计划。每份实现计划只覆盖一个阶段，包含准确文件、失败测试、最小实现、验证命令和 commit 边界。阶段完成并验收后，更新本文…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 35.49"
+          },
+          {
+            "path": "docs/superpowers/specs/2026-08-28-conversation-attachments-stage-5-design.md",
+            "line": 9,
+            "startLine": 9,
+            "endLine": 18,
+            "text": "PDF/Word/代码提取、文件夹遍历和任意文件挂载，这些仍属于阶段 6。旧 `ImageToText` 的 `prompt`、远程 Provider 请求、Data URL、`visionModel` 和自由 URL 直传全部删除，不提供兼容层。\n\n## 运行流程\n\n1. `SessionRunExecutor` 取得运行时真实模型能力和该 Agent 实际可见的工具目录。\n2. `AttachmentCapabilityRouter` 对每个图片决定 `native_image` 或 `image_to_text_tool`。原生路径保持阶段 4 行为；OCR 路径生成纯文本资源说明，包含附件 ID、文件名、MIME、大小和只能调用 `ImageToText` 提取文字的边界提示。\n3. OCR 路径只有在 `ImageToText` 实际可见、附件是受支持图片且 OCR 宿主已安装时才允许运行。工具被 allow/deny 排除时，在调用 Provider 前明确失败。\n4. 主 Agent 调用 `ImageToText({ attachment_id })`。工具本身只校验输入并调用宿主能力，不读取设置、密钥或模型信息。\n5. 宿主将 `attachment_id`、`image_path` 或 `image_url` 统一变成 Attachment Service 中的 ready asset，再交给 `LocalOcrService`。路径按会话 cwd 解析；URL 仅允许 HTTP(S)，逐次解析 DNS、阻止私网/环回/链路本地地址、限制重定向、响应大小、MIME 和总超时。\n6. `LocalOcrService` 通过资产哈希、处理器版本、模型档位、locale、归一化版本和有效参数生成缓存键。命中 completed representation 直接复用；否则创建 running representation，读取…",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 33.88"
+          },
+          {
+            "path": "docs/superpowers/specs/2026-08-27-conversation-attachments-roadmap-design.md",
+            "line": 98,
+            "startLine": 98,
+            "endLine": 141,
+            "text": "附件顺序和意图属于消息语义\n\n附件顺序、用户指定的使用意图、显示名称和消息文字共同构成 prompt。幂等比较、编辑和重试必须包含这些字段。\n\n## 术语与附件类别\n\n### Attachment Asset\n\n由 daemon 管理的不可变文件资产，包含稳定 ID、内容哈希、MIME、大小、存储位置和生命周期状态。\n\n### Attachment Reference\n\n一条 `SessionInput` 对某个资产的有序引用。引用包含 `intent`，说明希望系统如何使用附件。\n\n### Representation\n\n由附件派生的可复用内容，例如 OCR 文本、文本提取结果、PDF 页面图、缩略图或归档清单。\n\n### Provider Cache\n\n资产上传到 OpenAI、Anthropic 或其他 Provider 后得到的远程文件记录。它受账号、workspace、过期时间和 Provider 删除规则约束。\n\n### Workspace Resource\n\n当前 daemon 可访问的工作区文件或目录引用。它可以选择实时读取，也可以在发送时固化为不可变快照。\n\n### Intent\n\n附件引用的处理意图：\n\n```ts\ntype AttachmentIntent =\n  | \"auto\"\n  | \"vision\"\n  | \"ocr\"\n  | \"document\"\n  | \"tool_resource\"\n  | \"workspace_reference\"\n```\n\n- `auto`：系统根据 MIME、模型能力和运行上下文选择。\n- `vision`：优先交给原生支持图片的主模型；主模型不支持时只能通过 `ImageToText` 提取文字，不能承诺保留非文字视觉语义。\n- `ocr`：强调忠实提取可见文字，同时保留必要的布局说明。\n- …",
+            "truncated": true,
+            "evidence": "native_passage_verified_current",
+            "notice": "score 33.88"
+          },
+          {
+            "path": "packages/services/src/attachments/README.md",
+            "line": 1,
+            "startLine": 1,
+            "endLine": 1,
+            "text": "",
+            "truncated": false,
+            "evidence": "native_locator_only",
+            "notice": "score 33.42"
+          }
+        ],
+        "truncated": false,
+        "note": "保留 XERJ 原生排序与片段，正文已与当前项目文件核对；索引仍可能遗漏新文件，证据不足时继续 Grep/Read。"
+      },
+      "score": {
+        "fileHit": true,
+        "evidenceHit": true,
+        "relevantFilesFound": 1,
+        "relevantFilesTotal": 1,
+        "fileRecall": 1,
+        "topFiles": [
+          "packages/server/src/application/attachments/routing/README.md",
+          "docs/superpowers/specs/2026-08-27-conversation-attachments-roadmap-design.md",
+          "docs/superpowers/specs/2026-08-28-conversation-attachments-stage-5-design.md",
+          "packages/services/src/attachments/README.md"
+        ],
+        "evidenceFiles": [
+          "packages/server/src/application/attachments/routing/README.md"
+        ]
+      },
+      "evidence": [
+        {
+          "path": "packages/server/src/application/attachments/routing/README.md",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "# 附件输入方式选择\n\n结合模型与运行能力，决定图片等附件采用哪种输入方式。\n\n## 入口与流程\n\n能力函数归一化模型声明，`AttachmentCapabilityRouter` 按有效能力生成路由结果或明确错误，交给会话输入处理继续组装。\n\n## 状态归属\n\n判断依赖当前模型与附件信息；结果属于当前输入，不维护长期缓存。\n\n## 主要文件",
+          "bytes": 412,
+          "truncated": false
+        },
+        {
+          "path": "docs/superpowers/specs/2026-08-27-conversation-attachments-roadmap-design.md",
+          "startLine": 1618,
+          "endLine": 1642,
+          "text": "5. 主模型不支持或不确定支持图片时，不能收到无效图片块；系统必须提供受控附件资源和明确的 `ImageToText` 工具提示。\n6. OCR 由主 Agent 通过正常 `ImageToText` tool call 发起，系统不得隐藏执行或伪造 tool use/tool result。\n7. `ImageToText` 只能调用本地 `LocalOcrService`，不得读取视觉模型、主模型或 Provider 凭证，不得产生远程图片请求。\n8. unknown Provider capability 默认保守降级，不尝试发送未经声明的内容块。\n9. OCR、提取和缩略图是有版本的派生表示，不能覆盖原始附件。\n10. Provider remote file ID 不能由 Client 提交或跨 credential scope 复用。\n11. sandbox 只能读取明确挂载的附件，不能访问整个 daemon 数据目录。\n12. fork 复用 blob，删除一个引用不能破坏其他 session。\n13. compact 必须保留附件身份、转换结果和按需再读取能力。\n14. 上传进度不写成高频 durable session event。\n15. 日志、指标和错误不能包含附件正文、Data URL、API key 或 Client 原始路径。\n16. 文件夹必须明确区分实时引用和不可变快照。\n17. 归档、可执行文件和主动内容不会因为上传而自动执行。\n18. GC 在删除前必须检查引用、lease、活跃 mount 和 Provider 删除协调状态。\n\n## 完整完成标准\n\n路线全部完成时，应满足以下结果：\n\n- Desktop 和远程 Client 均可稳定上传、恢复、预览和发送附件。\n- 图片、PDF、文本、代码、结构化数据、普通文件和文件夹都有明确且一致的处理语义。\n- 支持图片的主模型接收原生图片；不支持图片的主模型收到附件资源和工具提示，并能主动调用 `ImageToText` 获得 `light-ocr` 本地结果。\n- `ImageToText` 只使用本地 OCR 服务、错误分类、缓存和审计，不包含远程视觉模型能力。\n- Provider 原生能力、OCR、文档提取和工具挂载的路由可被诊断和解释。\n- queue、steer、edit、retry、replay、fork、interrupt、restart 和 compact 全部保留正确附件行为。",
+          "bytes": 2109,
+          "truncated": false
+        },
+        {
+          "path": "docs/superpowers/specs/2026-08-28-conversation-attachments-stage-5-design.md",
+          "startLine": 1,
+          "endLine": 21,
+          "text": "# 对话附件阶段 5：本地 OCR 与 ImageToText 设计\n\n> 状态：已实现并验收（2026-08-28）。本文把总路线中已经确认的阶段 5 边界细化为可实现规格；不重新引入远程视觉模型，也不兼容旧的 `ImageToText` 输入或结果。\n\n## 目标与边界\n\n阶段 5 完成两条图片路径：支持图片的模型继续收到原生图片；不支持图片或能力未知的模型收到附件身份、文件信息和明确的 `ImageToText` 调用提示，由主 Agent 自己发起正常工具调用。本地 OCR 只提取可见文字，不描述人物、物体、颜色、图表含义或空间关系。\n\n本阶段不做 PDF/Word/代码提取、文件夹遍历和任意文件挂载，这些仍属于阶段 6。旧 `ImageToText` 的 `prompt`、远程 Provider 请求、Data URL、`visionModel` 和自由 URL 直传全部删除，不提供兼容层。\n\n## 运行流程\n\n1. `SessionRunExecutor` 取得运行时真实模型能力和该 Agent 实际可见的工具目录。\n2. `AttachmentCapabilityRouter` 对每个图片决定 `native_image` 或 `image_to_text_tool`。原生路径保持阶段 4 行为；OCR 路径生成纯文本资源说明，包含附件 ID、文件名、MIME、大小和只能调用 `ImageToText` 提取文字的边界提示。\n3. OCR 路径只有在 `ImageToText` 实际可见、附件是受支持图片且 OCR 宿主已安装时才允许运行。工具被 allow/deny 排除时，在调用 Provider 前明确失败。\n4. 主 Agent 调用 `ImageToText({ attachment_id })`。工具本身只校验输入并调用宿主能力，不读取设置、密钥或模型信息。\n5. 宿主将 `attachment_id`、`image_path` 或 `image_url` 统一变成 Attachment Service 中的 ready asset，再交给 `LocalOcrService`。路径按会话 cwd 解析；URL 仅允许 HTTP(S)，逐次解析 DNS、阻止私网/环回/链路本地地址、限制重定向、响应大小、MIME 和总超时。\n6. `LocalOcrService` 通过资产哈希、处理器版本、模型档位、locale、归一化版本和有效参数生成缓存键。命中 completed representation 直接复用；否则创建 running representation，读取只读 Blob，归一化图片并调用长生命周期 light-ocr engine。\n7. 工具结果作为正常 `tool_use/tool_result` 出现在 transcript；结果 metadata 带 asset ID、representation ID 和 processor。零行结果返回 `no_text_detected` 成功状态，绝不补写图片描述。\n\n## 组件边界",
+          "bytes": 2465,
+          "truncated": false
+        },
+        {
+          "path": "packages/services/src/attachments/README.md",
+          "startLine": 1,
+          "endLine": 13,
+          "text": "# 附件领域\n\n管理附件状态、限制、输入引用和错误，并汇总附件子目录。\n\n## 入口与流程\n\n附件登记与事务由 persistence 处理，原始内容由 storage 保存，图片和文字识别由 processing 处理；`normalizePromptAttachments()` 整理消息中的附件引用并检查重复。\n\n## 状态归属\n\n附件元数据位于数据库，内容位于 Blob 目录；当前操作的引用和处理结果由调用方持有。\n\n## 主要文件",
+          "bytes": 475,
+          "truncated": false
+        }
+      ]
+    }
+  ]
+}

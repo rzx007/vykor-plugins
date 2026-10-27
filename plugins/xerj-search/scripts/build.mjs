@@ -1,0 +1,10 @@
+import { readFile, access } from 'node:fs/promises';
+import { registerTools } from '../tools/index.mjs';
+const root = new URL('../', import.meta.url);
+const manifest = JSON.parse(await readFile(new URL('.vykor-plugin/plugin.json', root), 'utf8'));
+const pkg = JSON.parse(await readFile(new URL('package.json', root), 'utf8'));
+if (manifest.version !== pkg.version) throw new Error('Plugin and package versions differ');
+for (const path of ['LICENSE', 'skills/search/SKILL.md', 'tools/index.mjs', 'tools/search.mjs', 'tools/native-mcp.mjs', 'tools/config.mjs', 'tools/evidence.mjs', 'scripts/bind-autoindex.mjs']) await access(new URL(path, root));
+const tools = await registerTools();
+if (JSON.stringify(tools.map(tool => tool.name).sort()) !== JSON.stringify(['XerjBatchSearch', 'XerjDefinition', 'XerjMap', 'XerjSearch'])) throw new Error('Unexpected plugin tool surface');
+console.log(`Prepared ${manifest.id}@${manifest.version}; no bundled XERJ binary or external Node dependencies.`);

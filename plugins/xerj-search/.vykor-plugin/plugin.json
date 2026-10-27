@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "dev.vykor.xerj-search",
+  "name": "xerj-search",
+  "displayName": "XERJ 代码与资料搜索",
+  "version": "0.2.1",
+  "license": "MIT",
+  "description": "可关闭的 XERJ 原生代码检索、定义、索引概览和批量搜索；限定当前项目，不可用时继续 Grep。",
+  "introduction": "## 搜索代码与资料\n\n复用本机 XERJ 原生代码搜索、定义定位、索引概览和批量检索，保留排序与匹配片段，并限定当前项目。未配置、关闭、超时、弱匹配或证据不足时继续使用 Grep 和 Read。\n\n需要另外准备已校验的 XERJ 程序、服务和语料绑定；插件不自动安装、启动、更新或写入索引，不写记忆、不发送反馈。首次使用请按 README 配置。",
+  "prompts": [
+    {
+      "title": "搜索相关实现",
+      "prompt": "请使用 XERJ 搜索当前项目中与这个需求相关的代码和资料，返回文件和行号；检索不可用或证据不足时继续使用 Grep，并读取当前原文确认：\n\n在这里填写问题"
+    }
+  ],
+  "components": {
+    "skills": [
+      "./skills/search/SKILL.md"
+    ],
+    "tools": [
+      {
+        "entry": "./tools/index.mjs",
+        "runtime": "node",
+        "permissions": [
+          "filesystem:read",
+          "network:127.0.0.1"
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "filesystem": [
+      "read"
+    ],
+    "network": [
+      "127.0.0.1"
+    ]
+  },
+  "runtime": {
+    "engine": "node",
+    "isolation": "process"
+  },
+  "repository": "https://github.com/rzx007/vykor-plugins",
+  "homepage": "https://github.com/rzx007/vykor-plugins/tree/main/plugins/xerj-search"
+}

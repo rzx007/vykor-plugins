@@ -1,0 +1,1114 @@
+[
+  {
+    "taskId": "chinese-plugin-data",
+    "variant": "english-short",
+    "params": {
+      "corpus": "current",
+      "query": "native plugin process data directory per plugin id",
+      "k": 5,
+      "full": 1200,
+      "mode": "bm25",
+      "max_tokens": 2000
+    },
+    "native": {
+      "content": [
+        {
+          "type": "text",
+          "text": "\n─── packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts:34  (score 63.42)\n    [method start @ line 62 — 1,247 of 13,417 chars]\n  async start(): Promise<NativeToolRegistration[]> {\r\n    if (this.child) throw new NativeToolHostError(\"tool_protocol_error\", \"Native Tool Host is already started\");\r\n    const entries = this.plugin.components.tools?.value ?? [];\r\n    if (entries.length === 0) return [];\r\n    this.generation = randomUUID();\r\n    this.state = \"starting\";\r\n    const hostEntry = new URL(\"./host-entry.mjs\", import.meta.url);\r\n    const inheritedEnv = [\"PATH\", \"Path\", \"SystemRoot\", \"WINDIR\", \"ComSpec\", \"PATHEXT\", \"TEMP\", \"TMP\", \"TMPDIR\", \"LANG\"]\r\n      .reduce<NodeJS.ProcessEnv>((result, key) => {\r\n        if (process.env[key] !== undefined) result[key] = process.env[key];\r\n        return result;\r\n      }, {});\r\n    const child = fork(hostEntry, [], {\r\n      stdio: [\"ignore\", \"pipe\", \"pipe\", \"ipc\"],\r\n      serialization: \"advanced\",\r\n      // Do not leak daemon API keys or other ambient secrets into third-party code.\r\n      env: buildNativeToolHostEnvironment(inheritedEnv, process.versions.electron),\r\n    });\r\n    this.child = child;\r\n    child.on(\"message\", (message) => this.handleMessage(message));\r\n    child.on(\"error\", (error) => this.handleCrash(new NativeToolHostError(\"tool_host_spawn_failed\", er\n    ... [method start truncated at 1200 chars]\n\n─── apps/cli/src/commands/main.ts:415  (score 60.03)\n    [function loadSkillsThreeSources @ line 415 — 1,266 of 18,659 chars]\nexport async function loadSkillsThreeSources(\r\n  skillRegistry: SkillRegistry,\r\n  cwd: string,\r\n  settings?: Settings,\r\n) {\r\n  skillRegistry.registerBundled();\r\n  const pluginContributions: { plugins: Awaited<ReturnType<typeof loadNativePlugin>>[]; warnings: string[] } = { plugins: [], warnings: [] };\r\n  if (settings && (settings.plugins?.enabled ?? true)) {\r\n    const records = await discoverInstalledNativePlugins({ cwd });\r\n    for (const record of records) {\r\n      const verification = await verifyInstalledNativePlugin(record);\r\n      if (verification.status !== \"valid\") {\r\n        pluginContributions.warnings.push(...verification.diagnostics.map((item) => `${record.id}: ${item.message}`));\r\n        continue;\r\n      }\r\n      const loaded = await loadNativePlugin(verification.plugin);\r\n      pluginContributions.plugins.push(loaded);\r\n      pluginContributions.warnings.push(...loaded.diagnostics.map((item) => item.message));\r\n      for (const skill of loaded.components.skills?.value ?? []) skillRegistry.register(skill);\r\n    }\r\n  }\r\n  // 插件贡献插在 bundled 之后、user/project 之前：bundled < plugin < user < project\r\n  // （register 覆盖语义）。信任门控告警直接打到 stderr，三模式一致。\r\n  for (const warning of plugi\n    ... [function loadSkillsThreeSources truncated at 1200 chars]\n\n─── packages/server/src/application/daemon-application.ts:50  (score 59.78)\n    [method constructor @ line 291 — 1,253 of 61,753 chars]\n  constructor(private readonly options: DaemonApplicationOptions) {\r\n    const { store } = options;\r\n    this.store = store;\r\n    const executionOwner = options.executionOwner ?? new ExecutionRuntimeOwner();\r\n    this.executionOwner = executionOwner;\r\n    this.notes = createNoteApplicationService({ notes: store.notes, readiness: () => this.diagnosticState });\r\n    this.mcpRuntimes = new McpRuntimeConnectionCoordinator();\r\n    this.mcpOAuth = new McpOAuthApplicationService({ coordinator: this.mcpRuntimes });\r\n    this.mcpOAuthOperations = new McpOAuthOperationService({ application: this.mcpOAuth });\r\n    this.modelCatalog = createModelCatalogService();\r\n    // 同一份会话库同时只允许一个 daemon 当主人。心跳断了，别人才能接管。\r\n    this.ownerLease = store.acquireApplicationOwner({\r\n      ownerId: options.ownerId ?? `daemon:${process.pid}:${randomUUID()}`,\r\n      pid: process.pid,\r\n      staleAfterMs: options.ownerStaleAfterMs ?? 30_000,\r\n      canTakeOver: (current) => !(options.ownerProcessAlive ?? isProcessAlive)(current.pid),\r\n    });\r\n    this.ownerHeartbeat = setInterval(() => {\r\n      try {\r\n        this.ownerLease = store.heartbeatApplicationOwner(this.ownerLease);\r\n      } catch (error) {\r\n        clearI\n    ... [method constructor truncated at 1200 chars]\n\n─── packages/server/src/application/__test__/default-application-services.test.ts:26  (score 57.75)\n    [no symbol match; showing 1,200 of 43,503 chars from offset 7,050, window centred on the match]\n= \"plugin\")).toBe(true);\r\n  });\r\n\r\n  it(\"updates daemon.autoStart without restarting live agent runtimes\", async () => {\r\n    const ref = {\r\n      current: {\r\n        model: \"m\",\r\n        apiFormat: \"anthropic\" as const,\r\n        maxTurns: 50,\r\n        permission: { mode: \"default\" as const },\r\n        daemon: { autoStart: false },\r\n      },\r\n    };\r\n    const settings = createDefaultSettingsService(ref);\r\n\r\n    const result = await settings.patch({\r\n      path: \"daemon.autoStart\",\r\n      value: \"true\",\r\n    });\r\n\r\n    expect(ref.current.daemon.autoStart).toBe(true);\r\n    expect(result.restartRuntimes).toBe(false);\r\n  });\r\n\r\n  it(\"updates the plugin master switch and requests runtime restart\", async () => {\r\n    const ref = {\r\n      current: {\r\n        model: \"m\",\r\n        apiFormat: \"anthropic\" as const,\r\n        maxTurns: 50,\r\n        permission: { mode: \"default\" as const },\r\n        plugins: { enabled: true },\r\n      },\r\n    };\r\n    const settings = createDefaultSettingsService(ref);\r\n\r\n    const result = await settings.patch({\r\n      path: \"plugins.enabled\",\r\n      value: \"false\",\r\n    });\r\n\r\n    expect(ref.current.plugins.enabled).toBe(false);\r\n    expect(result.restartRuntim\n\n─── packages/agent-runtime/src/node/plugins/native-tools/__test__/knowledge-work.test.ts:11  (score 51.73)\n    [function withKnowledge @ line 20 — 1,257 of 10,675 chars]\nasync function withKnowledge(run: (tool: ToolDefinition, cwd: string, registry: TestRegistry, metadata: Record<string, unknown>) => Promise<void>) {\r\n  const cwd = mkdtempSync(join(tmpdir(), \"vykor-knowledge-work-\"));\r\n  const trustDirectory = mkdtempSync(join(tmpdir(), \"vykor-evidence-trust-\"));\r\n  const metadata = { dataRoot: trustDirectory };\r\n  const registry = new TestRegistry();\r\n  const cleanups: Array<() => Promise<void> | void> = [];\r\n  try {\r\n    const validation = await validateNativePlugin(pluginRoot);\r\n    expect(validation.status, JSON.stringify(validation.diagnostics)).toBe(\"valid\");\r\n    expect(requestedPluginPermissions(validation.plugin!.manifest)).toEqual(expect.arrayContaining([\r\n      \"filesystem:read\", \"network:api.openalex.org\", \"tool:filesystem:read\", \"tool:network:api.openalex.org\",\r\n    ]));\r\n    const plugin = await loadNativePlugin(validation.plugin!);\r\n    expect(plugin.diagnostics.filter(item => item.severity === \"error\")).toEqual([]);\r\n    const activation = await activateNativePluginTools(plugin, {\r\n      cwd, dataRoot: trustDirectory, toolRegistry: registry, addCleanup: cleanup => cleanups.push(cleanup),\r\n    });\r\n    expect(activation.state, JSON.s\n    ... [function withKnowledge truncated at 1200 chars]\n\n5 passages from 'current'\nCite file:line for anything you rely on.\n"
+        }
+      ],
+      "isError": false
+    },
+    "score": {
+      "fileHit": true,
+      "evidenceHit": false,
+      "relevantFilesFound": 1,
+      "relevantFilesTotal": 1,
+      "fileRecall": 1,
+      "topFiles": [
+        "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+        "apps/cli/src/commands/main.ts",
+        "packages/server/src/application/daemon-application.ts",
+        "packages/server/src/application/__test__/default-application-services.test.ts",
+        "packages/agent-runtime/src/node/plugins/native-tools/__test__/knowledge-work.test.ts"
+      ],
+      "evidenceFiles": []
+    },
+    "hits": [
+      {
+        "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+        "line": 62,
+        "startLine": 62,
+        "endLine": 82,
+        "text": "  async start(): Promise<NativeToolRegistration[]> {\n    if (this.child) throw new NativeToolHostError(\"tool_protocol_error\", \"Native Tool Host is already started\");\n    const entries = this.plugin.components.tools?.value ?? [];\n    if (entries.length === 0) return [];\n    this.generation = randomUUID();\n    this.state = \"starting\";\n    const hostEntry = new URL(\"./host-entry.mjs\", import.meta.url);\n    const inheritedEnv = [\"PATH\", \"Path\", \"SystemRoot\", \"WINDIR\", \"ComSpec\", \"PATHEXT\", \"TEMP\", \"TMP\", \"TMPDIR\", \"LANG\"]\n      .reduce<NodeJS.ProcessEnv>((result, key) => {\n        if (process.env[key] !== undefined) result[key] = process.env[key];\n        return result;\n      }, {});\n    const child = fork(hostEntry, [], {\n      stdio: [\"ignore\", \"pipe\", \"pipe\", \"ipc\"],\n      serialization: \"advanced\",\n      // Do not leak daemon API keys or other ambient secrets into third-party code.\n      env: buildNativeToolHostEnvironment(inheritedEnv, process.versions.electron),\n    });\n    this.child = child;\n    child.on(\"message\", (message) => this.handleMessage(message));\n    child.on(\"error\", (error) => this.handleCrash(new NativeToolHostError(\"tool_host_spawn_failed\", er",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 63.42"
+      },
+      {
+        "path": "apps/cli/src/commands/main.ts",
+        "line": 415,
+        "startLine": 415,
+        "endLine": 438,
+        "text": "export async function loadSkillsThreeSources(\n  skillRegistry: SkillRegistry,\n  cwd: string,\n  settings?: Settings,\n) {\n  skillRegistry.registerBundled();\n  const pluginContributions: { plugins: Awaited<ReturnType<typeof loadNativePlugin>>[]; warnings: string[] } = { plugins: [], warnings: [] };\n  if (settings && (settings.plugins?.enabled ?? true)) {\n    const records = await discoverInstalledNativePlugins({ cwd });\n    for (const record of records) {\n      const verification = await verifyInstalledNativePlugin(record);\n      if (verification.status !== \"valid\") {\n        pluginContributions.warnings.push(...verification.diagnostics.map((item) => `${record.id}: ${item.message}`));\n        continue;\n      }\n      const loaded = await loadNativePlugin(verification.plugin);\n      pluginContributions.plugins.push(loaded);\n      pluginContributions.warnings.push(...loaded.diagnostics.map((item) => item.message));\n      for (const skill of loaded.components.skills?.value ?? []) skillRegistry.register(skill);\n    }\n  }\n  // 插件贡献插在 bundled 之后、user/project 之前：bundled < plugin < user < project\n  // （register 覆盖语义）。信任门控告警直接打到 stderr，三模式一致。\n  for (const warning of plugi",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 60.03"
+      },
+      {
+        "path": "packages/server/src/application/daemon-application.ts",
+        "line": 291,
+        "startLine": 291,
+        "endLine": 312,
+        "text": "  constructor(private readonly options: DaemonApplicationOptions) {\n    const { store } = options;\n    this.store = store;\n    const executionOwner = options.executionOwner ?? new ExecutionRuntimeOwner();\n    this.executionOwner = executionOwner;\n    this.notes = createNoteApplicationService({ notes: store.notes, readiness: () => this.diagnosticState });\n    this.mcpRuntimes = new McpRuntimeConnectionCoordinator();\n    this.mcpOAuth = new McpOAuthApplicationService({ coordinator: this.mcpRuntimes });\n    this.mcpOAuthOperations = new McpOAuthOperationService({ application: this.mcpOAuth });\n    this.modelCatalog = createModelCatalogService();\n    // 同一份会话库同时只允许一个 daemon 当主人。心跳断了，别人才能接管。\n    this.ownerLease = store.acquireApplicationOwner({\n      ownerId: options.ownerId ?? `daemon:${process.pid}:${randomUUID()}`,\n      pid: process.pid,\n      staleAfterMs: options.ownerStaleAfterMs ?? 30_000,\n      canTakeOver: (current) => !(options.ownerProcessAlive ?? isProcessAlive)(current.pid),\n    });\n    this.ownerHeartbeat = setInterval(() => {\n      try {\n        this.ownerLease = store.heartbeatApplicationOwner(this.ownerLease);\n      } catch (error) {\n        clearI",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 59.78"
+      },
+      {
+        "path": "packages/server/src/application/__test__/default-application-services.test.ts",
+        "line": 159,
+        "startLine": 159,
+        "endLine": 201,
+        "text": "= \"plugin\")).toBe(true);\n  });\n\n  it(\"updates daemon.autoStart without restarting live agent runtimes\", async () => {\n    const ref = {\n      current: {\n        model: \"m\",\n        apiFormat: \"anthropic\" as const,\n        maxTurns: 50,\n        permission: { mode: \"default\" as const },\n        daemon: { autoStart: false },\n      },\n    };\n    const settings = createDefaultSettingsService(ref);\n\n    const result = await settings.patch({\n      path: \"daemon.autoStart\",\n      value: \"true\",\n    });\n\n    expect(ref.current.daemon.autoStart).toBe(true);\n    expect(result.restartRuntimes).toBe(false);\n  });\n\n  it(\"updates the plugin master switch and requests runtime restart\", async () => {\n    const ref = {\n      current: {\n        model: \"m\",\n        apiFormat: \"anthropic\" as const,\n        maxTurns: 50,\n        permission: { mode: \"default\" as const },\n        plugins: { enabled: true },\n      },\n    };\n    const settings = createDefaultSettingsService(ref);\n\n    const result = await settings.patch({\n      path: \"plugins.enabled\",\n      value: \"false\",\n    });\n\n    expect(ref.current.plugins.enabled).toBe(false);\n    expect(result.restartRuntim",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 57.75"
+      },
+      {
+        "path": "packages/agent-runtime/src/node/plugins/native-tools/__test__/knowledge-work.test.ts",
+        "line": 20,
+        "startLine": 20,
+        "endLine": 37,
+        "text": "async function withKnowledge(run: (tool: ToolDefinition, cwd: string, registry: TestRegistry, metadata: Record<string, unknown>) => Promise<void>) {\n  const cwd = mkdtempSync(join(tmpdir(), \"vykor-knowledge-work-\"));\n  const trustDirectory = mkdtempSync(join(tmpdir(), \"vykor-evidence-trust-\"));\n  const metadata = { dataRoot: trustDirectory };\n  const registry = new TestRegistry();\n  const cleanups: Array<() => Promise<void> | void> = [];\n  try {\n    const validation = await validateNativePlugin(pluginRoot);\n    expect(validation.status, JSON.stringify(validation.diagnostics)).toBe(\"valid\");\n    expect(requestedPluginPermissions(validation.plugin!.manifest)).toEqual(expect.arrayContaining([\n      \"filesystem:read\", \"network:api.openalex.org\", \"tool:filesystem:read\", \"tool:network:api.openalex.org\",\n    ]));\n    const plugin = await loadNativePlugin(validation.plugin!);\n    expect(plugin.diagnostics.filter(item => item.severity === \"error\")).toEqual([]);\n    const activation = await activateNativePluginTools(plugin, {\n      cwd, dataRoot: trustDirectory, toolRegistry: registry, addCleanup: cleanup => cleanups.push(cleanup),\n    });\n    expect(activation.state, JSON.s",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 51.73"
+      }
+    ],
+    "evidence": [
+      {
+        "path": "packages/agent-runtime/src/node/plugins/native-tools/tool-host.ts",
+        "startLine": 50,
+        "endLine": 74,
+        "text": "  private child: ChildProcess | undefined;\n  private pending = new Map<string, PendingRequest>();\n  private stopping = false;\n  private outputBytes = { stdout: 0, stderr: 0, ipc: 0 };\n  private outputLimitNotified = new Set<\"stdout\" | \"stderr\" | \"ipc\">();\n  state: NativeToolHostState = \"inactive\";\n\n  constructor(\n    readonly plugin: LoadedNativePlugin,\n    private readonly options: NativeToolHostOptions = {},\n  ) {}\n\n  async start(): Promise<NativeToolRegistration[]> {\n    if (this.child) throw new NativeToolHostError(\"tool_protocol_error\", \"Native Tool Host is already started\");\n    const entries = this.plugin.components.tools?.value ?? [];\n    if (entries.length === 0) return [];\n    this.generation = randomUUID();\n    this.state = \"starting\";\n    const hostEntry = new URL(\"./host-entry.mjs\", import.meta.url);\n    const inheritedEnv = [\"PATH\", \"Path\", \"SystemRoot\", \"WINDIR\", \"ComSpec\", \"PATHEXT\", \"TEMP\", \"TMP\", \"TMPDIR\", \"LANG\"]\n      .reduce<NodeJS.ProcessEnv>((result, key) => {\n        if (process.env[key] !== undefined) result[key] = process.env[key];\n        return result;\n      }, {});\n    const child = fork(hostEntry, [], {",
+        "bytes": 1150,
+        "truncated": false
+      },
+      {
+        "path": "apps/cli/src/commands/main.ts",
+        "startLine": 403,
+        "endLine": 427,
+        "text": " * 3. 创建 SkillLoader(registry)\n       ↓\n * 4. 调用 loadFromDirectory(\"/path/to/skills\")\n       ↓\n * 5. 对每个 .md 文件：\n       ├─ readFile() 读取内容\n       ├─ parseSkillMarkdown() 解析元数据\n       ├─ 构建 SkillDefinition 对象\n       └─ registry.register() 注册到内存\n       ↓\n  * 6. 通过 registry.get(name) 查询和使用技能\n */\nexport async function loadSkillsThreeSources(\n  skillRegistry: SkillRegistry,\n  cwd: string,\n  settings?: Settings,\n) {\n  skillRegistry.registerBundled();\n  const pluginContributions: { plugins: Awaited<ReturnType<typeof loadNativePlugin>>[]; warnings: string[] } = { plugins: [], warnings: [] };\n  if (settings && (settings.plugins?.enabled ?? true)) {\n    const records = await discoverInstalledNativePlugins({ cwd });\n    for (const record of records) {\n      const verification = await verifyInstalledNativePlugin(record);\n      if (verification.status !== \"valid\") {\n        pluginContributions.warnings.push(...verification.diagnostics.map((item) => `${record.id}: ${item.message}`));",
+        "bytes": 1080,
+        "truncated": false
+      },
+      {
+        "path": "packages/server/src/application/daemon-application.ts",
+        "startLine": 279,
+        "endLine": 303,
+        "text": "  private readonly localOcr: LocalOcrService;\n  private readonly startupRecovery: Promise<void>;\n  createMaintenanceService(host: Pick<MaintenanceApplicationContext, \"logs\" | \"settings\"> & { beforeClose?(): void } = {}) {\n    return createMaintenanceApplicationService({ store: this.store, control: this.control, commands: this.commands, terminals: this.terminals, ...host, readiness: () => this.diagnosticState, closeApplication: () => { host.beforeClose?.(); return this.close(); } });\n  }\n  private closePromise?: Promise<void>;\n  private releaseContextUsageLiveAssembler?: () => void;\n  private readyState: \"starting\" | \"ready\" | \"failed\" | \"closing\" | \"closed\" = \"starting\";\n  get diagnosticState() { return { phase: this.readyState, accepting: this.readyState === \"ready\" && this.operationGate.accepting }; }\n  private ownerLease: ApplicationOwnerLease;\n  private readonly ownerHeartbeat: ReturnType<typeof setInterval>;\n\n  constructor(private readonly options: DaemonApplicationOptions) {\n    const { store } = options;\n    this.store = store;\n    const executionOwner = options.executionOwner ?? new ExecutionRuntimeOwner();\n    this.executionOwner = executionOwner;\n    this.notes = createNoteApplicationService({ notes: store.notes, readiness: () => this.diagnosticState });\n    this.mcpRuntimes = new McpRuntimeConnectionCoordinator();\n    this.mcpOAuth = new McpOAuthApplicationService({ coordinator: this.mcpRuntimes });\n    this.mcpOAuthOperations = new McpOAuthOperationService({ application: this.mcpOAuth });\n    this.modelCatalog = createModelCatalogService();\n    // 同一份会话库同时只允许一个 daemon 当主人。心跳断了，别人才能接管。\n    this.ownerLease = store.acquireApplicationOwner({\n      ownerId: options.ownerId ?? `daemon:${process.pid}:${randomUUID()}`,",
+        "bytes": 1810,
+        "truncated": false
+      },
+      {
+        "path": "packages/server/src/application/__test__/default-application-services.test.ts",
+        "startLine": 147,
+        "endLine": 171,
+        "text": "    const context = createDefaultContextService({\n      current: { model: \"m\", apiFormat: \"anthropic\", maxTurns: 50, permission: { mode: \"default\" } } as never,\n    });\n\n    const status = await context.status({ cwd: temporaryDirectory });\n    expect(status.report).toContain(\"unreadable\");\n    expect(status.report).not.toContain(\"{incomplete-json\");\n  });\n\n  it(\"keeps persona inspection limited to built-in and user definitions\", async () => {\n    const result = await createDefaultAgentPersonaService().list();\n    expect(result.agents.map((agent) => agent.name)).toContain(\"worker\");\n    expect(result.agents.every((agent) => agent.source !== \"plugin\")).toBe(true);\n  });\n\n  it(\"updates daemon.autoStart without restarting live agent runtimes\", async () => {\n    const ref = {\n      current: {\n        model: \"m\",\n        apiFormat: \"anthropic\" as const,\n        maxTurns: 50,\n        permission: { mode: \"default\" as const },\n        daemon: { autoStart: false },\n      },\n    };",
+        "bytes": 985,
+        "truncated": false
+      },
+      {
+        "path": "packages/agent-runtime/src/node/plugins/native-tools/__test__/knowledge-work.test.ts",
+        "startLine": 8,
+        "endLine": 32,
+        "text": "import { describe, expect, it } from \"vitest\";\nimport { activateNativePluginTools } from \"../activate.js\";\nimport { createWebFetchTool } from \"@vykor/tools\";\nimport { createRunCapabilityView } from \"../../run-capability-view.js\";\n\n// Optional compatibility coverage against an explicit official-source checkout.\n// Normal host tests do not require the marketplace repository.\nconst officialPlugins = process.env.VYKOR_OFFICIAL_PLUGINS_DIR;\nconst pluginRoot = officialPlugins ? resolve(officialPlugins, \"knowledge-work\") : \"\";\n\nclass TestRegistry extends ToolRegistry {}\n\nasync function withKnowledge(run: (tool: ToolDefinition, cwd: string, registry: TestRegistry, metadata: Record<string, unknown>) => Promise<void>) {\n  const cwd = mkdtempSync(join(tmpdir(), \"vykor-knowledge-work-\"));\n  const trustDirectory = mkdtempSync(join(tmpdir(), \"vykor-evidence-trust-\"));\n  const metadata = { dataRoot: trustDirectory };\n  const registry = new TestRegistry();\n  const cleanups: Array<() => Promise<void> | void> = [];\n  try {\n    const validation = await validateNativePlugin(pluginRoot);\n    expect(validation.status, JSON.stringify(validation.diagnostics)).toBe(\"valid\");\n    expect(requestedPluginPermissions(validation.plugin!.manifest)).toEqual(expect.arrayContaining([\n      \"filesystem:read\", \"network:api.openalex.org\", \"tool:filesystem:read\", \"tool:network:api.openalex.org\",\n    ]));\n    const plugin = await loadNativePlugin(validation.plugin!);",
+        "bytes": 1451,
+        "truncated": false
+      }
+    ],
+    "passageEvidence": []
+  },
+  {
+    "taskId": "chinese-plugin-data",
+    "variant": "chinese-keywords",
+    "params": {
+      "corpus": "current",
+      "query": "插件 数据目录 工具进程",
+      "k": 5,
+      "full": 1200,
+      "mode": "bm25",
+      "max_tokens": 2000
+    },
+    "native": {
+      "content": [
+        {
+          "type": "text",
+          "text": "\n─── packages/agent-runtime/src/node/plugins/native-tools/README.md:1  (score 71.10)\n# 本地插件工具进程\n\n在独立的 Node 进程中加载插件工具，处理注册、调用、取消和日志，再将结果返回运行宿主。\n\n| 文件 | 用途 |\n| --- | --- |\n| `activate.ts` | 启用插件工具，向运行注册表提交结果 |\n| `tool-host.ts` | `NativeToolHost`，启动子进程并管理请求、超时和关闭 |\n| `host-entry.mjs` | 子进程入口，加载插件模块并执行工具 |\n| `protocol.ts` | 宿主与子进程间的注册、调用、取消和日志消息约定 |\n| `guard.ts` | 调用保护、参数与资源限制，以及审计事件 |\n| `status.ts` | 记录和读取本地工具运行状态 |\n| `__test__/` | 宿主协议、插件数据、实际插件和插件开发流程测试 |\n\n启用时创建宿主并捕获注册结果，调用时先通过保护检查，再把请求交给子进程，收到结果后按请求编号返回。进程和待处理请求由宿主持有，插件持久数据由授权的数据目录保存。\n\n`tool-host.ts` 与 `host-entry.mjs` 保持相邻，构建时将进程入口复制到发布目录。迁移本目录时需要同时检查构建脚本和桌面打包引用。新增进程协议或保护规则放在这里，测试放在同层 `__test__/`。\n\n官方插件由 `vykor-plugins` 仓库独立测试和发布。需要用真实“研究与写作”插件检查宿主兼容性时，设置测试变量 `VYKOR_OFFICIAL_PLUGINS_DIR` 指向其 `plugins` 目录，再运行 `__test__/knowledge-work.test.ts`。未设置时仅跳过这一组外部插件测试；正常宿主检查不读取相邻仓库，也不保留官方实现副本。\n\n─── docs/plugin-system.md:170  (score 66.72)\n独声明并批准 pluginData:write，且只对绑定的应用专用保存工具免重复确认；工作区导出和模型调用仍按原权限处理。\n\nNative Tool 入口导出 registerTools(context)，返回工具定义数组。工具定义提供名称、说明、inputSchema 和 invoke。\n\n一个插件版本共用一个 Tool Host 子进程。当前 Native Tool 在 local 环境激活。\n\n```callout warn 安全边界\nNode 子进程隔离崩溃和宿主环境，但不是操作系统级沙箱。\n第三方 Node 代码仍可直接使用文件、网络和进程 API。\n安装批准和调用门禁不等于拦截全部系统调用。\n```\n\n## F 代码、配置、草稿和业务数据放在哪里\n\n| 内容 | 保存位置或归属 | 更新与关闭的影响 |\n| --- | --- | --- |\n| 插件代码 | 安装快照或开发链接目录 | 正式快照不原地修改 |\n| 批准与启用状态 | 插件安装记录 | 与根清单分开保存 |\n| 长期业务数据 | Native 使用 context.plugin.dataDir；MCP 使用宿主注入的插件数据目录 | 普通更新和卸载不主动删除 |\n| 页面未保存草稿 | 当前 iframe 的内存 | 切换和收起保留，重启不保证恢复 |\n| 应用身份与操作回执 | 宿主会话存储 | 用于来源核对及恢复，不由页面伪造 |\n\ndataDir 的约定位置是 ~/.vykor/plugins/data/插件ID。它与代码版本及项目工作目录分开。\n\n插件负责数据格式、迁移和清理。页面需要持久保存时，应调用原有后台工具。\n\n## G 从完整模板到已有示例\n\n新插件优先从 [天气与出行模板](../skills/create-plugin/templates/weather-travel/README.md) 生成。初始化时选择 --backend native 或 --backend mcp，两版共用页面与业务逻辑，可分别构建、校验和打包。\n\nNative 版生成 components.tools 和 native-tools 后台。MCP 版生成 components.mcpServers、stdio 服务配置和 mcp-server 后台。两版都生成 components.apps，无需叠加两套工具入口。\n\n天气模板覆盖真实\n\n─── docs/native-plugin-authoring.md:274  (score 65.37)\nisError、failureKind、metadata。文本输出使用 `{ type: \"text\", text: \"...\" }`；不要直接返回字符串。异常由宿主转换成结构化错误。`safeToRetry` 只对能够安全重复调用的工具设为 true。\n\n异步工作应监听 `signal`，中止底层请求或等待并释放资源。只在长同步循环里读取 signal 不能及时接收进程间取消消息；同步任务必须有明确的工作量上限。调用超时、调用方主动取消分别返回 `tool_call_timeout`、`tool_call_cancelled`；插件长期不响应时宿主会结束进程。\n\n工具可通过注册日志接口记录调试信息；正文、凭据和完整输入不要写日志。宿主对 stdout、stderr 和插件日志消息设有大小限制，超出时截断或抑制；当前没有对 `ToolResult.content` 应用这些限额，工具应自行限制返回结果大小，不能依赖宿主自动截断。每次工具调用另有不包含完整参数正文的审计记录。\n\n## 插件持久数据与本轮工具结果\n\n宿主注入 `context.plugin.dataDir`，位置为 `~/.vykor/plugins/data/<plugin-id>`，与安装版本、代码快照和当前工作目录分开。插件按需创建目录并自行使用 Node 文件 API，保存格式、迁移及缓存清理由插件负责。普通更新与卸载不删除这些数据；此入口规范数据位置，不提供系统级文件沙箱，也不会隐式授予读写权限。\n\n原生工具可以声明 `toolResultInput: \"tool_result_id\"`，并在 inputSchema 定义该字符串字段。调用时宿主按编号取出本轮已经执行、且仍在当前可见工具范围内的实际结果，放入 `context.toolResult`；模型不能用参数正文替代它。上下文还提供可选 `runId`，用于插件记录本轮业务状态。\n\n─── docs/orkas-builtin-agents-integration-research.md:149  (score 62.38)\n转换\n\nOrkas 的 `workspace.read`、`office.presentation`、`media.image` 是能力分组；我们的 Agent `tools` 是实际工具名称列表，不能原样填入。Orkas 的脚本通过安装 ID、当前用户、专家归属和语言选择解释器，还依赖自己的目录和环境变量。\n\n集成时应将角色、流程、质量标准转成 Agent Markdown；将共享与私有技能依赖解析成实际技能；为可复用脚本提供真实工具或受控运行入口。文件、网络、进程操作沿用现有权限、超时和取消机制。Windows 的 Native／WSL 模式必须同时考虑文件路径、解释器和二进制位置，不能只在宿主进程中硬编码 Windows 路径。\n\n试点只需要转选中的能力包，没必要先造一个能转换全部 Orkas 资源的通用导入器。\n\n证据：[我们的默认工具目录（现归 Node）](../packages/agent-runtime/src/node/tools/default-tool-registry.ts)、[原生插件示例](D:/code/personal-project/OpenHarness-ts/examples/plugins/text-inspector/.vykor-plugin/plugin.json)、[Orkas 工具分组目录](D:/code/personal-project/Orkas/src/main/model/core-agent/tool-catalog.ts)、[Orkas 脚本运行入口](D:/code/personal-project/Orkas/bin/run-skill.cjs)。\n\n### 5.4 已有文件入口和插件 UI，仍需补“当前成品”记录\n\n我们已有文件变更汇总、文件打开、图片预览、子任务展示和插件 UI，可以复用。它们分别解决浏览文件、观察任务或与插件交互的问题。\n\n专业成果可以先在固定工作目录里记录当前文件、来源和检查结果，由技能约定后续修改读取它们；这不要求先建立应用级成果数据库。只有需要跨会话统一查找、结构化成品卡片或可靠版本关联时，再增加产物身份、类型、创建专家、版本和所在子会话等应用级记录。后续修改应读取当前文件，避免仅凭聊天中的文件名猜当前版本。\n\n对话里的成品卡片建议提供“打开”“继续修改”“导出”\n\n5 passages from 'current'\nCite file:line for anything you rely on.\n[token budget: 4/5 passages full, 0 locator-only, 0 deduped (identical locator and passage), 1 dropped; counted as standard-uax29-words, max_tokens 2000]\n"
+        }
+      ],
+      "isError": false
+    },
+    "score": {
+      "fileHit": false,
+      "evidenceHit": false,
+      "relevantFilesFound": 0,
+      "relevantFilesTotal": 1,
+      "fileRecall": 0,
+      "topFiles": [
+        "packages/agent-runtime/src/node/plugins/native-tools/README.md",
+        "docs/plugin-system.md",
+        "docs/native-plugin-authoring.md",
+        "docs/orkas-builtin-agents-integration-research.md"
+      ],
+      "evidenceFiles": []
+    },
+    "hits": [
+      {
+        "path": "packages/agent-runtime/src/node/plugins/native-tools/README.md",
+        "line": 1,
+        "startLine": 1,
+        "endLine": 19,
+        "text": "# 本地插件工具进程\n\n在独立的 Node 进程中加载插件工具，处理注册、调用、取消和日志，再将结果返回运行宿主。\n\n| 文件 | 用途 |\n| --- | --- |\n| `activate.ts` | 启用插件工具，向运行注册表提交结果 |\n| `tool-host.ts` | `NativeToolHost`，启动子进程并管理请求、超时和关闭 |\n| `host-entry.mjs` | 子进程入口，加载插件模块并执行工具 |\n| `protocol.ts` | 宿主与子进程间的注册、调用、取消和日志消息约定 |\n| `guard.ts` | 调用保护、参数与资源限制，以及审计事件 |\n| `status.ts` | 记录和读取本地工具运行状态 |\n| `__test__/` | 宿主协议、插件数据、实际插件和插件开发流程测试 |\n\n启用时创建宿主并捕获注册结果，调用时先通过保护检查，再把请求交给子进程，收到结果后按请求编号返回。进程和待处理请求由宿主持有，插件持久数据由授权的数据目录保存。\n\n`tool-host.ts` 与 `host-entry.mjs` 保持相邻，构建时将进程入口复制到发布目录。迁移本目录时需要同时检查构建脚本和桌面打包引用。新增进程协议或保护规则放在这里，测试放在同层 `__test__/`。\n\n官方插件由 `vykor-plugins` 仓库独立测试和发布。需要用真实“研究与写作”插件检查宿主兼容性时，设置测试变量 `VYKOR_OFFICIAL_PLUGINS_DIR` 指向其 `plugins` 目录，再运行 `__test__/knowledge-work.test.ts`。未设置时…",
+        "truncated": true,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 71.10"
+      },
+      {
+        "path": "docs/plugin-system.md",
+        "line": 170,
+        "startLine": 170,
+        "endLine": 194,
+        "text": "独声明并批准 pluginData:write，且只对绑定的应用专用保存工具免重复确认；工作区导出和模型调用仍按原权限处理。\n\nNative Tool 入口导出 registerTools(context)，返回工具定义数组。工具定义提供名称、说明、inputSchema 和 invoke。\n\n一个插件版本共用一个 Tool Host 子进程。当前 Native Tool 在 local 环境激活。\n\n```callout warn 安全边界\nNode 子进程隔离崩溃和宿主环境，但不是操作系统级沙箱。\n第三方 Node 代码仍可直接使用文件、网络和进程 API。\n安装批准和调用门禁不等于拦截全部系统调用。\n```\n\n## F 代码、配置、草稿和业务数据放在哪里\n\n| 内容 | 保存位置或归属 | 更新与关闭的影响 |\n| --- | --- | --- |\n| 插件代码 | 安装快照或开发链接目录 | 正式快照不原地修改 |\n| 批准与启用状态 | 插件安装记录 | 与根清单分开保存 |\n| 长期业务数据 | Native 使用 context.plugin.dataDir；MCP 使用宿主注入的插件数据目录 | 普通更新和卸载不主动删除 |\n| 页面未保存草稿 | 当前 iframe 的内存 | 切换和收起保留，重启不保证恢复 |\n| 应用身份与操作回执 | 宿主会话存储 | 用于来源核对及恢复，不由页面伪造 |\n\ndataDir 的约定位置是 ~/.vykor/plugins/data/插件ID。它与代码版本及项目工作目录分开。\n\n插件负责数据格式、迁移和清理。页面需要持久保存时，应调用原有后台…",
+        "truncated": true,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 66.72"
+      },
+      {
+        "path": "docs/native-plugin-authoring.md",
+        "line": 274,
+        "startLine": 274,
+        "endLine": 284,
+        "text": "isError、failureKind、metadata。文本输出使用 `{ type: \"text\", text: \"...\" }`；不要直接返回字符串。异常由宿主转换成结构化错误。`safeToRetry` 只对能够安全重复调用的工具设为 true。\n\n异步工作应监听 `signal`，中止底层请求或等待并释放资源。只在长同步循环里读取 signal 不能及时接收进程间取消消息；同步任务必须有明确的工作量上限。调用超时、调用方主动取消分别返回 `tool_call_timeout`、`tool_call_cancelled`；插件长期不响应时宿主会结束进程。\n\n工具可通过注册日志接口记录调试信息；正文、凭据和完整输入不要写日志。宿主对 stdout、stderr 和插件日志消息设有大小限制，超出时截断或抑制；当前没有对 `ToolResult.content` 应用这些限额，工具应自行限制返回结果大小，不能依赖宿主自动截断。每次工具调用另有不包含完整参数正文的审计记录。\n\n## 插件持久数据与本轮工具结果\n\n宿主注入 `context.plugin.dataDir`，位置为 `~/.vykor/plugins/data/<plugin-id>`，与安装版本、代码快照和当前工作目录分开。插件按需创建目录并自行使用 Node 文件 API，保存格式、迁移及缓存清理由插件负责。普通更新与卸载不删除这些数据；此入口规范数据位置，不提供系统级文件沙箱，也不会隐式授予读写权限。\n\n原生工具可以声明 `toolResultInput: \"tool_result_id\"`，并…",
+        "truncated": true,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 65.37"
+      },
+      {
+        "path": "docs/orkas-builtin-agents-integration-research.md",
+        "line": 149,
+        "startLine": 149,
+        "endLine": 161,
+        "text": "转换\n\nOrkas 的 `workspace.read`、`office.presentation`、`media.image` 是能力分组；我们的 Agent `tools` 是实际工具名称列表，不能原样填入。Orkas 的脚本通过安装 ID、当前用户、专家归属和语言选择解释器，还依赖自己的目录和环境变量。\n\n集成时应将角色、流程、质量标准转成 Agent Markdown；将共享与私有技能依赖解析成实际技能；为可复用脚本提供真实工具或受控运行入口。文件、网络、进程操作沿用现有权限、超时和取消机制。Windows 的 Native／WSL 模式必须同时考虑文件路径、解释器和二进制位置，不能只在宿主进程中硬编码 Windows 路径。\n\n试点只需要转选中的能力包，没必要先造一个能转换全部 Orkas 资源的通用导入器。\n\n证据：[我们的默认工具目录（现归 Node）](../packages/agent-runtime/src/node/tools/default-tool-registry.ts)、[原生插件示例](D:/code/personal-project/OpenHarness-ts/examples/plugins/text-inspector/.vykor-plugin/plugin.json)、[Orkas 工具分组目录](D:/code/personal-project/Orkas/src/main/model/core-agent/tool-catalog.ts)、[Orkas 脚本运行入口](D:/code/personal-project/Orkas/bin/run-skill.cjs)。\n\n### 5.4 已有文件入口和插件 UI，仍需补“当前成品”记录\n\n我们已有文件变更汇总、文件打开、图片预览、子任务展示和插件 UI，可以复用。它们分别解决浏览文件、观察任务或与插件交互…",
+        "truncated": true,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 62.38"
+      }
+    ],
+    "evidence": [
+      {
+        "path": "packages/agent-runtime/src/node/plugins/native-tools/README.md",
+        "startLine": 1,
+        "endLine": 13,
+        "text": "# 本地插件工具进程\n\n在独立的 Node 进程中加载插件工具，处理注册、调用、取消和日志，再将结果返回运行宿主。\n\n| 文件 | 用途 |\n| --- | --- |\n| `activate.ts` | 启用插件工具，向运行注册表提交结果 |\n| `tool-host.ts` | `NativeToolHost`，启动子进程并管理请求、超时和关闭 |\n| `host-entry.mjs` | 子进程入口，加载插件模块并执行工具 |\n| `protocol.ts` | 宿主与子进程间的注册、调用、取消和日志消息约定 |\n| `guard.ts` | 调用保护、参数与资源限制，以及审计事件 |\n| `status.ts` | 记录和读取本地工具运行状态 |\n| `__test__/` | 宿主协议、插件数据、实际插件和插件开发流程测试 |",
+        "bytes": 733,
+        "truncated": false
+      },
+      {
+        "path": "docs/plugin-system.md",
+        "startLine": 158,
+        "endLine": 182,
+        "text": "普通用户管理 user 插件。managed 插件由管理渠道控制，普通安装和卸载流程不能修改。\n\n## E 哪些检查真正决定能否执行\n\n| 检查层 | 检查内容 | 不能替代什么 |\n| --- | --- | --- |\n| 安装层 | 文件边界、摘要、组件和权限批准 | 不能代替运行时检查 |\n| 这次任务可用的能力 | 插件身份、版本、工具与技能来源 | 不能扩大角色权限 |\n| 调用层 | 工具权限、角色限制、禁用项和执行环境 | 不能靠模型选择绕过 |\n| Native Tool Guard | 输入格式、并发控制和审计摘要 | 不能代替业务数据校验 |\n| 应用操作层 | 页面可见性、确认、原会话与固定来源 | 不能任意调用其他插件工具 |\n\n声明 Apps 会产生 ui:render 和 ui:invoke-own-tools 两项安装批准。实际工具仍需满足自己的权限要求。自身数据自动保存还需单独声明并批准 pluginData:write，且只对绑定的应用专用保存工具免重复确认；工作区导出和模型调用仍按原权限处理。\n\nNative Tool 入口导出 registerTools(context)，返回工具定义数组。工具定义提供名称、说明、inputSchema 和 invoke。\n\n一个插件版本共用一个 Tool Host 子进程。当前 Native Tool 在 local 环境激活。\n\n```callout warn 安全边界\nNode 子进程隔离崩溃和宿主环境，但不是操作系统级沙箱。\n第三方 Node 代码仍可直接使用文件、网络和进程 API。\n安装批准和调用门禁不等于拦截全部系统调用。\n```\n\n## F 代码、配置、草稿和业务数据放在哪里",
+        "bytes": 1596,
+        "truncated": false
+      },
+      {
+        "path": "docs/native-plugin-authoring.md",
+        "startLine": 262,
+        "endLine": 286,
+        "text": "| plugin | id、name、version、root、dataDir；root 是代码快照，dataDir 是稳定的插件持久数据目录 |\n| deadline | Unix 毫秒时间戳，表示本次调用截止时间 |\n| signal | AbortSignal，通知本次调用超时或被调用方取消 |\n\n`cwd` 是调用所属项目，不是插件根目录。运行时加载插件自己的静态资源，应使用 `context.plugin.root` 或模块相对 URL；不要依赖 `process.cwd()`。注册上下文没有 cwd，调用上下文没有独立 log 方法，可以在 registerTools 中捕获日志函数。\n\n公共接口不包含宿主内部的 settings、terminal、jobs 或工具注册表。SDK 只提供类型，不会因为声明了这些字段就注入相应能力。实际参考 `.mjs` 已作为 checkJs 输入，通过仓库的样例类型检查配置解析公共子路径。\n\n### 参数、返回值与取消\n\ninputSchema 在调用前检查常用 JSON Schema 约束，包括对象字段、required、additionalProperties、基本类型、enum、const、字符串长度及数组项。当前不是完整 JSON Schema 实现；不要依赖未实现的关键字来表达必须执行的业务校验。字符串长度按 JavaScript UTF-16 code units 计数。\n\n返回现有 `ToolResult`：`content` 内容块数组，以及可选 isError、failureKind、metadata。文本输出使用 `{ type: \"text\", text: \"...\" }`；不要直接返回字符串。异常由宿主转换成结构化错误。`safeToRetry` 只对能够安全重复调用的工具设为 true。\n\n异步工作应监听 `signal`，中止底层请求或等待并释放资源。只在长同步循环里读取 signal 不能及时接收进程间取消消息；同步任务必须有明确的工作量上限。调用超时、调用方主动取消分别返回 `tool_call_timeout`、`tool_call_cancelled`；插件长期不响应时宿主会结束进程。\n\n工具可通过注册日志接口记录调试信息；正文、凭据和完整输入不要写日志。宿主对 stdout、stderr 和插件日志消息设有大小限制，超出时截断或抑制；当前没有对 `ToolResult.content` 应用这些限额，工具应自行限制返回结果大小，不能依赖宿主自动截断。每次工具调用另有不包含完整参数正文的审计记录。\n\n## 插件持久数据与本轮工具结果\n\n宿主注入 `context.plugin.dataDir`，位置为 `~/.vykor/plugins/data/<plugin-id>`，与安装版本、代码快照和当前工作目录分开。插件按需创建目录并自行使用 Node 文件 API，保存格式、迁移及缓存清理由插件负责。普通更新与卸载不删除这些数据；此入口规范数据位置，不提供系统级文件沙箱，也不会隐式授予读写权限。\n\n原生工具可以声明 `toolResultInput: \"tool_result_id\"`，并在 inputSchema 定义该字符串字段。调用时宿主按编号取出本轮已经执行、且仍在当前可见工具范围内的实际结果，放入 `context.toolResult`；模型不能用参数正文替代它。上下文还提供可选 `runId`，用于插件记录本轮业务状态。\n\n工具结果编号在模型反馈中显示为 `Tool-Result-Id: <tool-call-id>`。此接口仅保留选中插件的本轮最近 16 项结果，单项最多 256000 字节、总量最多 1000000 字节；不截断后冒充完整结果，不跨 Run 或运行时重启读取。结果不存在、过大或已被淘汰时明确返回不可用，插件可重新取得结果或读取自己的持久数据。先执行取资料工具，再在后续调用导入；同一批并行工具未完成时不能读取其结果。",
+        "bytes": 3587,
+        "truncated": false
+      },
+      {
+        "path": "docs/orkas-builtin-agents-integration-research.md",
+        "startLine": 137,
+        "endLine": 161,
+        "text": "### 5.2 插件能力已经注入，专家专属技能声明是另一层\n\n当前选中插件的技能、工具和智能体已经进入本轮能力范围；子智能体继承这个范围，工具还会按 Agent 的允许／禁止列表进一步筛选。现有插件准备错误和 MCP 依赖也有检查。因此，不能把下面的字段处理差异理解为“现有插件不会注入能力”，也不应把新增一套绑定机制列为两个专家试点的必要前提。\n\nAgent 加载器会解析 `skills`、`memory` 等字段。但已检查的 Agent 调度路径和 Workflow 调度路径没有把 `agentDef.skills`、`agentDef.memory` 传入子运行；子能力范围的派生主要筛选工具和 MCP，并未按专家技能列表筛选。\n\n此外，自定义专家提示词会走 `customPrompt`，不能仅凭定义里写了技能列表，就认为默认技能说明一定被拼进提示词。现有 Skill 工具仍可读取当前范围允许的技能；这里的缺口是明确的专家依赖注入、选择与运行校验。\n\n第一版可以直接在专家提示词中写明要通过 Skill 工具加载的真实技能名称，以及插件检查工具的调用方式，复用现有能力范围和权限检查。只有需要自动消费 Agent 的 `skills` 声明、强制按专家缩小技能范围或额外检查领域运行组件时，再扩展这层机制；这些属于可选增强。缺失的实际运行组件应返回清晰错误。\n\n证据：[字段解析](D:/code/personal-project/OpenHarness-ts/packages/coordinator/src/agent-loader.ts)、[Agent 调度参数（第 120 行）](D:/code/personal-project/OpenHarness-ts/packages/tools/src/agent/agent-tools.ts)、[Workflow 调度参数（第 126 行）](D:/code/personal-project/OpenHarness-ts/packages/tools/src/agent/workflow/runner.ts)、[子运行能力派生（第 110 行）](D:/code/personal-project/OpenHarness-ts/packages/agent-runtime/src/node/children/child-agent-options.ts)、[提示词组装（第 251 行）](D:/code/personal-project/OpenHarness-ts/packages/agent-runtime/src/node/runtime/default-runtime.ts)。\n\n### 5.3 工具组、脚本入口和运行环境需要转换\n\nOrkas 的 `workspace.read`、`office.presentation`、`media.image` 是能力分组；我们的 Agent `tools` 是实际工具名称列表，不能原样填入。Orkas 的脚本通过安装 ID、当前用户、专家归属和语言选择解释器，还依赖自己的目录和环境变量。\n\n集成时应将角色、流程、质量标准转成 Agent Markdown；将共享与私有技能依赖解析成实际技能；为可复用脚本提供真实工具或受控运行入口。文件、网络、进程操作沿用现有权限、超时和取消机制。Windows 的 Native／WSL 模式必须同时考虑文件路径、解释器和二进制位置，不能只在宿主进程中硬编码 Windows 路径。\n\n试点只需要转选中的能力包，没必要先造一个能转换全部 Orkas 资源的通用导入器。\n\n证据：[我们的默认工具目录（现归 Node）](../packages/agent-runtime/src/node/tools/default-tool-registry.ts)、[原生插件示例](D:/code/personal-project/OpenHarness-ts/examples/plugins/text-inspector/.vykor-plugin/plugin.json)、[Orkas 工具分组目录](D:/code/personal-project/Orkas/src/main/model/core-agent/tool-catalog.ts)、[Orkas 脚本运行入口](D:/code/personal-project/Orkas/bin/run-skill.cjs)。\n\n### 5.4 已有文件入口和插件 UI，仍需补“当前成品”记录\n\n我们已有文件变更汇总、文件打开、图片预览、子任务展示和插件 UI，可以复用。它们分别解决浏览文件、观察任务或与插件交互的问题。",
+        "bytes": 3655,
+        "truncated": false
+      }
+    ],
+    "passageEvidence": []
+  },
+  {
+    "taskId": "chinese-schedule-history",
+    "variant": "english-short",
+    "params": {
+      "corpus": "current",
+      "query": "schedule execution history create run storage",
+      "k": 5,
+      "full": 1200,
+      "mode": "bm25",
+      "max_tokens": 2000
+    },
+    "native": {
+      "content": [
+        {
+          "type": "text",
+          "text": "\n─── packages/protocol/src/requests/requests.ts:204  (score 63.80)\n    [function parseScheduleFields @ line 374 — 1,263 of 17,911 chars]\nfunction parseScheduleFields(\r\n  body: JsonRecord,\r\n): Partial<CreateScheduledTaskInput> {\r\n  const id = optionalString(body, \"id\");\r\n  const name = optionalString(body, \"name\");\r\n  const description = optionalString(body, \"description\");\r\n  const prompt = optionalString(body, \"prompt\");\r\n  const recurrence = optionalString(body, \"recurrence\");\r\n  const recurrenceFormat = optionalEnum(body, \"recurrenceFormat\", [\r\n    \"rrule\",\r\n    \"once\",\r\n  ] as const);\r\n  const timezone = optionalString(body, \"timezone\");\r\n  const status = optionalEnum(body, \"status\", [\r\n    \"active\",\r\n    \"paused\",\r\n    \"completed\",\r\n  ] as const);\r\n  const destination = optionalEnum(body, \"destination\", [\r\n    \"standalone\",\r\n    \"chat\",\r\n  ] as const);\r\n  const sessionId = optionalString(body, \"sessionId\");\r\n  const projectPaths = optionalStringArray(body, \"projectPaths\");\r\n  const executionMode = optionalEnum(body, \"executionMode\", [\r\n    \"local\",\r\n    \"worktree\",\r\n  ] as const);\r\n  const model = optionalString(body, \"model\");\r\n  const effort = optionalString(body, \"effort\");\r\n  const skillNames = optionalStringArray(body, \"skillNames\");\r\n  const pluginNames = optionalStringArray(body, \"pluginNames\");\r\n  const\n    ... [function parseScheduleFields truncated at 1200 chars]\n\n─── packages/server/src/daemon/__test__/scheduled-task-service.test.ts:519  (score 59.51)\n    [function createHarness @ line 22 — 915 of 28,314 chars]\nfunction createHarness(\r\n  execute = vi.fn(async (\r\n    _task: ScheduledTaskRecord,\r\n    _run: ScheduledRunRecord,\r\n    reportSessionReady: (sessionId: string) => void,\r\n  ) => {\r\n    reportSessionReady(\"scheduled-session\");\r\n    return {\r\n      sessionId: \"scheduled-session\",\r\n      runId: \"agent-run\",\r\n      summary: \"Agent completed the scheduled work.\",\r\n    };\r\n  }),\r\n) {\r\n  const dir = mkdtempSync(join(tmpdir(), \"vk-scheduled-service-\"));\r\n  const store = new SessionStore({ path: join(dir, \"store.db\") });\r\n  store.sessions.create({\r\n    id: \"scheduled-session\",\r\n    cwd: process.cwd(),\r\n    model: \"test-model\",\r\n  });\r\n  const service = new ScheduledTaskService({\r\n    schedules: store.schedules,\r\n    execute,\r\n  });\r\n  cleanups.push(async () => {\r\n    await service.shutdown();\r\n    store.close();\r\n    rmSync(dir, { recursive: true, force: true });\r\n  });\r\n  return { execute, service, store };\r\n}\r\n\n─── packages/services/src/session-runtime/__test__/store.test.ts:1078  (score 55.24)\n    [function createReadyAttachment @ line 59 — 438 of 126,074 chars]\nfunction createReadyAttachment(\r\n  store: SessionStore,\r\n  id: string,\r\n  sizeBytes = 100,\r\n): void {\r\n  store.attachments.createImportingAttachment({\r\n    id,\r\n    displayName: `${id}.png`,\r\n    declaredMediaType: \"image/png\",\r\n    stagingName: `${id}.part`,\r\n    createdAt: 10,\r\n  });\r\n  store.attachments.markAttachmentReady(id, {\r\n    sha256: \"a\".repeat(64),\r\n    sizeBytes,\r\n    mediaType: \"image/png\",\r\n    updatedAt: 11,\r\n  });\r\n}\r\n\n─── packages/client/src/index.ts:94  (score 41.17)\n    [no symbol match; showing 1,200 of 8,420 chars from offset 2,700, window centred on the match]\nor,\r\n} from \"./state/index.js\";\r\nexport type {\r\n  SessionSyncControllerOptions,\r\n  SyncConnectionStatus,\r\n} from \"./state/index.js\";\r\nexport {\r\n  LOCAL_COMMAND_DETAILS,\r\n  LOCAL_COMMAND_NAMES,\r\n  dispatchSessionCommand,\r\n  hasActiveRun,\r\n  mergeCommandDetails,\r\n  parseSlashLine,\r\n  resolveSessionCwd,\r\n} from \"./commands/index.js\";\r\nexport { isPluginIconSource, isPluginWebUrl, readRuntimeMetadata } from \"@vykor/protocol\";\r\nexport type { SessionRuntimeConfig, SessionRuntimeConfigPatch } from \"@vykor/protocol\";\r\nexport type {\r\n  PresentationReadRequest,\r\n  SessionCommandHost,\r\n  SessionCommandOutcome,\r\n  SlashLine,\r\n} from \"./commands/index.js\";\r\nexport type {\r\n  AdmitClientPromptInput,\r\n  AgentPersonaInfo,\r\n  AttachmentStorageGcResult,\r\n  AttachmentStorageIssue,\r\n  AttachmentStorageRepairResult,\r\n  AttachmentStorageReport,\r\n  AuthStatus,\r\n  CommandCatalogEntry,\r\n  CommandKind,\r\n  CommandSelection,\r\n  CommandSource,\r\n  CompactSessionResponse,\r\n  CancelQueuedClientPromptInput,\r\n  CancelQueuedPromptResponse,\r\n  CreateBackgroundShellInput,\r\n  CreateBackgroundShellResult,\r\n  CreateScheduledTaskInput,\r\n  AdmitPromptAttachmentInput,\r\n  CreateClientSessionInput,\r\n  EditLatestClientPromptInpu\n\n─── packages/services/src/schedules/schedule-repository.ts:27  (score 41.16)\n    [method updateTask @ line 80 — 1,252 of 9,906 chars]\n  updateTask(id: string, patch: UpdateScheduledTaskInput): ScheduledTaskRecord {\r\n    return this.storage.database.connection.transaction(() => {\r\n      this.storage.assertWritable();\r\n      const current = this.getTask(id);\r\n      if (!current) throw new Error(`Scheduled task not found: ${id}`);\r\n      const updated = {\r\n        ...current,\r\n        ...withoutUndefined(patch),\r\n        updatedAt: Date.now(),\r\n      } as ScheduledTaskRecord;\r\n      if (patch.lastRunAt === null) delete updated.lastRunAt;\r\n      if (patch.nextRunAt === null) delete updated.nextRunAt;\r\n      this.database.update(scheduledTasks).set({\r\n        name: updated.name,\r\n        description: updated.description ?? null,\r\n        prompt: updated.prompt,\r\n        recurrence: updated.recurrence,\r\n        recurrenceFormat: updated.recurrenceFormat,\r\n        timezone: updated.timezone,\r\n        status: updated.status,\r\n        destination: updated.destination,\r\n        sessionId: updated.sessionId ?? null,\r\n        projectPathsJson: encode(updated.projectPaths),\r\n        executionMode: updated.executionMode,\r\n        model: updated.model ?? null,\r\n        effort: updated.effort ?? null,\r\n        skillNamesJson: en\n    ... [method updateTask truncated at 1200 chars]\n\n5 passages from 'current'\nCite file:line for anything you rely on.\n"
+        }
+      ],
+      "isError": false
+    },
+    "score": {
+      "fileHit": true,
+      "evidenceHit": false,
+      "relevantFilesFound": 1,
+      "relevantFilesTotal": 2,
+      "fileRecall": 0.5,
+      "topFiles": [
+        "packages/protocol/src/requests/requests.ts",
+        "packages/server/src/daemon/__test__/scheduled-task-service.test.ts",
+        "packages/services/src/session-runtime/__test__/store.test.ts",
+        "packages/client/src/index.ts",
+        "packages/services/src/schedules/schedule-repository.ts"
+      ],
+      "evidenceFiles": []
+    },
+    "hits": [
+      {
+        "path": "packages/protocol/src/requests/requests.ts",
+        "line": 374,
+        "startLine": 374,
+        "endLine": 406,
+        "text": "function parseScheduleFields(\n  body: JsonRecord,\n): Partial<CreateScheduledTaskInput> {\n  const id = optionalString(body, \"id\");\n  const name = optionalString(body, \"name\");\n  const description = optionalString(body, \"description\");\n  const prompt = optionalString(body, \"prompt\");\n  const recurrence = optionalString(body, \"recurrence\");\n  const recurrenceFormat = optionalEnum(body, \"recurrenceFormat\", [\n    \"rrule\",\n    \"once\",\n  ] as const);\n  const timezone = optionalString(body, \"timezone\");\n  const status = optionalEnum(body, \"status\", [\n    \"active\",\n    \"paused\",\n    \"completed\",\n  ] as const);\n  const destination = optionalEnum(body, \"destination\", [\n    \"standalone\",\n    \"chat\",\n  ] as const);\n  const sessionId = optionalString(body, \"sessionId\");\n  const projectPaths = optionalStringArray(body, \"projectPaths\");\n  const executionMode = optionalEnum(body, \"executionMode\", [\n    \"local\",\n    \"worktree\",\n  ] as const);\n  const model = optionalString(body, \"model\");\n  const effort = optionalString(body, \"effort\");\n  const skillNames = optionalStringArray(body, \"skillNames\");\n  const pluginNames = optionalStringArray(body, \"pluginNames\");\n  const",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 63.80"
+      },
+      {
+        "path": "packages/server/src/daemon/__test__/scheduled-task-service.test.ts",
+        "line": 22,
+        "startLine": 22,
+        "endLine": 53,
+        "text": "function createHarness(\n  execute = vi.fn(async (\n    _task: ScheduledTaskRecord,\n    _run: ScheduledRunRecord,\n    reportSessionReady: (sessionId: string) => void,\n  ) => {\n    reportSessionReady(\"scheduled-session\");\n    return {\n      sessionId: \"scheduled-session\",\n      runId: \"agent-run\",\n      summary: \"Agent completed the scheduled work.\",\n    };\n  }),\n) {\n  const dir = mkdtempSync(join(tmpdir(), \"vk-scheduled-service-\"));\n  const store = new SessionStore({ path: join(dir, \"store.db\") });\n  store.sessions.create({\n    id: \"scheduled-session\",\n    cwd: process.cwd(),\n    model: \"test-model\",\n  });\n  const service = new ScheduledTaskService({\n    schedules: store.schedules,\n    execute,\n  });\n  cleanups.push(async () => {\n    await service.shutdown();\n    store.close();\n    rmSync(dir, { recursive: true, force: true });\n  });\n  return { execute, service, store };\n}",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 59.51"
+      },
+      {
+        "path": "packages/services/src/session-runtime/__test__/store.test.ts",
+        "line": 59,
+        "startLine": 59,
+        "endLine": 77,
+        "text": "function createReadyAttachment(\n  store: SessionStore,\n  id: string,\n  sizeBytes = 100,\n): void {\n  store.attachments.createImportingAttachment({\n    id,\n    displayName: `${id}.png`,\n    declaredMediaType: \"image/png\",\n    stagingName: `${id}.part`,\n    createdAt: 10,\n  });\n  store.attachments.markAttachmentReady(id, {\n    sha256: \"a\".repeat(64),\n    sizeBytes,\n    mediaType: \"image/png\",\n    updatedAt: 11,\n  });\n}",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 55.24"
+      },
+      {
+        "path": "packages/client/src/index.ts",
+        "line": 69,
+        "startLine": 69,
+        "endLine": 112,
+        "text": "or,\n} from \"./state/index.js\";\nexport type {\n  SessionSyncControllerOptions,\n  SyncConnectionStatus,\n} from \"./state/index.js\";\nexport {\n  LOCAL_COMMAND_DETAILS,\n  LOCAL_COMMAND_NAMES,\n  dispatchSessionCommand,\n  hasActiveRun,\n  mergeCommandDetails,\n  parseSlashLine,\n  resolveSessionCwd,\n} from \"./commands/index.js\";\nexport { isPluginIconSource, isPluginWebUrl, readRuntimeMetadata } from \"@vykor/protocol\";\nexport type { SessionRuntimeConfig, SessionRuntimeConfigPatch } from \"@vykor/protocol\";\nexport type {\n  PresentationReadRequest,\n  SessionCommandHost,\n  SessionCommandOutcome,\n  SlashLine,\n} from \"./commands/index.js\";\nexport type {\n  AdmitClientPromptInput,\n  AgentPersonaInfo,\n  AttachmentStorageGcResult,\n  AttachmentStorageIssue,\n  AttachmentStorageRepairResult,\n  AttachmentStorageReport,\n  AuthStatus,\n  CommandCatalogEntry,\n  CommandKind,\n  CommandSelection,\n  CommandSource,\n  CompactSessionResponse,\n  CancelQueuedClientPromptInput,\n  CancelQueuedPromptResponse,\n  CreateBackgroundShellInput,\n  CreateBackgroundShellResult,\n  CreateScheduledTaskInput,\n  AdmitPromptAttachmentInput,\n  CreateClientSessionInput,\n  EditLatestClientPromptInpu",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 41.17"
+      },
+      {
+        "path": "packages/services/src/schedules/schedule-repository.ts",
+        "line": 80,
+        "startLine": 80,
+        "endLine": 106,
+        "text": "  updateTask(id: string, patch: UpdateScheduledTaskInput): ScheduledTaskRecord {\n    return this.storage.database.connection.transaction(() => {\n      this.storage.assertWritable();\n      const current = this.getTask(id);\n      if (!current) throw new Error(`Scheduled task not found: ${id}`);\n      const updated = {\n        ...current,\n        ...withoutUndefined(patch),\n        updatedAt: Date.now(),\n      } as ScheduledTaskRecord;\n      if (patch.lastRunAt === null) delete updated.lastRunAt;\n      if (patch.nextRunAt === null) delete updated.nextRunAt;\n      this.database.update(scheduledTasks).set({\n        name: updated.name,\n        description: updated.description ?? null,\n        prompt: updated.prompt,\n        recurrence: updated.recurrence,\n        recurrenceFormat: updated.recurrenceFormat,\n        timezone: updated.timezone,\n        status: updated.status,\n        destination: updated.destination,\n        sessionId: updated.sessionId ?? null,\n        projectPathsJson: encode(updated.projectPaths),\n        executionMode: updated.executionMode,\n        model: updated.model ?? null,\n        effort: updated.effort ?? null,\n        skillNamesJson: en",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 41.16"
+      }
+    ],
+    "evidence": [
+      {
+        "path": "packages/protocol/src/requests/requests.ts",
+        "startLine": 362,
+        "endLine": 386,
+        "text": "    minimum: 1,\n  });\n  const stopWhenCompleted = optionalBoolean(body, \"stopWhenCompleted\");\n  const expiresAt = optionalNumber(body, \"expiresAt\");\n  return {\n    ...(runOnce !== undefined ? { runOnce } : {}),\n    ...(maxRuns !== undefined ? { maxRuns: maxRuns as number } : {}),\n    ...(stopWhenCompleted !== undefined ? { stopWhenCompleted } : {}),\n    ...(expiresAt !== undefined ? { expiresAt: expiresAt as number } : {}),\n  };\n}\n\nfunction parseScheduleFields(\n  body: JsonRecord,\n): Partial<CreateScheduledTaskInput> {\n  const id = optionalString(body, \"id\");\n  const name = optionalString(body, \"name\");\n  const description = optionalString(body, \"description\");\n  const prompt = optionalString(body, \"prompt\");\n  const recurrence = optionalString(body, \"recurrence\");\n  const recurrenceFormat = optionalEnum(body, \"recurrenceFormat\", [\n    \"rrule\",\n    \"once\",\n  ] as const);\n  const timezone = optionalString(body, \"timezone\");",
+        "bytes": 936,
+        "truncated": false
+      },
+      {
+        "path": "packages/server/src/daemon/__test__/scheduled-task-service.test.ts",
+        "startLine": 10,
+        "endLine": 34,
+        "text": "  ScheduledTaskService,\n  type ScheduleOperations,\n} from \"../scheduled-task-service.js\";\nimport { DaemonApplication } from \"../../application/daemon-application.js\";\n\nconst cleanups: Array<() => Promise<void> | void> = [];\n\nafterEach(async () => {\n  while (cleanups.length > 0) await cleanups.pop()!();\n  vi.useRealTimers();\n});\n\nfunction createHarness(\n  execute = vi.fn(async (\n    _task: ScheduledTaskRecord,\n    _run: ScheduledRunRecord,\n    reportSessionReady: (sessionId: string) => void,\n  ) => {\n    reportSessionReady(\"scheduled-session\");\n    return {\n      sessionId: \"scheduled-session\",\n      runId: \"agent-run\",\n      summary: \"Agent completed the scheduled work.\",\n    };\n  }),",
+        "bytes": 693,
+        "truncated": false
+      },
+      {
+        "path": "packages/services/src/session-runtime/__test__/store.test.ts",
+        "startLine": 47,
+        "endLine": 71,
+        "text": "    test(store, path);\n  } finally {\n    store.close();\n    rmSync(dir, {\n      recursive: true,\n      force: true,\n      maxRetries: 5,\n      retryDelay: 50,\n    });\n  }\n}\n\nfunction createReadyAttachment(\n  store: SessionStore,\n  id: string,\n  sizeBytes = 100,\n): void {\n  store.attachments.createImportingAttachment({\n    id,\n    displayName: `${id}.png`,\n    declaredMediaType: \"image/png\",\n    stagingName: `${id}.part`,\n    createdAt: 10,\n  });\n  store.attachments.markAttachmentReady(id, {",
+        "bytes": 495,
+        "truncated": false
+      },
+      {
+        "path": "packages/client/src/index.ts",
+        "startLine": 57,
+        "endLine": 81,
+        "text": "  selectSessionInputs,\n  selectSessionMessagesWithParts,\n  selectSessionModelRetry,\n  selectSessionModelUsage,\n  selectSessionOrderedMessages,\n  selectSessionParts,\n  selectSessionPermissions,\n  selectSessionRuns,\n  selectSessionTasks,\n  selectVisibleSessionMessagesWithParts,\n  SessionSyncController,\n  syncEvents,\n  UnsupportedSessionEventSchemaVersionError,\n} from \"./state/index.js\";\nexport type {\n  SessionSyncControllerOptions,\n  SyncConnectionStatus,\n} from \"./state/index.js\";\nexport {\n  LOCAL_COMMAND_DETAILS,\n  LOCAL_COMMAND_NAMES,\n  dispatchSessionCommand,\n  hasActiveRun,\n  mergeCommandDetails,\n  parseSlashLine,",
+        "bytes": 624,
+        "truncated": false
+      },
+      {
+        "path": "packages/services/src/schedules/schedule-repository.ts",
+        "startLine": 68,
+        "endLine": 92,
+        "text": "    return row ? scheduledTaskFromRow(row) : undefined;\n  }\n  listTasks(\n    options: { status?: ScheduledTaskRecord[\"status\"] } = {},\n  ): ScheduledTaskRecord[] {\n    return this.database\n      .select().from(scheduledTasks)\n      .where(options.status ? eq(scheduledTasks.status, options.status) : undefined)\n      .orderBy(desc(scheduledTasks.createdAt))\n      .all()\n      .map(scheduledTaskFromRow);\n  }\n  updateTask(id: string, patch: UpdateScheduledTaskInput): ScheduledTaskRecord {\n    return this.storage.database.connection.transaction(() => {\n      this.storage.assertWritable();\n      const current = this.getTask(id);\n      if (!current) throw new Error(`Scheduled task not found: ${id}`);\n      const updated = {\n        ...current,\n        ...withoutUndefined(patch),\n        updatedAt: Date.now(),\n      } as ScheduledTaskRecord;\n      if (patch.lastRunAt === null) delete updated.lastRunAt;\n      if (patch.nextRunAt === null) delete updated.nextRunAt;\n      this.database.update(scheduledTasks).set({",
+        "bytes": 1018,
+        "truncated": false
+      }
+    ],
+    "passageEvidence": []
+  },
+  {
+    "taskId": "chinese-schedule-history",
+    "variant": "chinese-keywords",
+    "params": {
+      "corpus": "current",
+      "query": "定时计划 执行历史 保存 创建记录",
+      "k": 5,
+      "full": 1200,
+      "mode": "bm25",
+      "max_tokens": 2000
+    },
+    "native": {
+      "content": [
+        {
+          "type": "text",
+          "text": "\n─── docs/superpowers/specs/2026-10-20-approval-presets-and-plan-mode-design.md:23  (score 88.16)\n`/plan`，或明确点击“开始执行”后退出。\n\n计划模式允许可信只读工具，阻止文件修改、命令执行、后台任务变更及其他有副作用的工具。授权为完全访问时也必须遵守计划限制。用户开启的计划模式不能被模型调用 `ExitPlanMode` 自行解除；模型临时进入计划仍只缩小权限，退出最多恢复用户当前选择。\n\n## 3. 状态放在哪里\n\n协议增加两类独立状态：\n\n```ts\nexport type ApprovalMode = \"ask\" | \"auto_review\" | \"full_access\";\nexport type WorkMode = \"execute\" | \"plan\";\n```\n\n- `settings.permission.mode` 保存新聊天采用的默认授权档位，不保存计划开关。\n- `session.metadata.runtime.approvalMode` 保存当前聊天授权档位。\n- `session.metadata.runtime.workMode` 保存当前聊天工作模式。\n- 新聊天尚未创建时，工作模式仅存在当前新聊天的内存状态。首次发送和创建目标时一起写入会话；不因此修改全局默认。\n- 正文和附件仍保存在原有草稿里，不把工作模式伪装成纯文本、Skill 或插件引用。\n- 每次运行记录当时的模式与配置修订号，历史展示读取真实运行状态，不使用当前菜单值回填。\n\n运行时可以把两类状态计算成现有工具检查器的只读或自动执行限制；内部计算结果不是第三份可写会话状态。必须同时更新给模型的工具与模式说明，以及真正拦截工具的检查器。\n\n## 4. 一次操作怎样得到决定\n\n```text\n模型提出工具与参数\n  → 检查工具来源、强制禁止规则和计划限制\n  → 已有明确允许规则：直接执行\n  → 其余根据授权档位处理\n      请我批准：保存授权请求 → 用户决定\n      帮我批准：保存授权请求 → 独立审查 → 自动通过 / 转用户 / 拒绝\n      完全访问：使用当前会话允许的扩大访问策略\n  → 执行前确认请求没有取消、过期或被配置变更替代\n  → 执行并记录真实结果\n```\n\n─── docs/superpowers/specs/2026-10-18-desktop-workflow-plan-editing-design.md:1  (score 86.50)\n# 桌面编排二期：执行前计划编辑交互规格\n\n日期：2026-10-18。范围已由用户确认；本文用于审阅交互与实现约束，应用功能尚未实现。\n\n## 1. 目标和范围\n\n用户能在现有右侧编排工具面板中，检查 Agent 提出的计划、修改任务与依赖、保存草稿，并明确确认执行。执行后接入一期运行观察，不另开页面。\n\n本期交付：Agent 提交待确认计划、任务编辑、依赖预览、问题定位、草稿保存恢复、确认启动，以及聊天摘要和运行记录的衔接。\n\n运行中的计划修改、暂停、失败续跑、从历史运行复制计划、画布拖线和完整配置源码编辑不在本期范围内。\n\n遵循 `apps/desktop/DESIGN.md`、现有工具面板的会话归属和标签行为。优先直接复用已接入组件；需要补充组件时先检查 beUI 官方源代码和依赖。\n\n## 2. 用户应当始终能回答的问题\n\n1. 现在编辑的是哪个计划，准备做什么？\n2. 当前内容是否保存，还有哪些地方需要修改？\n3. 点击执行后，使用的是不是刚刚看到的内容？\n\n计划草稿与运行记录是两个对象。草稿中没有正在运行的任务，不展示完成率、运行耗时或等待调度等执行状态。保存草稿不会启动工作。\n\n## 3. 主流程\n\n```mermaid\nflowchart TD\n    A[Agent 提交计划草稿] --> B[聊天显示计划待确认]\n    B --> C[打开现有右侧编排面板]\n    C --> D[编辑任务与前置任务]\n    D --> E[保存草稿并检查]\n    E -->|存在问题| F[定位字段和受影响任务]\n    F --> D\n    E -->|检查通过| G[用户开始执行]\n    D -->|保存并执行| H[保存当前内容并检查]\n    H -->|存在问题| F\n    H -->|检查通过| G\n    G --> I[绑定确认的计划版本并创建运行]\n    I --> J[同一面板进入一期运行观察]\n```\n\n### 3.1 入口\n\n─── docs/superpowers/reviews/2026-10-26-s1-tool-operation-safety.md:1  (score 85.00)\n# S1 工具操作安全验收记录\n\n> 状态：S1 实施与合并前限定范围验收记录；实现起点为 `25812866`，提交与合并结果以 Git 历史为准。S2 的检查点续跑、子执行恢复、Workflow 恢复和 S3 的持久审批尚未实施。\n> 日期：2026-10-26。工作分支：`codex/s1-tool-operation-safety`。\n\n对应[分阶段方案](../specs/2026-10-26-agent-core-capability-completion-design.md)与[实施计划](../plans/2026-10-26-s1-tool-operation-safety.md)。先写计划和合同，再以失败测试建立要求，随后实现、独立审查和验证。\n\n## 已接入的能力\n\n- daemon 默认提供 AgentToolSafety。独立 SDK 默认不创建数据库，可显式提供操作记录和强制规则，配置不完整就拒绝。\n- root、child、手动 runTool、嵌套及代理调用经过同一工具管道；参数与工具绑定在检查期间固定。\n- 每个逻辑操作有 operationId，每次实际派发有独立 toolAttemptId。派发意图先保存，完整结果保存后才推进下一步；等待审批不伪造实际尝试。\n- 新 Execution 头、Operation 和 Attempt 共用现有事务、owner、回滚日志和 SQLite/memory 路由；新增 `0009_exotic_owl.sql` 增量，不修改旧迁移。\n- 强制规则在原有权限与审批流程中单独生效，默认 5 秒超时；失败、拒绝和取消均不派发。可选 Hook 保留原合同。\n- 结果未知、旧运行遗留派发或回执提交失败时，同一根会话树停止新危险派发；已启动项仍可结算。合法迟到回执只补审计，不重开终态 Run。\n- 核对证据追加保存。相同已确认调用复用结果，独立相同参数的操作不合并；确认未生效后重新授权，重试创建新 Attempt。\n- 按时间批量清理在预览和执行时保护整棵树的未决记录；单独明确删除会话仍沿用原删除入口。\n\n## 设计落实时的调整\n\nServices 新目录使用 `execution-records/`，避免恢复已退役的旧 `executions/` 实现路径。架构\n\n─── docs/superpowers/specs/2026-10-26-agent-core-capability-completion-design.md:133  (score 83.31)\n    [passage omitted: over the max_tokens 2000 budget — locator only]\n─── docs/superpowers/specs/2026-10-20-approval-presets-and-plan-mode-design.md:110  (score 80.39)\n    [passage omitted: over the max_tokens 2000 budget — locator only]\n5 passages from 'current'\nCite file:line for anything you rely on.\n[token budget: 3/5 passages full, 2 locator-only, 0 deduped (identical locator and passage), 0 dropped; counted as standard-uax29-words, max_tokens 2000]\n"
+        }
+      ],
+      "isError": false
+    },
+    "score": {
+      "fileHit": false,
+      "evidenceHit": false,
+      "relevantFilesFound": 0,
+      "relevantFilesTotal": 2,
+      "fileRecall": 0,
+      "topFiles": [
+        "docs/superpowers/specs/2026-10-20-approval-presets-and-plan-mode-design.md",
+        "docs/superpowers/specs/2026-10-18-desktop-workflow-plan-editing-design.md",
+        "docs/superpowers/reviews/2026-10-26-s1-tool-operation-safety.md",
+        "docs/superpowers/specs/2026-10-26-agent-core-capability-completion-design.md"
+      ],
+      "evidenceFiles": []
+    },
+    "hits": [
+      {
+        "path": "docs/superpowers/specs/2026-10-20-approval-presets-and-plan-mode-design.md",
+        "line": 23,
+        "startLine": 23,
+        "endLine": 45,
+        "text": "`/plan`，或明确点击“开始执行”后退出。\n\n计划模式允许可信只读工具，阻止文件修改、命令执行、后台任务变更及其他有副作用的工具。授权为完全访问时也必须遵守计划限制。用户开启的计划模式不能被模型调用 `ExitPlanMode` 自行解除；模型临时进入计划仍只缩小权限，退出最多恢复用户当前选择。\n\n## 3. 状态放在哪里\n\n协议增加两类独立状态：\n\n```ts\nexport type ApprovalMode = \"ask\" | \"auto_review\" | \"full_access\";\nexport type WorkMode = \"execute\" | \"plan\";\n```\n\n- `settings.permission.mode` 保存新聊天采用的默认授权档位，不保存计划开关。\n- `session.metadata.runtime.approvalMode` 保存当前聊天授权档位。\n- `session.metadata.runtime.workMode` 保存当前聊天工作模式。\n- 新聊天尚未创建时，工作模式仅存在当前新聊天的内存状态。首次发送和创建目标时一起写入会话；不因此修改全局默认。\n- 正文和附件仍保存在原有草稿里，不把工作模式伪装成纯文本、Skill 或插件引用。\n- 每次运行记录当时的模式与配置修订号，历史展示读取真实运行状态，不使用当前菜单值回填。\n\n运行时可以把两类状态计算成现有工具检查器的只读或自动执行限制；内部计算结果不是第三份可写会话状态。必须同时更新给模型的工具与模式说明，以及真正拦截工具的检查器。\n\n## 4. 一次操作…",
+        "truncated": true,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 88.16"
+      },
+      {
+        "path": "docs/superpowers/specs/2026-10-18-desktop-workflow-plan-editing-design.md",
+        "line": 1,
+        "startLine": 1,
+        "endLine": 29,
+        "text": "# 桌面编排二期：执行前计划编辑交互规格\n\n日期：2026-10-18。范围已由用户确认；本文用于审阅交互与实现约束，应用功能尚未实现。\n\n## 1. 目标和范围\n\n用户能在现有右侧编排工具面板中，检查 Agent 提出的计划、修改任务与依赖、保存草稿，并明确确认执行。执行后接入一期运行观察，不另开页面。\n\n本期交付：Agent 提交待确认计划、任务编辑、依赖预览、问题定位、草稿保存恢复、确认启动，以及聊天摘要和运行记录的衔接。\n\n运行中的计划修改、暂停、失败续跑、从历史运行复制计划、画布拖线和完整配置源码编辑不在本期范围内。\n\n遵循 `apps/desktop/DESIGN.md`、现有工具面板的会话归属和标签行为。优先直接复用已接入组件；需要补充组件时先检查 beUI 官方源代码和依赖。\n\n## 2. 用户应当始终能回答的问题\n\n1. 现在编辑的是哪个计划，准备做什么？\n2. 当前内容是否保存，还有哪些地方需要修改？\n3. 点击执行后，使用的是不是刚刚看到的内容？\n\n计划草稿与运行记录是两个对象。草稿中没有正在运行的任务，不展示完成率、运行耗时或等待调度等执行状态。保存草稿不会启动工作。\n\n## 3. 主流程\n\n```mermaid\nflowchart TD\n    A[Agent 提交计划草稿] --> B[聊天显示计划待确认]\n    B --> C[打开现有右侧编排面板]\n    C --> D[编辑任务与…",
+        "truncated": true,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 86.50"
+      },
+      {
+        "path": "docs/superpowers/reviews/2026-10-26-s1-tool-operation-safety.md",
+        "line": 1,
+        "startLine": 1,
+        "endLine": 15,
+        "text": "# S1 工具操作安全验收记录\n\n> 状态：S1 实施与合并前限定范围验收记录；实现起点为 `25812866`，提交与合并结果以 Git 历史为准。S2 的检查点续跑、子执行恢复、Workflow 恢复和 S3 的持久审批尚未实施。\n> 日期：2026-10-26。工作分支：`codex/s1-tool-operation-safety`。\n\n对应[分阶段方案](../specs/2026-10-26-agent-core-capability-completion-design.md)与[实施计划](../plans/2026-10-26-s1-tool-operation-safety.md)。先写计划和合同，再以失败测试建立要求，随后实现、独立审查和验证。\n\n## 已接入的能力\n\n- daemon 默认提供 AgentToolSafety。独立 SDK 默认不创建数据库，可显式提供操作记录和强制规则，配置不完整就拒绝。\n- root、child、手动 runTool、嵌套及代理调用经过同一工具管道；参数与工具绑定在检查期间固定。\n- 每个逻辑操作有 operationId，每次实际派发有独立 toolAttemptId。派发意图先保存，完整结果保存后才推进下一步；等待审批不伪造实际尝试。\n- 新 Execution 头、Operation 和 Attempt 共用现有事务、owner、回滚日志和 SQLite/memory 路由；新增 `0009_exotic_owl.sql` 增量，不修改旧迁移。\n- 强制规则在原有权限与审批流程中单独生效，默认 5 秒超时；失败、拒绝和取消均不派发。可选 Hook 保留原合同。\n- 结果未知、旧运行遗留派发或回执提交失败时，同一根会话树停止…",
+        "truncated": true,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 85.00"
+      },
+      {
+        "path": "docs/superpowers/specs/2026-10-26-agent-core-capability-completion-design.md",
+        "line": 133,
+        "startLine": 133,
+        "endLine": 133,
+        "text": "",
+        "truncated": false,
+        "evidence": "native_locator_only",
+        "notice": "score 83.31"
+      }
+    ],
+    "evidence": [
+      {
+        "path": "docs/superpowers/specs/2026-10-20-approval-presets-and-plan-mode-design.md",
+        "startLine": 11,
+        "endLine": 35,
+        "text": "不在本次范围内实现原生 Windows 的新系统沙箱后端。当前平台没有系统隔离时必须准确说明能力；不能把工具参数检查描述成对任意命令和子进程的隔离。\n\n## 2. 对用户的行为\n\n| 授权选项 | 行为 |\n| --- | --- |\n| 请我批准 | 已允许的操作直接执行；其余需要授权的操作显示用户审批。 |\n| 帮我批准 | 已允许的操作直接执行；其余先由独立审查请求判断，可以自动通过、请求用户决定或拒绝。 |\n| 完全访问权限 | 在系统和强制策略允许的范围内扩大当前会话的文件、命令与网络访问，通常不再请求普通操作审批。 |\n\n新安装首次默认“请我批准”；不在这次改造中额外改变用户已保存的有效默认值。用户可主动选择另外两档。完全访问只授权当前执行环境，不授予系统管理员权限，也不替代外部应用自己的登录和同意流程。\n\n选择计划模式后，输入框附近出现可移除的“计划模式”标记，授权按钮保留原选项。发送消息后标记继续显示；切换聊天或重启后从会话记录恢复。用户移除标记、再次执行 `/plan`，或明确点击“开始执行”后退出。\n\n计划模式允许可信只读工具，阻止文件修改、命令执行、后台任务变更及其他有副作用的工具。授权为完全访问时也必须遵守计划限制。用户开启的计划模式不能被模型调用 `ExitPlanMode` 自行解除；模型临时进入计划仍只缩小权限，退出最多恢复用户当前选择。\n\n## 3. 状态放在哪里\n\n协议增加两类独立状态：\n\n```ts\nexport type ApprovalMode = \"ask\" | \"auto_review\" | \"full_access\";\nexport type WorkMode = \"execute\" | \"plan\";\n```\n",
+        "bytes": 1773,
+        "truncated": false
+      },
+      {
+        "path": "docs/superpowers/specs/2026-10-18-desktop-workflow-plan-editing-design.md",
+        "startLine": 1,
+        "endLine": 13,
+        "text": "# 桌面编排二期：执行前计划编辑交互规格\n\n日期：2026-10-18。范围已由用户确认；本文用于审阅交互与实现约束，应用功能尚未实现。\n\n## 1. 目标和范围\n\n用户能在现有右侧编排工具面板中，检查 Agent 提出的计划、修改任务与依赖、保存草稿，并明确确认执行。执行后接入一期运行观察，不另开页面。\n\n本期交付：Agent 提交待确认计划、任务编辑、依赖预览、问题定位、草稿保存恢复、确认启动，以及聊天摘要和运行记录的衔接。\n\n运行中的计划修改、暂停、失败续跑、从历史运行复制计划、画布拖线和完整配置源码编辑不在本期范围内。\n\n遵循 `apps/desktop/DESIGN.md`、现有工具面板的会话归属和标签行为。优先直接复用已接入组件；需要补充组件时先检查 beUI 官方源代码和依赖。",
+        "bytes": 902,
+        "truncated": false
+      },
+      {
+        "path": "docs/superpowers/reviews/2026-10-26-s1-tool-operation-safety.md",
+        "startLine": 1,
+        "endLine": 13,
+        "text": "# S1 工具操作安全验收记录\n\n> 状态：S1 实施与合并前限定范围验收记录；实现起点为 `25812866`，提交与合并结果以 Git 历史为准。S2 的检查点续跑、子执行恢复、Workflow 恢复和 S3 的持久审批尚未实施。\n> 日期：2026-10-26。工作分支：`codex/s1-tool-operation-safety`。\n\n对应[分阶段方案](../specs/2026-10-26-agent-core-capability-completion-design.md)与[实施计划](../plans/2026-10-26-s1-tool-operation-safety.md)。先写计划和合同，再以失败测试建立要求，随后实现、独立审查和验证。\n\n## 已接入的能力\n\n- daemon 默认提供 AgentToolSafety。独立 SDK 默认不创建数据库，可显式提供操作记录和强制规则，配置不完整就拒绝。\n- root、child、手动 runTool、嵌套及代理调用经过同一工具管道；参数与工具绑定在检查期间固定。\n- 每个逻辑操作有 operationId，每次实际派发有独立 toolAttemptId。派发意图先保存，完整结果保存后才推进下一步；等待审批不伪造实际尝试。\n- 新 Execution 头、Operation 和 Attempt 共用现有事务、owner、回滚日志和 SQLite/memory 路由；新增 `0009_exotic_owl.sql` 增量，不修改旧迁移。",
+        "bytes": 1252,
+        "truncated": false
+      },
+      {
+        "path": "docs/superpowers/specs/2026-10-26-agent-core-capability-completion-design.md",
+        "startLine": 121,
+        "endLine": 145,
+        "text": "\n子 Run 必须保持上述启动顺序。\n手动执行沿用宿主 scope，不新增模型 Run 启动事件。\n手动执行不再因显式 store 与安全能力齐全而跳过准备。\n\nSDK 包公开导出 PreparedAgentRun 和 runTool 选项。\nREADME 与测试已明确预绑定存储的可用条件，构成兼容约束。\n本轮将 `PreparedAgentRun.toolResults` 和手动 `options.toolResults` 标记弃用。\n旧调用在唯一绑定函数中适配，不新增适配框架。\nPrepared 旧存储仍核对工具名称、来源、定义和调用函数。\n\n这段等价检查暂不能删除，否则收窄权限后可能读取越权历史。\n手动显式 store 保留可信宿主已绑定语义；新代码使用准备工厂。\n当前仓库生产路径不依赖这两个旧字段。\n\n## F 状态归属与不可破坏的顺序\n\n| 状态 | 所有者 | 入口与返回 |\n|---|---|---|\n| schema 参数与合同冲突 | Server 应用用例 | 受理、编辑、重放；创建记录前拒绝错误 |\n| Input/Run 合同快照 | 现有会话存储 | 受理时保存，执行入口读取 |\n| 操作状态与审计正文 | ToolOperationRepository | S1 保存和核对，结果读取器提供只读视图 |\n| owner、Run、revision 与来源授权 | Server 结果服务 | 每次访问校验，返回当前允许的数据 |\n| SDK 历史结果 | Agent 的有界内存存储 | 工厂按 Run 和最终工具集合绑定 |\n| 运行取消与交付事件 | Kernel/core | 已保存结果继续交付，终态不重开 |",
+        "bytes": 1502,
+        "truncated": false
+      }
+    ],
+    "passageEvidence": []
+  },
+  {
+    "taskId": "chinese-plugin-guard",
+    "variant": "chinese-keywords",
+    "params": {
+      "corpus": "current",
+      "query": "插件 参数校验 并发限制",
+      "k": 5,
+      "full": 1200,
+      "mode": "bm25",
+      "max_tokens": 2000
+    },
+    "native": {
+      "content": [
+        {
+          "type": "text",
+          "text": "\n─── docs/native-plugin-next-stage-handoff.md:27  (score 70.88)\nlugin/plugin.json` 作为唯一运行时 manifest；\n- manifest、组件路径、权限、平台要求和内容摘要会在安装时校验；\n- 非 link 安装会复制到不可变快照目录，不原地覆盖旧版本；\n- Runtime 激活前会重新校验快照、manifest ID、版本、权限和 digest；\n- Skills、Agents、Hooks、MCP 和 Node Native Tools 已进入原生插件加载范围；\n- Node Tool 运行在独立子进程中，已有参数校验、审计、超时、取消、并发和输出限制；\n- CLI 已有本地 Native 安装、link、转换、启停、详情和卸载；\n- 原生插件作者指南、SDK 类型和文本检查参考插件已经存在。\n\n### Desktop 本地插件包导入\n\n- 插件页可以选择一个本地 Native Plugin 包；\n- 当前支持 `.zip`、`.tar`、`.tar.gz` 和 `.tgz`；\n- Archive Resolver 在后台复制、解压、校验路径、类型、大小、数量、压缩比、CRC 和摘要；\n- Renderer 不拿到插件包绝对路径或内容摘要；\n- 无权限请求的插件直接安装；\n- 有权限请求的插件只显示一次完整权限确认；\n- 重新导入同一插件 ID 时，如果旧批准覆盖本次权限，不重复确认；\n- 新版本新增权限时才重新确认；\n- 新快照成功切换前保留旧安装记录；\n- 重装保留原来的启停状态；\n- 成功后的插件从下一次对话开始生效。\n\n### Runtime 诊断 v1\n\n- `PluginInfo.runtimeStatus` 已加入 Server 与 Client 类型；\n- Plugin Service 根据安装校验、组件加载诊断和 Native Tool Runtime 状态计算主状态；\n- 主状态包含 `disabled`、`pending_reload`、`loaded`、`degraded` 和 `failed`；\n- Desktop 插件列表、快捷入口 tooltip 和详情弹窗会显示主状态；\n- 失败或降级状态只给一条建议动作，例如重新导入插件包、重新确认权限、查看详情或先禁用插件；\n- 原始 `diagnostics` 和 Tool Runtime 统计仍保留在详情里，供作者排查。\n\n### Converter 当前状态\n\n- Conv\n\n─── docs/superpowers/specs/2026-10-22-protocol-layering-design.md:114  (score 70.13)\n    [no symbol match; showing 1,200 of 1,226 chars from offset 0, window centred on the match]\n基线值；执行限额不能突破格式硬上限，格式合法也不能替代授权。\n\n| 现有字段和值 | 目标所有者及使用方式 |\n| --- | --- |\n| manifestCount 8、manifestBytes 256 KiB、backendCount/surfaceCount 32 | plugin-contracts/limits 的清单硬上限，plugins 的文件读取和清单校验共同使用 |\n| htmlBytes 16 MiB、resourceBytes 8 MiB | plugin-contracts/limits 的资源硬上限；Node plugin-apps/policy 组装有效限制，资源读取通过参数接收；不引入新的放宽设置 |\n| maxArgsBytes 64 MiB、jsonDepth 32 | plugin-contracts/limits 的调用数据硬上限；Node 有效参数限制不得超过它，Protocol 只做结构检查 |\n| argsBytes 64 KiB、appDataBytes 256 KiB | Node plugin-apps/policy 的默认参数限制和本机应用数据结果限制 |\n| handoffBytes 32 KiB、messageCharacters 4096 | domain-contracts/plugin-apps/limits 的产品输入上限；应用入口和通信 parser 均执行 |\n| sessionPages 4 | server/application/session/plugin-app-policy.ts 的会话打开配额；继续由 Server 强制执行，桌面不能代替 |\n| windowPages 8 | 当前实际用于 composer contexts 请求数量，迁为 domain-contracts/plugin-apps/limits 的 maxComposerContexts 8；若桌面有独立窗口配额，由桌面自行维护，不共用此策略名 |\n| resultBytes 1 MiB、widgetStateBytes 32 KiB | 基线未发现生产消费者；P12 删除无用出口，不新建策略；已有 MCP 结果 1 MiB 限制及其来源保持不变 |\n\n现有 parser 对请求包装额外允许的 16/32 KiB、文本复制的字符倍数等计算也纳入固定样本，不能仅保存这张表的常量。\n\n## 5. 校验与策略的调用顺序\n\nHTTP 请求 → Protocol 校验通信结构 → 应用服务校验 owner、版本、当前状态与授权 → 构造内部命令或宿主绑定 → Services/Node 校验自己的数据和资源边界 → 执行与可靠记录 → 映射为响应并序列化。\n\n- 插件及插件产\n\n─── docs/plugin-system.md:92  (score 69.82)\n会拒绝。\n\n## C 安装以后，能力怎样进入一次任务\n\n```flow\n插件包 -> 清单与文件校验\n清单与文件校验 -> 安装记录与权限批准\n安装记录与权限批准 -> 会话运行时加载\n会话运行时加载 -> 这次任务可用的插件能力\n这次任务可用的插件能力 -> 模型或用户明确调用\n模型或用户明确调用 -> 原有执行与校验\n原有执行与校验 -> 工具结果与操作记录\n```\n\n“这次任务可用的插件能力”表示一份允许清单。它列出助手处理这次请求可用的工具、技能和角色。\n\n允许使用不代表每项能力都会执行。基础工具仍按原有权限使用。\n\n| 能力 | 加载后做什么 | 执行时机 |\n| --- | --- | --- |\n| Skill | 提供技能名称、说明和来源 | 正文按需读取，安装不执行脚本 |\n| Agent | 注册角色及工具限制 | 明确派发任务后执行 |\n| Hook | 装配受支持的事件处理配置 | 对应事件发生时触发 |\n| MCP | 连接适用的服务，登记工具与资源 | 调用时走 MCP 后台 |\n| Native Tool | 读取元数据，再由 Tool Host 加载代码 | 调用时校验参数并执行 |\n| App | 提供可打开的应用入口 | 用户打开或实时工具结果触发 |\n\n自动模式可让模型按需使用多个已启用、已授权的插件。\n\n显式 @插件 会把插件范围限制到指定插件。当前显式引用不能混选不同插件。\n\n后续普通消息会延续手动选择。切换或清除选择后，再按相应设置确定可用插件。\n\n例如，你要求“检查文本，再保存到笔记”：\n\n- 自动模式允许两个插件时，可用 Text Inspector 检查、Notes 保存。\n- 显式 @Text Inspector 时，只允许使用它的插件能力。\n\n宿主收到消息时保存候选范围。任务开始时再次校验并固定实际能力。\n\n后续选择不改变已经运行的任务。运行中的调用也不能因目录刷新而悄悄换成另一版本。\n\n## D 如何安装、开发和更新\n\n─── docs/plugin-system-handoff.md:418  (score 68.91)\n    [passage omitted: over the max_tokens 2000 budget — locator only]\n─── docs/plugin-system-handoff.md:587  (score 67.55)\n    [no symbol match; showing 1,200 of 1,304 chars from offset 0, window centred on the match]\n5. 包与职责边界\n\n| 模块 | 负责 | 不负责 |\n|---|---|---|\n| `@vykor/plugins` | Native schema、路径校验、组件加载、安装记录、快照校验 | Claude/Codex 解析、网络下载、Marketplace UI |\n| `@vykor/plugin-converters` | detect、inspect、plan、convert、report | 安装、运行、依赖安装、远程下载 |\n| Source Resolver | Git/npm/archive/Marketplace 来源解析与完整性校验 | 组件转换、Runtime 激活 |\n| Dependency Preparer | 准备经过批准的插件依赖 | 猜测依赖、执行未批准脚本 |\n| `@vykor/agent-runtime` | 发现已安装插件并激活组件 | 安装插件、解析外部 manifest |\n| Server Plugin Service | 管理用例、状态变更、Runtime 失效 | 自己实现另一套 Validator |\n| Desktop / CLI | 用户交互和结果展示 | 直接写 cache 或 `installed.json` |\n| Marketplace | 发现、版本和可信来源 metadata | 定义新的运行格式、绕过 Installer |\n\n禁止形成以下依赖：\n\n```text\nagent-runtime → claude-code converter\npackages/plugins → Claude / Codex parser\nDesktop → 直接修改 installed.json\nMarketplace → 直接写 plugin cache\nNative Plugin → 在 daemon 主进程注册 Converter\n```\n\n## 16. 当前实现与剩余工作\n\n截至 2026-09-09：\n\n### 已完成\n\n- Native Plugin v1 manifest、路径校验和结构化诊断；\n- 用户级安装记录和不可变 `<version>-<digest>` 快照；\n- Runtime 激活前统一验证实际快照；\n- Skills、Agents、Hooks、MCP 和 Node Tool 加载；\n- Node Tool 独立子进程、参数校验、审计、超时、取消、并发和输出限制；\n- Converter core；\n- Claude Code Converter；\n- Codex Converter 首版：legacy/portable 格式识别、Skills、保守 MCP 映射、有损批准和 CLI 导入；\n- \n\n5 passages from 'current'\nCite file:line for anything you rely on.\n[token budget: 4/5 passages full, 1 locator-only, 0 deduped (identical locator and passage), 0 dropped; counted as standard-uax29-words, max_tokens 2000]\n"
+        }
+      ],
+      "isError": false
+    },
+    "score": {
+      "fileHit": false,
+      "evidenceHit": false,
+      "relevantFilesFound": 0,
+      "relevantFilesTotal": 1,
+      "fileRecall": 0,
+      "topFiles": [
+        "docs/native-plugin-next-stage-handoff.md",
+        "docs/superpowers/specs/2026-10-22-protocol-layering-design.md",
+        "docs/plugin-system.md",
+        "docs/plugin-system-handoff.md"
+      ],
+      "evidenceFiles": []
+    },
+    "hits": [
+      {
+        "path": "docs/native-plugin-next-stage-handoff.md",
+        "line": 27,
+        "startLine": 27,
+        "endLine": 53,
+        "text": "lugin/plugin.json` 作为唯一运行时 manifest；\n- manifest、组件路径、权限、平台要求和内容摘要会在安装时校验；\n- 非 link 安装会复制到不可变快照目录，不原地覆盖旧版本；\n- Runtime 激活前会重新校验快照、manifest ID、版本、权限和 digest；\n- Skills、Agents、Hooks、MCP 和 Node Native Tools 已进入原生插件加载范围；\n- Node Tool 运行在独立子进程中，已有参数校验、审计、超时、取消、并发和输出限制；\n- CLI 已有本地 Native 安装、link、转换、启停、详情和卸载；\n- 原生插件作者指南、SDK 类型和文本检查参考插件已经存在。\n\n### Desktop 本地插件包导入\n\n- 插件页可以选择一个本地 Native Plugin 包；\n- 当前支持 `.zip`、`.tar`、`.tar.gz` 和 `.tgz`；\n- Archive Resolver 在后台复制、解压、校验路径、类型、大小、数量、压缩比、CRC 和摘要；\n- Renderer 不拿到插件包绝对路径或内容摘要；\n- 无权限请求的插件直接安装；\n- 有权限请求的插件只显示一次完整权限确认；\n- 重新导入同一插件 ID 时，如果旧批准覆盖本次权限，不重复确认；\n- 新版本新增权限时才重新确认；\n- 新快照成功切换前保留旧安装记录；\n- 重装保留原来的启停状态；\n- 成功后的插件从下一次对话开始生效。\n\n### Runtime 诊断 v1\n\n- `PluginInfo.runtimeStatus` 已加入 Server 与 Client 类型；\n- Plugin Service …",
+        "truncated": true,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 70.88"
+      },
+      {
+        "path": "docs/superpowers/specs/2026-10-22-protocol-layering-design.md",
+        "line": 114,
+        "startLine": 114,
+        "endLine": 125,
+        "text": "基线值；执行限额不能突破格式硬上限，格式合法也不能替代授权。\n\n| 现有字段和值 | 目标所有者及使用方式 |\n| --- | --- |\n| manifestCount 8、manifestBytes 256 KiB、backendCount/surfaceCount 32 | plugin-contracts/limits 的清单硬上限，plugins 的文件读取和清单校验共同使用 |\n| htmlBytes 16 MiB、resourceBytes 8 MiB | plugin-contracts/limits 的资源硬上限；Node plugin-apps/policy 组装有效限制，资源读取通过参数接收；不引入新的放宽设置 |\n| maxArgsBytes 64 MiB、jsonDepth 32 | plugin-contracts/limits 的调用数据硬上限；Node 有效参数限制不得超过它，Protocol 只做结构检查 |\n| argsBytes 64 KiB、appDataBytes 256 KiB | Node plugin-apps/policy 的默认参数限制和本机应用数据结果限制 |\n| handoffBytes 32 KiB、messageCharacters 4096 | domain-contracts/plugin-apps/limits 的产品输入上限；应用入口和通信 parser 均执行 |\n| sessionPages 4 | server/application/session/plugin-app-policy.ts 的会话打开配额；继续由 Server 强制执行，桌面不能代替 |\n| windowPages 8 | 当前实际用于 composer contexts 请求数量，迁为 domain-contracts/plugin-apps/limits 的 maxComposerContexts 8；若桌面有独立窗口配额，由桌面自行维护，不共用此策略名 |\n| resultBytes 1 MiB、widgetStateBytes 32 KiB | 基线未发现生产消费者；P12 删除无用出口，不新建策略；已有 MCP 结果 1 MiB 限制及其来…",
+        "truncated": true,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 70.13"
+      },
+      {
+        "path": "docs/plugin-system.md",
+        "line": 92,
+        "startLine": 92,
+        "endLine": 123,
+        "text": "会拒绝。\n\n## C 安装以后，能力怎样进入一次任务\n\n```flow\n插件包 -> 清单与文件校验\n清单与文件校验 -> 安装记录与权限批准\n安装记录与权限批准 -> 会话运行时加载\n会话运行时加载 -> 这次任务可用的插件能力\n这次任务可用的插件能力 -> 模型或用户明确调用\n模型或用户明确调用 -> 原有执行与校验\n原有执行与校验 -> 工具结果与操作记录\n```\n\n“这次任务可用的插件能力”表示一份允许清单。它列出助手处理这次请求可用的工具、技能和角色。\n\n允许使用不代表每项能力都会执行。基础工具仍按原有权限使用。\n\n| 能力 | 加载后做什么 | 执行时机 |\n| --- | --- | --- |\n| Skill | 提供技能名称、说明和来源 | 正文按需读取，安装不执行脚本 |\n| Agent | 注册角色及工具限制 | 明确派发任务后执行 |\n| Hook | 装配受支持的事件处理配置 | 对应事件发生时触发 |\n| MCP | 连接适用的服务，登记工具与资源 | 调用时走 MCP 后台 |\n| Native Tool | 读取元数据，再由 Tool Host 加载代码 | 调用时校验参数并执行 |\n| App | 提供可打开的应用入口 | 用户打开或实时工具结果触发 |\n\n自动模式可让模型按需使用多个已启用、已授权的插件。\n\n显式 @插件 会把插件范围限制到指定插件。当前显式引用不能混选不同插件。\n\n后续普通消息会延续手动选择。切换或清除选择后…",
+        "truncated": true,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 69.82"
+      },
+      {
+        "path": "docs/plugin-system-handoff.md",
+        "line": 418,
+        "startLine": 418,
+        "endLine": 418,
+        "text": "",
+        "truncated": false,
+        "evidence": "native_locator_only",
+        "notice": "score 68.91"
+      },
+      {
+        "path": "docs/plugin-system-handoff.md",
+        "line": 587,
+        "startLine": 587,
+        "endLine": 619,
+        "text": "5. 包与职责边界\n\n| 模块 | 负责 | 不负责 |\n|---|---|---|\n| `@vykor/plugins` | Native schema、路径校验、组件加载、安装记录、快照校验 | Claude/Codex 解析、网络下载、Marketplace UI |\n| `@vykor/plugin-converters` | detect、inspect、plan、convert、report | 安装、运行、依赖安装、远程下载 |\n| Source Resolver | Git/npm/archive/Marketplace 来源解析与完整性校验 | 组件转换、Runtime 激活 |\n| Dependency Preparer | 准备经过批准的插件依赖 | 猜测依赖、执行未批准脚本 |\n| `@vykor/agent-runtime` | 发现已安装插件并激活组件 | 安装插件、解析外部 manifest |\n| Server Plugin Service | 管理用例、状态变更、Runtime 失效 | 自己实现另一套 Validator |\n| Desktop / CLI | 用户交互和结果展示 | 直接写 cache 或 `installed.json` |\n| Marketplace | 发现、版本和可信来源 metadata | 定义新的运行格式、绕过 Installer |\n\n禁止形成以下依赖：\n\n```text\nagent-runtime → claude-code converter\npackages/plugins → Claude / Codex parser\nDesktop → 直接修改 installed.json\nMarketplace → 直接写 plugin cache\nNative Plugin → 在 daemon 主进程注册 Converter\n```\n\n## 16. 当前实现与剩余工作\n\n截至 2026-09-09：\n\n### 已完成\n\n- Native Plugin v1 manifest、路径校验和结构化诊断；\n- 用户级安装记录和不可变 `<version>-<digest>` 快照；\n- Runtime 激活前统一验证实际快照；\n- Skills、Agents、Hooks…",
+        "truncated": true,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 67.55"
+      }
+    ],
+    "evidence": [
+      {
+        "path": "docs/native-plugin-next-stage-handoff.md",
+        "startLine": 15,
+        "endLine": 39,
+        "text": "Native Plugin 运行诊断 v1 已完成。安装链路和运行状态现在都能给出清晰反馈：用户不需要理解 cache、digest 或 manifest diff，只看插件页的状态文案和建议动作即可。\n\n作者体验小修也已完成：开发指南和文本检查参考插件 README 已补齐“如何打包、如何重装验证、如何看诊断、参考插件常见失败”。该阶段没有扩展来源，不做 Marketplace，不做 Agent 对话内安装，也不做自动更新。\n\n本地插件包格式补齐 v1 已完成：Desktop 仍只有一个简单导入入口，用户只看到成功、失败或一次权限确认；后台支持 `.zip`、`.tar`、`.tar.gz` 和 `.tgz`，TAR 解析使用成熟的 `tar` 包，并继续做安全校验。\n\nPlugin Agent 可用性收口已完成：核心 Runtime 已能加载插件 Agent，并在用户本轮选择插件后把它们放入 Agent 工具可见范围。本轮补了参考插件的最小 Agent 示例和作者说明，没有增加新的安装来源或复杂 UI。\n\n## 2. 当前已经完成什么\n\n### 原生插件基础能力\n\n- Native Plugin 使用 `.vykor-plugin/plugin.json` 作为唯一运行时 manifest；\n- manifest、组件路径、权限、平台要求和内容摘要会在安装时校验；\n- 非 link 安装会复制到不可变快照目录，不原地覆盖旧版本；\n- Runtime 激活前会重新校验快照、manifest ID、版本、权限和 digest；\n- Skills、Agents、Hooks、MCP 和 Node Native Tools 已进入原生插件加载范围；\n- Node Tool 运行在独立子进程中，已有参数校验、审计、超时、取消、并发和输出限制；\n- CLI 已有本地 Native 安装、link、转换、启停、详情和卸载；\n- 原生插件作者指南、SDK 类型和文本检查参考插件已经存在。\n\n### Desktop 本地插件包导入\n\n- 插件页可以选择一个本地 Native Plugin 包；\n- 当前支持 `.zip`、`.tar`、`.tar.gz` 和 `.tgz`；",
+        "bytes": 1949,
+        "truncated": false
+      },
+      {
+        "path": "docs/superpowers/specs/2026-10-22-protocol-layering-design.md",
+        "startLine": 102,
+        "endLine": 124,
+        "text": "| attachment.ts、office.ts | 附件记录、限制形状、媒体识别归 domain-contracts/attachments；DEFAULT_ATTACHMENT_LIMITS 单一归属 services/src/attachments/attachment-policy.ts，Server 引用；Office 转换使用 services/office/contracts.ts 的 OfficeDocumentPreview | 上传与网络输入解析；OfficePreview 保留通信形状，当前没有 Server producer，不创建空 mapper |\n| scheduled.ts | domain-contracts/src/schedules/records.ts；存储命令归 services/schedules/commands.ts | 对外创建/更新请求，不负责调度和重叠执行决策 |\n| channel.ts | 记录归 domain-contracts/src/channels/；稳定输入 ID 算法和应用桥接归 server/application/channel/ | HTTP 接入请求与状态响应 |\n| notes.ts、memory.ts | domain-contracts/src/notes/、memory/ 的记录和纯数据校验；修订号冲突与 I/O 留 Services/Server | 请求 parser 与响应 DTO |\n| runtime-config.ts | 配置数据、readRuntimeMetadata/readSessionRuntimeRevision 归 domain-contracts/src/sessions/runtime-config.ts；readSessionRuntimeConfig、patch/changed 等组合计算归 Server application/session/runtime-configuration.ts，旧值归一化调用 host-config，执行模式计算调用 permissions | 公开配置 DTO 和反序列化；纯读取不引入权限策略实现 |\n| auto-review.ts、workspace-changes.ts | domain-contracts/src/approvals/auto-review.ts、workspace-changes/；自动审查触发/证据和工作区采集留应用层 | 展示数据与通信校验 |\n| maintenance.ts | UsagePrice/UsageSettings 归 domain-contracts/src/usage/settings.ts；StorageRetentionPolicy/MaintenanceBackupManifest 归 domain-contracts/src/maintenance/records.ts；报表、筛选、预览的内部模型归 server/application/maintenance/query-models.ts | UsageReport/StorageReport/CleanupPreview 等公开响应，HTTP 显式映射应用查询结果 |\n| capabilities.ts、serialization.ts、mcp-oauth.ts、channel-runtime.ts、execution-observability.ts | 通信版本、解码、OAuth/通道公开视图、执行观察查询和导出 DTO 留 Protocol；对应应用输入/查询模型归各自 MCP 应用服务、channel/query-models.ts、observability/query-models.ts 等所属模块 | 保持通信职责；HTTP 映射输入和结果，底层能力保持自己的状态，不反向引用这些视图 |\n| 历史界面记录与解析 | 记录和纯数据校验归 domain-contracts 的 plugin-apps/history.ts | 历史 HTTP 请求/响应适配；不恢复已退役执行入口 |\n\nTerminalScope 的 project/session 字段在本轮保持原形状，视为终端归属数据；Server/桌面负责验证归属和解析 cwd。TerminalProvider 不因此取得 Session/Project Repository。如果以后需要跨产品终端 SDK，再单独设计 ownerKey，不与本次拆分混做。\n\n`PLUGIN_APP_LIMITS` 按以下实际使用语义拆分。表内数值固定为基线值；执行限额不能突破格式硬上限，格式合法也不能替代授权。\n\n| 现有字段和值 | 目标所有者及使用方式 |\n| --- | --- |\n| manifestCount 8、manifestBytes 256 KiB、backendCount/surfaceCount 32 | plugin-contracts/limits 的清单硬上限，plugins 的文件读取和清单校验共同使用 |\n| htmlBytes 16 MiB、resourceBytes 8 MiB | plugin-contracts/limits 的资源硬上限；Node plugin-apps/policy 组装有效限制，资源读取通过参数接收；不引入新的放宽设置 |\n| maxArgsBytes 64 MiB、jsonDepth 32 | plugin-contracts/limits 的调用数据硬上限；Node 有效参数限制不得超过它，Protocol 只做结构检查 |\n| argsBytes 64 KiB、appDataBytes 256 KiB | Node plugin-apps/policy 的默认参数限制和本机应用数据结果限制 |\n| handoffBytes 32 KiB、messageCharacters 4096 | domain-contracts/plugin-apps/limits 的产品输入上限；应用入口和通信 parser 均执行 |\n| sessionPages 4 | server/application/session/plugin-app-policy.ts 的会话打开配额；继续由 Server 强制执行，桌面不能代替 |\n| windowPages 8 | 当前实际用于 composer contexts 请求数量，迁为 domain-contract",
+        "bytes": 4096,
+        "truncated": true
+      },
+      {
+        "path": "docs/plugin-system.md",
+        "startLine": 80,
+        "endLine": 104,
+        "text": "    \"skills\": [\"./skills/check/SKILL.md\"],\n    \"tools\": [{\n      \"entry\": \"./tools/index.mjs\",\n      \"runtime\": \"node\",\n      \"permissions\": []\n    }],\n    \"apps\": [\"./ui/apps.json\"]\n  },\n  \"runtime\": { \"engine\": \"node\", \"isolation\": \"process\" }\n}\n```\n\n清单描述包内容，不保存用户批准、启用状态或进程状态。新包声明旧 components.ui 时，正常校验会拒绝。\n\n## C 安装以后，能力怎样进入一次任务\n\n```flow\n插件包 -> 清单与文件校验\n清单与文件校验 -> 安装记录与权限批准\n安装记录与权限批准 -> 会话运行时加载\n会话运行时加载 -> 这次任务可用的插件能力\n这次任务可用的插件能力 -> 模型或用户明确调用\n模型或用户明确调用 -> 原有执行与校验\n原有执行与校验 -> 工具结果与操作记录\n```",
+        "bytes": 827,
+        "truncated": false
+      },
+      {
+        "path": "docs/plugin-system-handoff.md",
+        "startLine": 406,
+        "endLine": 430,
+        "text": "→ 再次计算摘要并校验副本\n→ 原子改名为 <version>-<digest>\n→ 原子更新 installed.json 指向新快照\n→ 标记 Runtime reload-required\n```\n\n旧快照不能在仍有 Runtime 引用时删除。后续垃圾回收应基于安装记录和活动 Runtime 引用，而不是安装完成后立即清空历史目录。\n\n项目如果需要某个插件，只声明稳定插件 ID 和可接受版本范围。缺少时提示用户安装，不能因为打开仓库就静默下载、转换、授权或执行插件。\n\n组织托管插件使用 `managed` 状态，普通用户不能在 UI 或 CLI 中禁用、替换和卸载。它的分发与策略来源应独立于普通用户安装流程。\n\n## 10. Runtime 激活流程\n\n每次创建或重新加载 Agent Runtime 时：\n\n```text\n读取 installed.json\n→ 过滤已启用的 user / managed 记录\n→ verifyInstalledNativePlugin\n→ 校验快照根不是符号链接或目录联接\n→ 核对 manifest ID、version、权限和 behavior digest\n→ loadNativePlugin\n→ 分组件注册到对应 Registry / Runtime\n→ 返回 activation status 与结构化 diagnostics",
+        "bytes": 1124,
+        "truncated": false
+      }
+    ],
+    "passageEvidence": []
+  },
+  {
+    "taskId": "english-image-route",
+    "variant": "typescript-filter",
+    "params": {
+      "corpus": "current",
+      "query": "Choose native image input or the image to text tool based on model and provider capabilities",
+      "k": 5,
+      "full": 1200,
+      "mode": "bm25",
+      "max_tokens": 2000,
+      "lang": "typescript"
+    },
+    "native": {
+      "content": [
+        {
+          "type": "text",
+          "text": "\n─── packages/server/src/application/session/execution/__test__/session-run-executor.test.ts:495  (score 81.55)\n    [function createStore @ line 930 — 1,255 of 51,741 chars]\nfunction createStore(options: {\r\n  attachments?: ReturnType<typeof attachment>[];\r\n  metadata?: Record<string, unknown>;\r\n  items?: Array<{ type: \"text\"; text: string } | { type: \"skill\"; name: string; path: string }>;\r\n} = {}) {\r\n  const run = { id: \"run-1\", sessionId: \"s1\", inputId: \"input-1\", status: \"pending\" };\r\n  const getSession = vi.fn(() => ({\r\n    id: \"s1\",\r\n    cwd: \"/repo\",\r\n    model: \"gpt-test\",\r\n    metadata: { runtime: { model: \"gpt-test\" } },\r\n  }));\r\n  const getInput = vi.fn(() => ({\r\n    id: \"input-1\",\r\n    sessionId: \"s1\",\r\n    content: \"hello\",\r\n    items: options.items ?? [{ type: \"text\", text: \"hello\" }],\r\n    attachments: options.attachments ?? [],\r\n    delivery: \"queue\",\r\n    metadata: options.metadata ?? { requestedBy: \"test\", traceId: \"trace-1\" },\r\n  }));\r\n  const getRun = vi.fn(() => run);\r\n  const appendEvent = vi.fn();\r\n  const updateRun = vi.fn((id, update) => Object.assign(run, update, { id, metadata: { ...(run as any).metadata, ...update.metadata } }));\r\n  const data = {\r\n    transaction: <T>(work: () => T) => work(),\r\n    sessions: { get: getSession },\r\n    conversations: {\r\n      getInput,\r\n      listMessages: vi.fn(() => []),\r\n      listMessagePa\n    ... [function createStore truncated at 1200 chars]\n\n─── packages/server/src/application/attachments/routing/attachment-capabilities.ts:15  (score 80.67)\n    [function supportsNativeImageInput @ line 15 — 1,268 of 4,181 chars]\nexport function supportsNativeImageInput(\r\n  context: {\r\n    requestConfiguration?: { model: string; provider?: string; apiFormat?: Settings[\"apiFormat\"] };\r\n    settings?: Settings;\r\n  },\r\n  catalog: ModelsDevCatalog,\r\n): boolean {\r\n  const request = context.requestConfiguration;\r\n  if (!request) return false;\r\n\r\n  const providerName = request.provider ?? context.settings?.provider;\r\n  const customProvider = context.settings?.customProviders?.find((item) => item.id === providerName);\r\n  const backend = customProvider\r\n    ? \"openai_compat\"\r\n    : providerName\r\n      ? findByName(providerName)?.backendType\r\n      : request.apiFormat === \"openai\"\r\n        ? \"openai_compat\"\r\n        : request.apiFormat === \"anthropic\"\r\n          ? \"anthropic\"\r\n          : undefined;\r\n  if (!backend) return false;\r\n\r\n  const provider = providerName ? readCatalogProvider(catalog, providerName) : undefined;\r\n  const model = Object.entries(provider?.models ?? {}).find(([id, value]) =>\r\n    (value.id ?? id) === request.model,\r\n  )?.[1];\r\n  const customModel = customProvider?.models.find((item) => item.id === request.model);\r\n  const modelSupport: InputSupport = model\r\n    ? modelInputCapabilities(model).i\n    ... [function supportsNativeImageInput truncated at 1200 chars]\n\n─── packages/api/src/providers/registry.ts:5  (score 74.81)\n    [function providerInputCapabilities @ line 28 — 187 of 10,453 chars]\nexport function providerInputCapabilities(\r\n  _backendType: BackendType,\r\n): ProviderInputCapabilities {\r\n  return { image: \"native\", imageMediaTypes: [...NATIVE_IMAGE_MEDIA_TYPES] };\r\n}\r\n\n─── packages/server/src/application/attachments/routing/attachment-routing-types.ts:24  (score 70.26)\n    [interface RouteAttachmentBatchInput @ line 34 — 464 of 2,198 chars]\nexport interface RouteAttachmentBatchInput {\r\n  text: string;\r\n  attachments: readonly SessionInputAttachmentRecord[];\r\n  modelCapabilities: ModelInputCapabilities;\r\n  providerCapabilities: ProviderInputCapabilities;\r\n  /** Actual tools left after the Agent's allow/deny filters. */\r\n  availableTools?: readonly string[];\r\n  /** Whether the daemon installed the local OCR service for this Agent. */\r\n  attachmentOcrAvailable?: boolean;\r\n  signal?: AbortSignal;\r\n}\r\n\n─── packages/server/src/application/attachments/routing/attachment-capability-router.ts:47  (score 70.03)\n    [method route @ line 47 — 1,247 of 11,872 chars]\n  async route(\r\n    input: RouteAttachmentBatchInput,\r\n  ): Promise<NativeAttachmentRouteResult> {\r\n    const attachments = [...input.attachments].sort(\r\n      (left, right) => left.seq - right.seq,\r\n    );\r\n    const assetIds = attachments.map((item) => item.assetId);\r\n    throwIfAborted(input.signal, assetIds);\r\n\r\n    const nativeImageAvailable =\r\n      input.modelCapabilities.image === \"native\" &&\r\n      input.providerCapabilities.image === \"native\";\r\n    const availableTools = new Set(input.availableTools ?? []);\r\n    const decisions: AttachmentRoutingDecision[] = attachments.map((attachment) => {\r\n      const common = {\r\n        assetId: attachment.assetId,\r\n        intent: attachment.intent,\r\n        mediaType: attachment.mediaType,\r\n      };\r\n      const kind = classifyAttachmentCandidate(attachment);\r\n      const format=officeFormat(attachment.displayName);\r\n      if(format && attachment.mediaType===OFFICE_MEDIA_TYPES[format]) {\r\n        if(!availableTools.has(\"Read\"))return {...common,route:\"blocked\",reason:\"attachment_document_unsupported\"};\r\n        return {...common,route:\"text_resource\",complete:false,resourceUri:attachmentResourceUri(attachment.assetId,attachment.disp\n    ... [method route truncated at 1200 chars]\n\n5 passages from 'current'\nCite file:line for anything you rely on.\n"
+        }
+      ],
+      "isError": false
+    },
+    "score": {
+      "fileHit": true,
+      "evidenceHit": true,
+      "relevantFilesFound": 1,
+      "relevantFilesTotal": 1,
+      "fileRecall": 1,
+      "topFiles": [
+        "packages/server/src/application/session/execution/__test__/session-run-executor.test.ts",
+        "packages/server/src/application/attachments/routing/attachment-capabilities.ts",
+        "packages/api/src/providers/registry.ts",
+        "packages/server/src/application/attachments/routing/attachment-routing-types.ts",
+        "packages/server/src/application/attachments/routing/attachment-capability-router.ts"
+      ],
+      "evidenceFiles": [
+        "packages/server/src/application/attachments/routing/attachment-capability-router.ts"
+      ]
+    },
+    "hits": [
+      {
+        "path": "packages/server/src/application/session/execution/__test__/session-run-executor.test.ts",
+        "line": 930,
+        "startLine": 930,
+        "endLine": 960,
+        "text": "function createStore(options: {\n  attachments?: ReturnType<typeof attachment>[];\n  metadata?: Record<string, unknown>;\n  items?: Array<{ type: \"text\"; text: string } | { type: \"skill\"; name: string; path: string }>;\n} = {}) {\n  const run = { id: \"run-1\", sessionId: \"s1\", inputId: \"input-1\", status: \"pending\" };\n  const getSession = vi.fn(() => ({\n    id: \"s1\",\n    cwd: \"/repo\",\n    model: \"gpt-test\",\n    metadata: { runtime: { model: \"gpt-test\" } },\n  }));\n  const getInput = vi.fn(() => ({\n    id: \"input-1\",\n    sessionId: \"s1\",\n    content: \"hello\",\n    items: options.items ?? [{ type: \"text\", text: \"hello\" }],\n    attachments: options.attachments ?? [],\n    delivery: \"queue\",\n    metadata: options.metadata ?? { requestedBy: \"test\", traceId: \"trace-1\" },\n  }));\n  const getRun = vi.fn(() => run);\n  const appendEvent = vi.fn();\n  const updateRun = vi.fn((id, update) => Object.assign(run, update, { id, metadata: { ...(run as any).metadata, ...update.metadata } }));\n  const data = {\n    transaction: <T>(work: () => T) => work(),\n    sessions: { get: getSession },\n    conversations: {\n      getInput,\n      listMessages: vi.fn(() => []),\n      listMessagePa",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 81.55"
+      },
+      {
+        "path": "packages/server/src/application/attachments/routing/attachment-capabilities.ts",
+        "line": 15,
+        "startLine": 15,
+        "endLine": 44,
+        "text": "export function supportsNativeImageInput(\n  context: {\n    requestConfiguration?: { model: string; provider?: string; apiFormat?: Settings[\"apiFormat\"] };\n    settings?: Settings;\n  },\n  catalog: ModelsDevCatalog,\n): boolean {\n  const request = context.requestConfiguration;\n  if (!request) return false;\n\n  const providerName = request.provider ?? context.settings?.provider;\n  const customProvider = context.settings?.customProviders?.find((item) => item.id === providerName);\n  const backend = customProvider\n    ? \"openai_compat\"\n    : providerName\n      ? findByName(providerName)?.backendType\n      : request.apiFormat === \"openai\"\n        ? \"openai_compat\"\n        : request.apiFormat === \"anthropic\"\n          ? \"anthropic\"\n          : undefined;\n  if (!backend) return false;\n\n  const provider = providerName ? readCatalogProvider(catalog, providerName) : undefined;\n  const model = Object.entries(provider?.models ?? {}).find(([id, value]) =>\n    (value.id ?? id) === request.model,\n  )?.[1];\n  const customModel = customProvider?.models.find((item) => item.id === request.model);\n  const modelSupport: InputSupport = model\n    ? modelInputCapabilities(model).i",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 80.67"
+      },
+      {
+        "path": "packages/api/src/providers/registry.ts",
+        "line": 28,
+        "startLine": 28,
+        "endLine": 32,
+        "text": "export function providerInputCapabilities(\n  _backendType: BackendType,\n): ProviderInputCapabilities {\n  return { image: \"native\", imageMediaTypes: [...NATIVE_IMAGE_MEDIA_TYPES] };\n}",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 74.81"
+      },
+      {
+        "path": "packages/server/src/application/attachments/routing/attachment-routing-types.ts",
+        "line": 34,
+        "startLine": 34,
+        "endLine": 44,
+        "text": "export interface RouteAttachmentBatchInput {\n  text: string;\n  attachments: readonly SessionInputAttachmentRecord[];\n  modelCapabilities: ModelInputCapabilities;\n  providerCapabilities: ProviderInputCapabilities;\n  /** Actual tools left after the Agent's allow/deny filters. */\n  availableTools?: readonly string[];\n  /** Whether the daemon installed the local OCR service for this Agent. */\n  attachmentOcrAvailable?: boolean;\n  signal?: AbortSignal;\n}",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 70.26"
+      },
+      {
+        "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+        "line": 47,
+        "startLine": 47,
+        "endLine": 70,
+        "text": "  async route(\n    input: RouteAttachmentBatchInput,\n  ): Promise<NativeAttachmentRouteResult> {\n    const attachments = [...input.attachments].sort(\n      (left, right) => left.seq - right.seq,\n    );\n    const assetIds = attachments.map((item) => item.assetId);\n    throwIfAborted(input.signal, assetIds);\n\n    const nativeImageAvailable =\n      input.modelCapabilities.image === \"native\" &&\n      input.providerCapabilities.image === \"native\";\n    const availableTools = new Set(input.availableTools ?? []);\n    const decisions: AttachmentRoutingDecision[] = attachments.map((attachment) => {\n      const common = {\n        assetId: attachment.assetId,\n        intent: attachment.intent,\n        mediaType: attachment.mediaType,\n      };\n      const kind = classifyAttachmentCandidate(attachment);\n      const format=officeFormat(attachment.displayName);\n      if(format && attachment.mediaType===OFFICE_MEDIA_TYPES[format]) {\n        if(!availableTools.has(\"Read\"))return {...common,route:\"blocked\",reason:\"attachment_document_unsupported\"};\n        return {...common,route:\"text_resource\",complete:false,resourceUri:attachmentResourceUri(attachment.assetId,attachment.disp",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 70.03"
+      }
+    ],
+    "evidence": [
+      {
+        "path": "packages/server/src/application/session/execution/__test__/session-run-executor.test.ts",
+        "startLine": 918,
+        "endLine": 942,
+        "text": "        pluginIds: new Set([\"office\", \"knowledge\"]),\n        pluginPreparationErrors: new Map([...preparationFailures].map(pluginId => [pluginId, [`prepare failed: ${pluginId}`]])),\n      }, id),\n      submitMessage: (_content: unknown, options: any) => { observed.push([[...options.preparation.fixtureView.pluginIds], ...options.preparation.fixtureView.tools.keys()]); return completedHandle(); },\n    }), close: async () => {}, closeIfStale: async () => {} } as any,\n    events: { checkpoint: () => 1, publishSince: () => {} },\n    transcriptProjection: { finalizeRunParts: () => {} } as any, traceIdForRun: () => \"trace-1\", log: () => {},\n  });\n  return { store, controller, observed, preparationFailures, get requests() { return requests; },\n    execute: () => executor.execute({ sessionId: \"s1\", inputId: \"input-1\", runId: \"run-1\" }, { signal: controller.signal, registerHandle: async () => {} }) };\n}\n\nfunction createStore(options: {\n  attachments?: ReturnType<typeof attachment>[];\n  metadata?: Record<string, unknown>;\n  items?: Array<{ type: \"text\"; text: string } | { type: \"skill\"; name: string; path: string }>;\n} = {}) {\n  const run = { id: \"run-1\", sessionId: \"s1\", inputId: \"input-1\", status: \"pending\" };\n  const getSession = vi.fn(() => ({\n    id: \"s1\",\n    cwd: \"/repo\",\n    model: \"gpt-test\",\n    metadata: { runtime: { model: \"gpt-test\" } },\n  }));\n  const getInput = vi.fn(() => ({",
+        "bytes": 1402,
+        "truncated": false
+      },
+      {
+        "path": "packages/server/src/application/attachments/routing/attachment-capabilities.ts",
+        "startLine": 3,
+        "endLine": 27,
+        "text": "  ModelsDevModel,\n  ProviderInputCapabilities,\n} from \"@vykor/api\";\nimport {\n  findByName,\n  providerInputCapabilities,\n} from \"@vykor/api\";\nimport type { Settings, InputSupport, ModelInputCapabilities } from \"@vykor/host-config\";\nimport type { SessionRuntimeConfig } from \"@vykor/domain-contracts/sessions\";\nimport type { ModelProviderInfo } from \"../../settings-api.js\";\nimport { readCatalogProvider } from \"../../default-services/models/catalog-provider-mapping.js\";\n\nexport function supportsNativeImageInput(\n  context: {\n    requestConfiguration?: { model: string; provider?: string; apiFormat?: Settings[\"apiFormat\"] };\n    settings?: Settings;\n  },\n  catalog: ModelsDevCatalog,\n): boolean {\n  const request = context.requestConfiguration;\n  if (!request) return false;\n\n  const providerName = request.provider ?? context.settings?.provider;\n  const customProvider = context.settings?.customProviders?.find((item) => item.id === providerName);\n  const backend = customProvider",
+        "bytes": 982,
+        "truncated": false
+      },
+      {
+        "path": "packages/api/src/providers/registry.ts",
+        "startLine": 16,
+        "endLine": 40,
+        "text": "\nexport type NativeImageMediaType = (typeof NATIVE_IMAGE_MEDIA_TYPES)[number];\n\nexport function assertNativeImageMediaType(\n  mediaType: string,\n): asserts mediaType is NativeImageMediaType {\n  if (!(NATIVE_IMAGE_MEDIA_TYPES as readonly string[]).includes(mediaType)) {\n    throw new Error(`Unsupported image media type: ${mediaType}`);\n  }\n}\n\n/** Capabilities of the request adapter, independent from any concrete model. */\nexport function providerInputCapabilities(\n  _backendType: BackendType,\n): ProviderInputCapabilities {\n  return { image: \"native\", imageMediaTypes: [...NATIVE_IMAGE_MEDIA_TYPES] };\n}\n\nexport interface ProviderConfig {\n  apiKey: string;\n  baseURL?: string;\n  model?: string;\n  headers?: Record<string, string>;\n}\n",
+        "bytes": 737,
+        "truncated": false
+      },
+      {
+        "path": "packages/server/src/application/attachments/routing/attachment-routing-types.ts",
+        "startLine": 22,
+        "endLine": 46,
+        "text": "  | \"attachment_routing_aborted\";\n\nexport interface AttachmentRoutingDecision {\n  assetId: string;\n  intent: SessionInputAttachmentRecord[\"intent\"];\n  mediaType: string;\n  route: \"native_image\" | \"image_to_text_tool\" | \"text_inline\" | \"text_resource\" | \"blocked\";\n  reason?: AttachmentRoutingErrorCode;\n  complete?: boolean;\n  resourceUri?: string;\n}\n\nexport interface RouteAttachmentBatchInput {\n  text: string;\n  attachments: readonly SessionInputAttachmentRecord[];\n  modelCapabilities: ModelInputCapabilities;\n  providerCapabilities: ProviderInputCapabilities;\n  /** Actual tools left after the Agent's allow/deny filters. */\n  availableTools?: readonly string[];\n  /** Whether the daemon installed the local OCR service for this Agent. */\n  attachmentOcrAvailable?: boolean;\n  signal?: AbortSignal;\n}\n\nexport interface NativeAttachmentRouteResult {",
+        "bytes": 853,
+        "truncated": false
+      },
+      {
+        "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+        "startLine": 35,
+        "endLine": 59,
+        "text": "}\n\nexport interface AttachmentCapabilityRouterOptions {\n  resolveReadyContentPath(\n    assetId: string,\n  ): Promise<ResolvedAttachmentContentPath>;\n  readReadyText(assetId: string, options?: { signal?: AbortSignal }): Promise<ReadyAttachmentText>;\n}\n\nexport class AttachmentCapabilityRouter {\n  constructor(private readonly options: AttachmentCapabilityRouterOptions) {}\n\n  async route(\n    input: RouteAttachmentBatchInput,\n  ): Promise<NativeAttachmentRouteResult> {\n    const attachments = [...input.attachments].sort(\n      (left, right) => left.seq - right.seq,\n    );\n    const assetIds = attachments.map((item) => item.assetId);\n    throwIfAborted(input.signal, assetIds);\n\n    const nativeImageAvailable =\n      input.modelCapabilities.image === \"native\" &&\n      input.providerCapabilities.image === \"native\";\n    const availableTools = new Set(input.availableTools ?? []);",
+        "bytes": 883,
+        "truncated": false
+      }
+    ],
+    "passageEvidence": [
+      {
+        "path": "packages/server/src/application/attachments/routing/attachment-capability-router.ts",
+        "line": 56
+      }
+    ]
+  },
+  {
+    "taskId": "english-shell-logs",
+    "variant": "full-4000",
+    "params": {
+      "corpus": "current",
+      "query": "Search retained shell output logs with a regular expression and open the matching byte offset",
+      "k": 5,
+      "full": 4000,
+      "mode": "bm25",
+      "max_tokens": 2000
+    },
+    "native": {
+      "content": [
+        {
+          "type": "text",
+          "text": "\n─── packages/tools/src/search/grep.ts:8  (score 114.61)\n    [function createGrepTool @ line 8 — 1,155 of 7,701 chars]\nexport function createGrepTool(host: FileToolHost = {}): ToolDefinition {\r\n  return {\r\n    name: \"Grep\",\r\n    description:\r\n      \"Search file contents using regular expressions. For Shell logs use path=shell-output://UUID; byte positions can be opened with Read cursor.\",\r\n    inputSchema: {\r\n      type: \"object\",\r\n      properties: {\r\n        pattern: { type: \"string\", description: \"Regex pattern to search for.\" },\r\n        path: { type: \"string\", description: \"Directory, file, or shell-output://UUID from Shell.\" },\r\n        include: {\r\n          type: \"string\",\r\n          description: 'File glob pattern to include (e.g. \"*.ts\").',\r\n        },\r\n        caseSensitive: {\r\n          type: \"boolean\",\r\n          description: \"Whether the search is case-sensitive. Default: true.\",\r\n          default: true,\r\n        },\r\n        limit: {\r\n          type: \"integer\",\r\n          description: \"Maximum number of matches (1–200). Output is also limited to 8 KiB; narrow the search if results are limited. Default: 200.\",\r\n          minimum: 1,\r\n          maximum: 200,\r\n          default: 200,\r\n        },\r\n      },\r\n      required: [\"pattern\"],\r\n    },\r\n\n─── packages/execution-node/src/executions/shell-output-log.ts:90  (score 101.46)\n    [function searchLog @ line 242 — 2,195 of 13,454 chars]\nasync function searchLog(directory: string, input: Parameters<ShellOutputLogHost[\"search\"]>[0]): Promise<ShellOutputLogSearchResult> {\r\n  const unavailable: ShellOutputLogSearchResult = { status: \"unavailable\", matches: [], truncated: false };\r\n  const found = availableLog(directory, input.sessionId, input.reference);\r\n  if (!found) return unavailable;\r\n  if (typeof input.pattern !== \"string\" || input.pattern.includes(\"\\0\")) {\r\n    return { status: \"invalid_pattern\", matches: [], truncated: false };\r\n  }\r\n  if (input.signal?.aborted) return { status: \"timeout\", matches: [], truncated: true };\r\n  let buffer: Buffer;\r\n  try {\r\n    buffer = readFileSync(found.path);\r\n  } catch { return unavailable; }\r\n  let regex: RegExp;\r\n  try {\r\n    regex = new RegExp(input.pattern, input.caseSensitive ? \"g\" : \"gi\");\r\n  } catch {\r\n    return { status: \"invalid_pattern\", matches: [], truncated: false };\r\n  }\r\n  const text = new TextDecoder(\"utf-8\").decode(buffer);\r\n  const matches: ShellOutputLogSearchResult[\"matches\"] = [];\r\n  let emittedBytes = 0;\r\n  let truncated = false;\r\n  let charIndex = 0;\r\n  let byteOffset = 0;\r\n  for (let match = regex.exec(text); match !== null; match = regex.exec(text)) {\r\n    while (charIndex < match.index) {\r\n      const codePoint = text.codePointAt(charIndex)!;\r\n      byteOffset += codePoint <= 0x7f ? 1 : codePoint <= 0x7ff ? 2 : codePoint <= 0xffff ? 3 : 4;\r\n      charIndex += codePoint > 0xffff ? 2 : 1;\r\n    }\r\n    const matchText = match[0];\r\n    const lineBytes = Buffer.byteLength(`${byteOffset}:${matchText}\\n`, \"utf8\");\r\n    if (matches.length >= 200 || emittedBytes + lineBytes > 32 * 1024) { truncated = true; break; }\r\n    matches.push({ byteOffset, text: matchText });\r\n    emittedBytes += lineBytes;\r\n    charIndex += matchText.length;\r\n    byteOffset += Buffer.byteLength(matchText, \"utf8\");\r\n    if (matchText.length === 0) {\r\n      regex.lastIndex += 1;\r\n      const codePoint = text.codePointAt(match.index)!;\r\n      charIndex += codePoint > 0xffff ? 2 : 1;\r\n      byteOffset += codePoint <= 0x7f ? 1 : codePoint <= 0x7ff ? 2 : codePoint <= 0xffff ? 3 : 4;\r\n    }\r\n  }\r\n  return { status: truncated ? \"limit\" : \"ok\", matches, truncated };\r\n}\r\n\n─── packages/agent-contracts/src/tools/shell-output.ts:21  (score 85.85)\n    [interface ShellOutputLogSearchResult @ line 21 — 227 of 1,339 chars]\nexport interface ShellOutputLogSearchResult {\r\n  status: \"ok\" | \"unavailable\" | \"invalid_pattern\" | \"limit\" | \"timeout\" | \"search_unavailable\";\r\n  matches: Array<{ byteOffset: number; text: string }>;\r\n  truncated: boolean;\r\n}\r\n\n─── packages/execution-node/src/executions/__test__/shell-output-log.test.ts:125  (score 83.14)\n    [function directory @ line 11 — 141 of 20,176 chars]\nconst directory = () => {\r\n  const value = mkdtempSync(join(tmpdir(), \"vykor-shell-log-\"));\r\n  directories.push(value);\r\n  return value;\r\n};\r\n\n─── packages/tools/src/file/read.ts:283  (score 80.93)\n    [function createFileReadTool @ line 154 — 1,541 of 21,742 chars]\nexport function createFileReadTool(host: FileToolHost = {}): ToolDefinition {\r\n  return {\r\n    name: \"Read\",\r\n    description:\r\n      \"Read a local text file, supported image, or directory. For Shell output use file_path=shell-output://UUID and cursor=0 (UTF-8 byte position); omit info_only/offset/limit. Use info_only=true to inspect local target existence, type and raw-byte SHA-256 without returning its body or changing files; this does not authorize a write. Otherwise local text is returned with each line prefixed as `N: <content>`. Use `offset` (1-indexed) and `limit` to continue through large local files or directories. Lines longer than 2000 characters and local text or directory output beyond 50 KB are truncated with a note. Supported images are returned as image blocks; other binary files are rejected.\",\r\n    inputSchema: {\r\n      type: \"object\",\r\n      properties: {\r\n        file_path: {\r\n          type: \"string\",\r\n          description: \"An absolute or working-directory-relative local path, or shell-output://UUID from Shell.\",\r\n        },\r\n        cursor: { type: \"number\", description: \"For shell-output:// only: UTF-8 byte cursor (default 0).\" },\r\n        offset: { type: \"number\", description: \"Start line (1-indexed).\" },\r\n        limit: { type: \"number\", description: \"Max lines to read.\" },\r\n        info_only: { type: \"boolean\", description: \"Only inspect a local file target's state and overwrite conditions. No body or mutation; not a permission grant.\" },\r\n      },\r\n      required: [\"file_path\"],\r\n    },\r\n\n5 passages from 'current'\nCite file:line for anything you rely on.\n"
+        }
+      ],
+      "isError": false
+    },
+    "score": {
+      "fileHit": true,
+      "evidenceHit": false,
+      "relevantFilesFound": 1,
+      "relevantFilesTotal": 1,
+      "fileRecall": 1,
+      "topFiles": [
+        "packages/tools/src/search/grep.ts",
+        "packages/execution-node/src/executions/shell-output-log.ts",
+        "packages/agent-contracts/src/tools/shell-output.ts",
+        "packages/execution-node/src/executions/__test__/shell-output-log.test.ts",
+        "packages/tools/src/file/read.ts"
+      ],
+      "evidenceFiles": []
+    },
+    "hits": [
+      {
+        "path": "packages/tools/src/search/grep.ts",
+        "line": 8,
+        "startLine": 8,
+        "endLine": 36,
+        "text": "export function createGrepTool(host: FileToolHost = {}): ToolDefinition {\n  return {\n    name: \"Grep\",\n    description:\n      \"Search file contents using regular expressions. For Shell logs use path=shell-output://UUID; byte positions can be opened with Read cursor.\",\n    inputSchema: {\n      type: \"object\",\n      properties: {\n        pattern: { type: \"string\", description: \"Regex pattern to search for.\" },\n        path: { type: \"string\", description: \"Directory, file, or shell-output://UUID from Shell.\" },\n        include: {\n          type: \"string\",\n          description: 'File glob pattern to include (e.g. \"*.ts\").',\n        },\n        caseSensitive: {\n          type: \"boolean\",\n          description: \"Whether the search is case-sensitive. Default: true.\",\n          default: true,\n        },\n        limit: {\n          type: \"integer\",\n          description: \"Maximum number of matches (1–200). Output is also limited to 8 KiB; narrow the search if results are limited. Default: 200.\",\n          minimum: 1,\n          maximum: 200,\n          default: 200,\n        },\n      },\n      required: [\"pattern\"],\n    },",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 114.61"
+      },
+      {
+        "path": "packages/execution-node/src/executions/shell-output-log.ts",
+        "line": 242,
+        "startLine": 242,
+        "endLine": 273,
+        "text": "async function searchLog(directory: string, input: Parameters<ShellOutputLogHost[\"search\"]>[0]): Promise<ShellOutputLogSearchResult> {\n  const unavailable: ShellOutputLogSearchResult = { status: \"unavailable\", matches: [], truncated: false };\n  const found = availableLog(directory, input.sessionId, input.reference);\n  if (!found) return unavailable;\n  if (typeof input.pattern !== \"string\" || input.pattern.includes(\"\\0\")) {\n    return { status: \"invalid_pattern\", matches: [], truncated: false };\n  }\n  if (input.signal?.aborted) return { status: \"timeout\", matches: [], truncated: true };\n  let buffer: Buffer;\n  try {\n    buffer = readFileSync(found.path);\n  } catch { return unavailable; }\n  let regex: RegExp;\n  try {\n    regex = new RegExp(input.pattern, input.caseSensitive ? \"g\" : \"gi\");\n  } catch {\n    return { status: \"invalid_pattern\", matches: [], truncated: false };\n  }\n  const text = new TextDecoder(\"utf-8\").decode(buffer);\n  const matches: ShellOutputLogSearchResult[\"matches\"] = [];\n  let emittedBytes = 0;\n  let truncated = false;\n  let charIndex = 0;\n  let byteOffset = 0;\n  for (let match = regex.exec(text); match !== null; match = regex.exec(text)) {\n    while (charIndex < match.index) {\n      const codePoint = text.codePointAt(charIndex)!;\n      byteOffset += codePoint <= 0x7f ? 1 : codePoint <= 0x7ff ? 2 : codePoint <= 0xffff ? 3 : 4;\n      charIndex += codePoint > 0xffff ? 2 : 1;\n    }\n    const matchText = match[0];\n    const lineBytes = Buffer.byteLength(`${by…",
+        "truncated": true,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 101.46"
+      },
+      {
+        "path": "packages/agent-contracts/src/tools/shell-output.ts",
+        "line": 21,
+        "startLine": 21,
+        "endLine": 25,
+        "text": "export interface ShellOutputLogSearchResult {\n  status: \"ok\" | \"unavailable\" | \"invalid_pattern\" | \"limit\" | \"timeout\" | \"search_unavailable\";\n  matches: Array<{ byteOffset: number; text: string }>;\n  truncated: boolean;\n}",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 85.85"
+      },
+      {
+        "path": "packages/execution-node/src/executions/__test__/shell-output-log.test.ts",
+        "line": 11,
+        "startLine": 11,
+        "endLine": 15,
+        "text": "const directory = () => {\n  const value = mkdtempSync(join(tmpdir(), \"vykor-shell-log-\"));\n  directories.push(value);\n  return value;\n};",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 83.14"
+      },
+      {
+        "path": "packages/tools/src/file/read.ts",
+        "line": 154,
+        "startLine": 154,
+        "endLine": 171,
+        "text": "export function createFileReadTool(host: FileToolHost = {}): ToolDefinition {\n  return {\n    name: \"Read\",\n    description:\n      \"Read a local text file, supported image, or directory. For Shell output use file_path=shell-output://UUID and cursor=0 (UTF-8 byte position); omit info_only/offset/limit. Use info_only=true to inspect local target existence, type and raw-byte SHA-256 without returning its body or changing files; this does not authorize a write. Otherwise local text is returned with each line prefixed as `N: <content>`. Use `offset` (1-indexed) and `limit` to continue through large local files or directories. Lines longer than 2000 characters and local text or directory output beyond 50 KB are truncated with a note. Supported images are returned as image blocks; other binary files are rejected.\",\n    inputSchema: {\n      type: \"object\",\n      properties: {\n        file_path: {\n          type: \"string\",\n          description: \"An absolute or working-directory-relative local path, or shell-output://UUID from Shell.\",\n        },\n        cursor: { type: \"number\", description: \"For shell-output:// only: UTF-8 byte cursor (default 0).\" },\n        offset: { type: \"number\", description: \"Start line (1-indexed).\" },\n        limit: { type: \"number\", description: \"Max lines to read.\" },\n        info_only: { type: \"boolean\", description: \"Only inspect a local file target's state and overwrite conditions. No body or mutation; not a permission grant.\" },\n      },\n      requir…",
+        "truncated": true,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 80.93"
+      }
+    ],
+    "evidence": [
+      {
+        "path": "packages/tools/src/search/grep.ts",
+        "startLine": 1,
+        "endLine": 20,
+        "text": "import type { FileToolHost } from \"../ports/policy.js\";\nimport type { ToolDefinition } from \"@vykor/agent-contracts\";\nimport { fileOperationsFor } from \"../file/operations.js\";\nimport { resolveToolPathInContext } from \"../file/access/environment-path.js\";\nimport { sandboxPathError } from \"../file/access/sandbox-guard.js\";\nimport { GREP_LIMIT_HINT, GREP_OUTPUT_BYTES, GrepSearchError } from \"../file/search/grep-search.js\";\n\nexport function createGrepTool(host: FileToolHost = {}): ToolDefinition {\n  return {\n    name: \"Grep\",\n    description:\n      \"Search file contents using regular expressions. For Shell logs use path=shell-output://UUID; byte positions can be opened with Read cursor.\",\n    inputSchema: {\n      type: \"object\",\n      properties: {\n        pattern: { type: \"string\", description: \"Regex pattern to search for.\" },\n        path: { type: \"string\", description: \"Directory, file, or shell-output://UUID from Shell.\" },\n        include: {\n          type: \"string\",\n          description: 'File glob pattern to include (e.g. \"*.ts\").',",
+        "bytes": 1054,
+        "truncated": false
+      },
+      {
+        "path": "packages/execution-node/src/executions/shell-output-log.ts",
+        "startLine": 230,
+        "endLine": 254,
+        "text": "      try { text = decoder.decode(bytes.subarray(0, consumed)); break; }\n      catch { consumed--; }\n    }\n    if (received > 0 && consumed === 0) return { status: \"unavailable\" };\n    const nextCursor = cursor + consumed;\n    return { status: \"ok\", text, nextCursor, eof: nextCursor === found.size,\n      retainedBytes: found.size, discardedBytes: found.metadata.discardedBytes,\n      complete: found.metadata.complete && found.metadata.finished && found.metadata.discardedBytes === 0 };\n  } catch { return { status: \"unavailable\" }; }\n  finally { if (fd !== undefined) { try { closeSync(fd); } catch { /* already closed */ } } }\n}\n\nasync function searchLog(directory: string, input: Parameters<ShellOutputLogHost[\"search\"]>[0]): Promise<ShellOutputLogSearchResult> {\n  const unavailable: ShellOutputLogSearchResult = { status: \"unavailable\", matches: [], truncated: false };\n  const found = availableLog(directory, input.sessionId, input.reference);\n  if (!found) return unavailable;\n  if (typeof input.pattern !== \"string\" || input.pattern.includes(\"\\0\")) {\n    return { status: \"invalid_pattern\", matches: [], truncated: false };\n  }\n  if (input.signal?.aborted) return { status: \"timeout\", matches: [], truncated: true };\n  let buffer: Buffer;\n  try {\n    buffer = readFileSync(found.path);\n  } catch { return unavailable; }\n  let regex: RegExp;",
+        "bytes": 1350,
+        "truncated": false
+      },
+      {
+        "path": "packages/agent-contracts/src/tools/shell-output.ts",
+        "startLine": 9,
+        "endLine": 32,
+        "text": "  reference?: string;\n  retainedBytes: number;\n  discardedBytes: number;\n  complete: boolean;\n  available: boolean;\n  reason?: string;\n}\n\nexport type ShellOutputLogPage =\n  | { status: \"unavailable\" | \"invalid_cursor\" }\n  | { status: \"ok\"; text: string; nextCursor: number; eof: boolean; retainedBytes: number; discardedBytes: number; complete: boolean };\n\nexport interface ShellOutputLogSearchResult {\n  status: \"ok\" | \"unavailable\" | \"invalid_pattern\" | \"limit\" | \"timeout\" | \"search_unavailable\";\n  matches: Array<{ byteOffset: number; text: string }>;\n  truncated: boolean;\n}\n\nexport interface ShellOutputLogHost {\n  begin(sessionId: string | undefined, inlineChars: number): ShellOutputCapture;\n  read(input: { sessionId?: string; reference: string; cursor?: number; maxBytes?: number }): Promise<ShellOutputLogPage>;\n  search(input: { sessionId?: string; reference: string; pattern: string; caseSensitive?: boolean; signal?: AbortSignal }): Promise<ShellOutputLogSearchResult>;\n}\n",
+        "bytes": 986,
+        "truncated": false
+      },
+      {
+        "path": "packages/execution-node/src/executions/__test__/shell-output-log.test.ts",
+        "startLine": 1,
+        "endLine": 23,
+        "text": "import { randomUUID } from \"node:crypto\";\nimport { spawnSync } from \"node:child_process\";\nimport { copyFileSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, renameSync, rmSync, symlinkSync, utimesSync, writeFileSync } from \"node:fs\";\nimport { tmpdir } from \"node:os\";\nimport { join } from \"node:path\";\nimport { fileURLToPath, pathToFileURL } from \"node:url\";\nimport { afterEach, describe, expect, it } from \"vitest\";\nimport { createShellOutputLogHost } from \"../shell-output-log.js\";\n\nconst directories: string[] = [];\nconst directory = () => {\n  const value = mkdtempSync(join(tmpdir(), \"vykor-shell-log-\"));\n  directories.push(value);\n  return value;\n};\nafterEach(() => {\n  for (const path of directories.splice(0)) rmSync(path, { recursive: true, force: true });\n});\n\ndescribe(\"shell output log host\", () => {\n  it(\"spills only long output and pages a UTF-8 long line without skipping bytes\", async () => {\n    const path = directory();\n    const host = createShellOutputLogHost({ directory: path });",
+        "bytes": 1010,
+        "truncated": false
+      },
+      {
+        "path": "packages/tools/src/file/read.ts",
+        "startLine": 142,
+        "endLine": 166,
+        "text": "}\n\n/** 诊断是否可用只影响说明，不改变原始读取失败的事实。 */\nfunction readErrorResult(error: unknown, started = true): ToolResult {\n  const missing = isFileNotFoundError(error);\n  return {\n    content: [{ type: \"text\", text: `Error reading file: ${error}` }], isError: true,\n    failureKind: missing ? \"precondition\" : \"unknown_outcome\",\n    executionState: started ? \"completed\" : \"not_started\",\n  };\n}\n\nexport function createFileReadTool(host: FileToolHost = {}): ToolDefinition {\n  return {\n    name: \"Read\",\n    description:\n      \"Read a local text file, supported image, or directory. For Shell output use file_path=shell-output://UUID and cursor=0 (UTF-8 byte position); omit info_only/offset/limit. Use info_only=true to inspect local target existence, type and raw-byte SHA-256 without returning its body or changing files; this does not authorize a write. Otherwise local text is returned with each line prefixed as `N: <content>`. Use `offset` (1-indexed) and `limit` to continue through large local files or directories. Lines longer than 2000 characters and local text or directory output beyond 50 KB are truncated with a note. Supported images are returned as image blocks; other binary files are rejected.\",\n    inputSchema: {\n      type: \"object\",\n      properties: {\n        file_path: {\n          type: \"string\",\n          description: \"An absolute or working-directory-relative local path, or shell-output://UUID from Shell.\",\n        },\n        cursor: { type: \"number\", description: \"For shell-output:// only: UTF-8 byte cursor (default 0).\" },",
+        "bytes": 1591,
+        "truncated": false
+      }
+    ],
+    "passageEvidence": []
+  },
+  {
+    "taskId": "chinese-tool-outcome",
+    "variant": "full-800",
+    "params": {
+      "corpus": "current",
+      "query": "对话压缩后，如何保留工具执行状态、错误标记和完整结果引用，避免把未知执行当成成功？",
+      "k": 5,
+      "full": 800,
+      "mode": "bm25",
+      "max_tokens": 2000
+    },
+    "native": {
+      "content": [
+        {
+          "type": "text",
+          "text": "\n─── packages/core/src/engine/README.md:1  (score 69.14)\n    [no symbol match; showing 800 of 1,587 chars from offset 0, window centred on the match]\n# 查询执行\n\n`QueryEngine` 是模型与工具循环的入口。它接收用户消息，维护当前历史，组织压缩、模型请求、工具调用和结束处理，并通过 `submitMessage()` 的异步事件流将进度与结果交给调用方。\n\n## 文件与子目录\n\n| 位置 | 用途 |\n| --- | --- |\n| `query-engine.ts` | 查询循环、请求配置应用、历史维护、手动工具执行与压缩入口 |\n| `turn-context.ts` | 固定本轮请求的消息与工具列表，拼接系统提示和记忆提醒 |\n| `index.ts` | `@vykor/core/engine` 公开入口 |\n| [model/](./model/README.md) | 执行模型请求、处理流式响应和重试 |\n| [tools/](./tools/README.md) | 准备、授权和执行工具调用 |\n| [results/](./results/README.md) | 保存有容量上限的 SDK 结果引用，统一文本分页和字面检索 |\n| [compaction/](./compaction/README.md) | 缩减历史消息并保留继续任务所需的线索 |\n| [trajectory/](./trajectory/README.md) | 根据工具结果生成后续行动提示 |\n| [usage/](./usage/README.md) | 累计模型请求用量 |\n| `__test__/` | 查询循环、请求配置、记忆注入、目标上下文等整体流程测试 |\n\n## 状态与调用关系\n\n`QueryEngine` 实例保存消息历史、当前模型和提示词、最近工具结果以及累计用量。每轮先准备历史和请求，再调用 `model/`；出现工具调用时交给 `tools/`，将结果写入历\n\n─── docs/model-network-retry-design.md:104  (score 67.83)\n求，不重试 |\n| 401、403、无效参数、不支持的模型能力 | 直接报告需处理的问题 |\n| 完整响应中的工具参数解析失败 | 不执行工具，反馈模型纠正；不是网络重试 |\n| 未知编程错误、其他解析错误 | 不用兜底无限重试掩盖问题，保留诊断信息 |\n\n建议起点是指数增加等待时间，例如 1、2、4、8 秒，再加少量随机延迟，避免多个请求同时重试。次数、最大等待和总时限应明确；具体默认值在实施时结合产品体验确定，Codex 默认值仅供参考。\n\n`Retry-After` 应支持秒数和 HTTP 日期。若服务端要求的等待超过剩余总预算，应明确结束或提示，不能把它压短后提前重试。\n\n流空闲超时指连续没有收到数据，不是整段生成总时长。服务端心跳与有效输出需要分别考虑，避免把模型正常长思考误判为断线。\n\n## 状态保存与界面\n\n建议的职责分工：\n\n- 适配器：提供错误类型、状态码、等待提示、请求标识和是否收到完成事件；保留原始原因。\n- 引擎：保存当前模型调用的尝试次数、截止时间、取消信号和未完成输出；决定何时重试、替换或提交。\n- 运行记录与事件通路：保存可供诊断的尝试结果，将当前重试状态纳入客户端可恢复的状态。先检查现有 Run/Attempt 模型，不能直接假设“一次 HTTP 请求”等于“一次运行 Attempt”。\n- 客户端：显示重试过程，并依据明确的生成标识替换残缺输出；刷新或重连后仍能恢复当前状态。\n\n建议文案：\n\n> 连接中断，2 秒后重试（第 2/5 次）。\n\n恢复成功后清除等待状态并继续显示内容。耗尽预算后显示最终原因，并允许用户手动继续。手动继续的恢复边界需明确，不能隐式重跑已完成工具。\n\n诊断记录包含提供商、模型、错误类型、HTTP 状态码、重试次数、等待时间、是否已有输出，以及可获得的请\n\n─── packages/core/src/engine/compaction/README.md:1  (score 67.74)\n    [no symbol match; showing 800 of 1,042 chars from offset 0, window centred on the match]\n# 历史消息压缩\n\n当长对话接近模型的上下文容量时，缩减旧消息，同时尽量保留最近工具调用和继续任务所需的信息。\n\n| 文件 | 用途 |\n| --- | --- |\n| `compact-service.ts` | `CompactService` 入口，选择压缩步骤、处理重试并报告进度 |\n| `compact-types.ts` | 压缩来源、进度、检查点、补充上下文和摘要客户端接口 |\n| `compact-messages.ts` | 估算消息大小，清理旧工具输出、截断长内容并保护工具调用与结果的配对 |\n| `compact-prompt.ts` | 构造摘要提示，提取近期文件与工具工作记录 |\n| `compact-summary.ts` | 收集和格式化模型摘要，识别上下文超长错误 |\n| `compact-continuity.ts` | 保留继续任务所需的原文片段，管理压缩前后的衔接信息 |\n| `__test__/` | 压缩阶段、回退、取消与上下文保留测试 |\n\n`QueryEngine` 在模型请求前调用自动压缩，也可通过 `compact()` 手动触发。服务先清理旧工具输出和截短长文本，再按需请求模型摘要；没有摘要客户端或摘要失败时，使用简单压缩作为后备处理。压缩结果交回引擎替换历史。\n\n压缩阈值、连续失败次数和检查点保存在 `CompactService` 实例中。摘要客户端与额外任务上下文由调用方注入。新增压缩规则放在对应文件，测试放在同层 `__test__/`；完整设计见 [上下文压缩说明](../../../../../docs/compact-service-design.md)。\n\n日常续做的原文摘录保留真实用户约束、工具 `executionState`、`isError` 和完整结果引用；再次\n\n─── docs/model-network-retry-design.md:130  (score 65.61)\n    [no symbol match; showing 800 of 838 chars from offset 0, window centred on the match]\n求标识。不记录密钥或完整敏感请求正文。失败尝试的用量如不可得，应标为未知，不能假定为零。\n\n执行计划审核后补充以下约束：\n\n- 过滤失效输出不仅发生在界面。服务端从数据库重建模型历史、提取公开回复时也必须排除被替代内容；新格式中未确认提交的残缺输出不能作为已完成历史送回模型。\n- 关闭适配器和 SDK 重试时，压缩和记忆提取必须接入独立、有界的重试。辅助调用先缓冲本次输出，成功后交付，避免摘要或记忆 JSON 拼接失败前缀；记忆写入不放进重试循环。\n- 每次请求记录用量为完整、部分已知或未知。未知时不填零；汇总只累加已知消耗并保留“不完整”标记，刷新后仍能展示“已知用量，部分请求用量未知”。具体事件、字段和去重规则见执行计划。\n\n2026-09-26 核对新增功能后，执行时还必须保留以下行为：\n\n- 模型输出上限已由请求配置中的 `maxOutputTokens` 传入 API 的 `maxTokens`，压缩通过 `setOutputReserve` 预留对应空间。同一次生成的所有重试固定使用同一上限、reasoningEffort 和已压缩输入；网络重试不再次压缩或重读配置，下一正常回合再采用配置变化。\n- `length`/`max_tokens` 属于明确的长度受限结束，不等同于提前 EOF。输出顺序为正文、必要的截断提示、最终 complete；持久提交须覆盖提示，重载后不能消失或重复。Codex 的 `response.incomplete` 须按具体原因分类，不能与所有网络错误混为一谈。\n- Desktop 已合并短时间内的会话更新，仅发送窗口内最新完整快照。输出失效、重试状态及用量完整性必须能由最新快照恢复，不能要求窗口逐个收到生成事件；沿用更新合并，不为显示重试而恢复逐 token 全量 IPC。\n\n## 建议实施顺序\n\n1\n\n5 passages from 'current'\nCite file:line for anything you rely on.\n[token budget: 4/5 passages full, 0 locator-only, 0 deduped (identical locator and passage), 1 dropped; counted as standard-uax29-words, max_tokens 2000]\n"
+        }
+      ],
+      "isError": false
+    },
+    "score": {
+      "fileHit": true,
+      "evidenceHit": false,
+      "relevantFilesFound": 1,
+      "relevantFilesTotal": 2,
+      "fileRecall": 0.5,
+      "topFiles": [
+        "packages/core/src/engine/README.md",
+        "docs/model-network-retry-design.md",
+        "packages/core/src/engine/compaction/README.md"
+      ],
+      "evidenceFiles": []
+    },
+    "hits": [
+      {
+        "path": "packages/core/src/engine/README.md",
+        "line": 1,
+        "startLine": 1,
+        "endLine": 22,
+        "text": "# 查询执行\n\n`QueryEngine` 是模型与工具循环的入口。它接收用户消息，维护当前历史，组织压缩、模型请求、工具调用和结束处理，并通过 `submitMessage()` 的异步事件流将进度与结果交给调用方。\n\n## 文件与子目录\n\n| 位置 | 用途 |\n| --- | --- |\n| `query-engine.ts` | 查询循环、请求配置应用、历史维护、手动工具执行与压缩入口 |\n| `turn-context.ts` | 固定本轮请求的消息与工具列表，拼接系统提示和记忆提醒 |\n| `index.ts` | `@vykor/core/engine` 公开入口 |\n| [model/](./model/README.md) | 执行模型请求、处理流式响应和重试 |\n| [tools/](./tools/README.md) | 准备、授权和执行工具调用 |\n| [results/](./results/README.md) | 保存有容量上限的 SDK 结果引用，统一文本分页和字面检索 |\n| [compaction/](./compaction/README.md) | 缩减历史消息并保留继续任务所需的线索 |\n| [trajectory/](./trajectory/README.md) | 根据工具结果生成后续行动提示 |\n| [usage/](./usage/README.md) | 累计模型请求用量 |\n| `__test__/` | 查询循环、请求配置、记忆注入、目标上下文等整体流程测试 |\n\n## 状态与调用关系\n\n`QueryEngine` 实例保存消息历史、当前模型和提示词、最近工具结果以及累计用量。每轮先准备历史和请求，再调用 `model/`；出现工具调用时交给 `tools/`，将结果写入历",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 69.14"
+      },
+      {
+        "path": "docs/model-network-retry-design.md",
+        "line": 104,
+        "startLine": 104,
+        "endLine": 122,
+        "text": "求，不重试 |\n| 401、403、无效参数、不支持的模型能力 | 直接报告需处理的问题 |\n| 完整响应中的工具参数解析失败 | 不执行工具，反馈模型纠正；不是网络重试 |\n| 未知编程错误、其他解析错误 | 不用兜底无限重试掩盖问题，保留诊断信息 |\n\n建议起点是指数增加等待时间，例如 1、2、4、8 秒，再加少量随机延迟，避免多个请求同时重试。次数、最大等待和总时限应明确；具体默认值在实施时结合产品体验确定，Codex 默认值仅供参考。\n\n`Retry-After` 应支持秒数和 HTTP 日期。若服务端要求的等待超过剩余总预算，应明确结束或提示，不能把它压短后提前重试。\n\n流空闲超时指连续没有收到数据，不是整段生成总时长。服务端心跳与有效输出需要分别考虑，避免把模型正常长思考误判为断线。\n\n## 状态保存与界面\n\n建议的职责分工：\n\n- 适配器：提供错误类型、状态码、等待提示、请求标识和是否收到完成事件；保留原始原因。\n- 引擎：保存当前模型调用的尝试次数、截止时间、取消信号和未完成输出；决定何时重试、替换或提交。\n- 运行记录与事件通路：保存可供诊断的尝试结果，将当前重试状态纳入客户端可恢复的状态。先检查现有 Run/Attempt 模型，不能直接假设“一次 HTTP 请求”等于“一次运行 Attempt”。\n- 客户端：显示…",
+        "truncated": true,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 67.83"
+      },
+      {
+        "path": "packages/core/src/engine/compaction/README.md",
+        "line": 1,
+        "startLine": 1,
+        "endLine": 19,
+        "text": "# 历史消息压缩\n\n当长对话接近模型的上下文容量时，缩减旧消息，同时尽量保留最近工具调用和继续任务所需的信息。\n\n| 文件 | 用途 |\n| --- | --- |\n| `compact-service.ts` | `CompactService` 入口，选择压缩步骤、处理重试并报告进度 |\n| `compact-types.ts` | 压缩来源、进度、检查点、补充上下文和摘要客户端接口 |\n| `compact-messages.ts` | 估算消息大小，清理旧工具输出、截断长内容并保护工具调用与结果的配对 |\n| `compact-prompt.ts` | 构造摘要提示，提取近期文件与工具工作记录 |\n| `compact-summary.ts` | 收集和格式化模型摘要，识别上下文超长错误 |\n| `compact-continuity.ts` | 保留继续任务所需的原文片段，管理压缩前后的衔接信息 |\n| `__test__/` | 压缩阶段、回退、取消与上下文保留测试 |\n\n`QueryEngine` 在模型请求前调用自动压缩，也可通过 `compact()` 手动触发。服务先清理旧工具输出和截短长文本，再按需请求模型摘要；没有摘要客户端或摘要失败时，使用简单压缩作为后备处理。压缩结果交回引擎替换历史。\n\n压缩阈值、连续失败次数和检查点保存在 `CompactService` 实例中。摘要客户端与额外任务上下文由调用方注入。新增压缩规则放在对应文件，测试放在同层 `__test__/`；完整设计见 [上下文压缩说明](../../../../../docs/compact-service-design.md)。\n\n日常续做的…",
+        "truncated": true,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 67.74"
+      },
+      {
+        "path": "docs/model-network-retry-design.md",
+        "line": 130,
+        "startLine": 130,
+        "endLine": 141,
+        "text": "求标识。不记录密钥或完整敏感请求正文。失败尝试的用量如不可得，应标为未知，不能假定为零。\n\n执行计划审核后补充以下约束：\n\n- 过滤失效输出不仅发生在界面。服务端从数据库重建模型历史、提取公开回复时也必须排除被替代内容；新格式中未确认提交的残缺输出不能作为已完成历史送回模型。\n- 关闭适配器和 SDK 重试时，压缩和记忆提取必须接入独立、有界的重试。辅助调用先缓冲本次输出，成功后交付，避免摘要或记忆 JSON 拼接失败前缀；记忆写入不放进重试循环。\n- 每次请求记录用量为完整、部分已知或未知。未知时不填零；汇总只累加已知消耗并保留“不完整”标记，刷新后仍能展示“已知用量，部分请求用量未知”。具体事件、字段和去重规则见执行计划。\n\n2026-09-26 核对新增功能后，执行时还必须保留以下行为：\n\n- 模型输出上限已由请求配置中的 `maxOutputTokens` 传入 API 的 `maxTokens`，压缩通过 `setOutputReserve` 预留对应空间。同一次生成的所有重试固定使用同一上限、reasoningEffort 和已压缩输入；网络重试不再次压缩或重读配置，下一正常回合再采用配置变化。\n- `length`/`max_tokens` 属于明确的长度受限结束，不等同于提前 EOF。输出顺序为正文、必要的截断提示、最终 complete；持久提交须覆盖提示，重载…",
+        "truncated": true,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 65.61"
+      }
+    ],
+    "evidence": [
+      {
+        "path": "packages/core/src/engine/README.md",
+        "startLine": 1,
+        "endLine": 13,
+        "text": "# 查询执行\n\n`QueryEngine` 是模型与工具循环的入口。它接收用户消息，维护当前历史，组织压缩、模型请求、工具调用和结束处理，并通过 `submitMessage()` 的异步事件流将进度与结果交给调用方。\n\n## 文件与子目录\n\n| 位置 | 用途 |\n| --- | --- |\n| `query-engine.ts` | 查询循环、请求配置应用、历史维护、手动工具执行与压缩入口 |\n| `turn-context.ts` | 固定本轮请求的消息与工具列表，拼接系统提示和记忆提醒 |\n| `index.ts` | `@vykor/core/engine` 公开入口 |\n| [model/](./model/README.md) | 执行模型请求、处理流式响应和重试 |\n| [tools/](./tools/README.md) | 准备、授权和执行工具调用 |",
+        "bytes": 728,
+        "truncated": false
+      },
+      {
+        "path": "docs/model-network-retry-design.md",
+        "startLine": 92,
+        "endLine": 116,
+        "text": "8. 不可重试或预算耗尽时，结束运行，保留错误摘要和尝试记录。迟到事件不得把已结束或已取消任务恢复成运行中。\n\n重试协调由引擎掌握输出替换与次数预算，适配器负责识别协议完成状态和提供结构化错误；不另建客户端重连系统。\n\n## 错误与等待策略\n\n| 情况 | 当前处理 |\n|---|---|\n| 连接重置、临时 DNS 故障、连接或读取超时 | 在预算内重试，检查错误本身及 `cause` 中的原因 |\n| 429 临时限流 | 按服务端等待提示重试；余额或额度耗尽不能简单等同于临时限流 |\n| 408、500、502、503、504，以及提供商明确规定的临时过载 | 有界重试 |\n| 流未收到完成标记就结束 | 视为中断，进入当前生成的恢复流程 |\n| 用户主动取消 | 立即结束等待或请求，不重试 |\n| 401、403、无效参数、不支持的模型能力 | 直接报告需处理的问题 |\n| 完整响应中的工具参数解析失败 | 不执行工具，反馈模型纠正；不是网络重试 |\n| 未知编程错误、其他解析错误 | 不用兜底无限重试掩盖问题，保留诊断信息 |\n\n建议起点是指数增加等待时间，例如 1、2、4、8 秒，再加少量随机延迟，避免多个请求同时重试。次数、最大等待和总时限应明确；具体默认值在实施时结合产品体验确定，Codex 默认值仅供参考。\n\n`Retry-After` 应支持秒数和 HTTP 日期。若服务端要求的等待超过剩余总预算，应明确结束或提示，不能把它压短后提前重试。\n\n流空闲超时指连续没有收到数据，不是整段生成总时长。服务端心跳与有效输出需要分别考虑，避免把模型正常长思考误判为断线。\n\n## 状态保存与界面\n",
+        "bytes": 1787,
+        "truncated": false
+      },
+      {
+        "path": "packages/core/src/engine/compaction/README.md",
+        "startLine": 1,
+        "endLine": 13,
+        "text": "# 历史消息压缩\n\n当长对话接近模型的上下文容量时，缩减旧消息，同时尽量保留最近工具调用和继续任务所需的信息。\n\n| 文件 | 用途 |\n| --- | --- |\n| `compact-service.ts` | `CompactService` 入口，选择压缩步骤、处理重试并报告进度 |\n| `compact-types.ts` | 压缩来源、进度、检查点、补充上下文和摘要客户端接口 |\n| `compact-messages.ts` | 估算消息大小，清理旧工具输出、截断长内容并保护工具调用与结果的配对 |\n| `compact-prompt.ts` | 构造摘要提示，提取近期文件与工具工作记录 |\n| `compact-summary.ts` | 收集和格式化模型摘要，识别上下文超长错误 |\n| `compact-continuity.ts` | 保留继续任务所需的原文片段，管理压缩前后的衔接信息 |\n| `__test__/` | 压缩阶段、回退、取消与上下文保留测试 |",
+        "bytes": 877,
+        "truncated": false
+      }
+    ],
+    "passageEvidence": []
+  },
+  {
+    "taskId": "english-image-route",
+    "variant": "hybrid",
+    "params": {
+      "corpus": "current",
+      "query": "Choose native image input or the image to text tool based on model and provider capabilities",
+      "k": 5,
+      "full": 1200,
+      "mode": "hybrid",
+      "max_tokens": 2000
+    },
+    "native": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[BM25 only — no usable semantic_text mapping for `body` could be discovered under 'oh-rc99-20261027-*']\n\n─── apps/desktop/src/renderer/src/components/desktop/settings-page/providers/__test__/provider-defaults-control.test.tsx:5  (score 85.58)\n    [function render @ line 76 — 109 of 18,699 chars]\n  const render = () =>\r\n    act(async () => root!.render(<ProviderDefaultsControl onChanged={onChanged} />))\r\n\n─── apps/desktop/src/renderer/src/components/desktop/settings-page/providers/provider-defaults-control.tsx:112  (score 81.58)\n    [function save @ line 189 — 1,248 of 20,557 chars]\n  async function save(nextDraft: Draft) {\r\n    if (\r\n      !snapshot ||\r\n      saving.current ||\r\n      !snapshot.models.some(\r\n        (item) => item.providerName === nextDraft.provider && item.id === nextDraft.model\r\n      )\r\n    )\r\n      return\r\n    saving.current = true\r\n    if (mounted.current) setBusy(true)\r\n    let modelSaved = false\r\n    try {\r\n      let next: ProviderDefaultsSnapshot\r\n      if (\r\n        nextDraft.provider === snapshot.provider &&\r\n        nextDraft.model === snapshot.model &&\r\n        !snapshot.disabled\r\n      ) {\r\n        next = await window.desktop.providerDefaults.updateEffort({\r\n          effort: nextDraft.effort,\r\n          expectedRevision: snapshot.revision,\r\n        })\r\n      } else {\r\n        const bootstrap = await window.desktop.sessions.setDefaultModel({\r\n          provider: nextDraft.provider,\r\n          model: nextDraft.model,\r\n          effort: nextDraft.effort ?? \"\",\r\n        })\r\n        modelSaved = true\r\n        useDesktopSessionStore.setState({\r\n          models: bootstrap.models,\r\n          defaultModel: bootstrap.defaultModel,\r\n          defaultProvider: bootstrap.defaultProvider,\r\n        })\r\n        next = await window.desktop.provi\n    ... [function save truncated at 1200 chars]\n\n─── packages/server/src/application/session/execution/__test__/session-run-executor.test.ts:495  (score 81.37)\n    [function createStore @ line 930 — 1,255 of 51,741 chars]\nfunction createStore(options: {\r\n  attachments?: ReturnType<typeof attachment>[];\r\n  metadata?: Record<string, unknown>;\r\n  items?: Array<{ type: \"text\"; text: string } | { type: \"skill\"; name: string; path: string }>;\r\n} = {}) {\r\n  const run = { id: \"run-1\", sessionId: \"s1\", inputId: \"input-1\", status: \"pending\" };\r\n  const getSession = vi.fn(() => ({\r\n    id: \"s1\",\r\n    cwd: \"/repo\",\r\n    model: \"gpt-test\",\r\n    metadata: { runtime: { model: \"gpt-test\" } },\r\n  }));\r\n  const getInput = vi.fn(() => ({\r\n    id: \"input-1\",\r\n    sessionId: \"s1\",\r\n    content: \"hello\",\r\n    items: options.items ?? [{ type: \"text\", text: \"hello\" }],\r\n    attachments: options.attachments ?? [],\r\n    delivery: \"queue\",\r\n    metadata: options.metadata ?? { requestedBy: \"test\", traceId: \"trace-1\" },\r\n  }));\r\n  const getRun = vi.fn(() => run);\r\n  const appendEvent = vi.fn();\r\n  const updateRun = vi.fn((id, update) => Object.assign(run, update, { id, metadata: { ...(run as any).metadata, ...update.metadata } }));\r\n  const data = {\r\n    transaction: <T>(work: () => T) => work(),\r\n    sessions: { get: getSession },\r\n    conversations: {\r\n      getInput,\r\n      listMessages: vi.fn(() => []),\r\n      listMessagePa\n    ... [function createStore truncated at 1200 chars]\n\n─── packages/server/src/application/attachments/routing/attachment-capabilities.ts:15  (score 80.50)\n    [function supportsNativeImageInput @ line 15 — 1,268 of 4,181 chars]\nexport function supportsNativeImageInput(\r\n  context: {\r\n    requestConfiguration?: { model: string; provider?: string; apiFormat?: Settings[\"apiFormat\"] };\r\n    settings?: Settings;\r\n  },\r\n  catalog: ModelsDevCatalog,\r\n): boolean {\r\n  const request = context.requestConfiguration;\r\n  if (!request) return false;\r\n\r\n  const providerName = request.provider ?? context.settings?.provider;\r\n  const customProvider = context.settings?.customProviders?.find((item) => item.id === providerName);\r\n  const backend = customProvider\r\n    ? \"openai_compat\"\r\n    : providerName\r\n      ? findByName(providerName)?.backendType\r\n      : request.apiFormat === \"openai\"\r\n        ? \"openai_compat\"\r\n        : request.apiFormat === \"anthropic\"\r\n          ? \"anthropic\"\r\n          : undefined;\r\n  if (!backend) return false;\r\n\r\n  const provider = providerName ? readCatalogProvider(catalog, providerName) : undefined;\r\n  const model = Object.entries(provider?.models ?? {}).find(([id, value]) =>\r\n    (value.id ?? id) === request.model,\r\n  )?.[1];\r\n  const customModel = customProvider?.models.find((item) => item.id === request.model);\r\n  const modelSupport: InputSupport = model\r\n    ? modelInputCapabilities(model).i\n    ... [function supportsNativeImageInput truncated at 1200 chars]\n\n─── packages/api/src/providers/registry.ts:5  (score 74.64)\n    [function providerInputCapabilities @ line 28 — 187 of 10,453 chars]\nexport function providerInputCapabilities(\r\n  _backendType: BackendType,\r\n): ProviderInputCapabilities {\r\n  return { image: \"native\", imageMediaTypes: [...NATIVE_IMAGE_MEDIA_TYPES] };\r\n}\r\n\n5 passages from 'current'\nCite file:line for anything you rely on.\n"
+        }
+      ],
+      "isError": false
+    },
+    "score": {
+      "fileHit": false,
+      "evidenceHit": false,
+      "relevantFilesFound": 0,
+      "relevantFilesTotal": 1,
+      "fileRecall": 0,
+      "topFiles": [
+        "apps/desktop/src/renderer/src/components/desktop/settings-page/providers/__test__/provider-defaults-control.test.tsx",
+        "apps/desktop/src/renderer/src/components/desktop/settings-page/providers/provider-defaults-control.tsx",
+        "packages/server/src/application/session/execution/__test__/session-run-executor.test.ts",
+        "packages/server/src/application/attachments/routing/attachment-capabilities.ts",
+        "packages/api/src/providers/registry.ts"
+      ],
+      "evidenceFiles": []
+    },
+    "hits": [
+      {
+        "path": "apps/desktop/src/renderer/src/components/desktop/settings-page/providers/__test__/provider-defaults-control.test.tsx",
+        "line": 76,
+        "startLine": 76,
+        "endLine": 77,
+        "text": "  const render = () =>\n    act(async () => root!.render(<ProviderDefaultsControl onChanged={onChanged} />))",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 85.58"
+      },
+      {
+        "path": "apps/desktop/src/renderer/src/components/desktop/settings-page/providers/provider-defaults-control.tsx",
+        "line": 189,
+        "startLine": 189,
+        "endLine": 224,
+        "text": "  async function save(nextDraft: Draft) {\n    if (\n      !snapshot ||\n      saving.current ||\n      !snapshot.models.some(\n        (item) => item.providerName === nextDraft.provider && item.id === nextDraft.model\n      )\n    )\n      return\n    saving.current = true\n    if (mounted.current) setBusy(true)\n    let modelSaved = false\n    try {\n      let next: ProviderDefaultsSnapshot\n      if (\n        nextDraft.provider === snapshot.provider &&\n        nextDraft.model === snapshot.model &&\n        !snapshot.disabled\n      ) {\n        next = await window.desktop.providerDefaults.updateEffort({\n          effort: nextDraft.effort,\n          expectedRevision: snapshot.revision,\n        })\n      } else {\n        const bootstrap = await window.desktop.sessions.setDefaultModel({\n          provider: nextDraft.provider,\n          model: nextDraft.model,\n          effort: nextDraft.effort ?? \"\",\n        })\n        modelSaved = true\n        useDesktopSessionStore.setState({\n          models: bootstrap.models,\n          defaultModel: bootstrap.defaultModel,\n          defaultProvider: bootstrap.defaultProvider,\n        })\n        next = await window.desktop.provi",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 81.58"
+      },
+      {
+        "path": "packages/server/src/application/session/execution/__test__/session-run-executor.test.ts",
+        "line": 930,
+        "startLine": 930,
+        "endLine": 960,
+        "text": "function createStore(options: {\n  attachments?: ReturnType<typeof attachment>[];\n  metadata?: Record<string, unknown>;\n  items?: Array<{ type: \"text\"; text: string } | { type: \"skill\"; name: string; path: string }>;\n} = {}) {\n  const run = { id: \"run-1\", sessionId: \"s1\", inputId: \"input-1\", status: \"pending\" };\n  const getSession = vi.fn(() => ({\n    id: \"s1\",\n    cwd: \"/repo\",\n    model: \"gpt-test\",\n    metadata: { runtime: { model: \"gpt-test\" } },\n  }));\n  const getInput = vi.fn(() => ({\n    id: \"input-1\",\n    sessionId: \"s1\",\n    content: \"hello\",\n    items: options.items ?? [{ type: \"text\", text: \"hello\" }],\n    attachments: options.attachments ?? [],\n    delivery: \"queue\",\n    metadata: options.metadata ?? { requestedBy: \"test\", traceId: \"trace-1\" },\n  }));\n  const getRun = vi.fn(() => run);\n  const appendEvent = vi.fn();\n  const updateRun = vi.fn((id, update) => Object.assign(run, update, { id, metadata: { ...(run as any).metadata, ...update.metadata } }));\n  const data = {\n    transaction: <T>(work: () => T) => work(),\n    sessions: { get: getSession },\n    conversations: {\n      getInput,\n      listMessages: vi.fn(() => []),\n      listMessagePa",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 81.37"
+      },
+      {
+        "path": "packages/server/src/application/attachments/routing/attachment-capabilities.ts",
+        "line": 15,
+        "startLine": 15,
+        "endLine": 44,
+        "text": "export function supportsNativeImageInput(\n  context: {\n    requestConfiguration?: { model: string; provider?: string; apiFormat?: Settings[\"apiFormat\"] };\n    settings?: Settings;\n  },\n  catalog: ModelsDevCatalog,\n): boolean {\n  const request = context.requestConfiguration;\n  if (!request) return false;\n\n  const providerName = request.provider ?? context.settings?.provider;\n  const customProvider = context.settings?.customProviders?.find((item) => item.id === providerName);\n  const backend = customProvider\n    ? \"openai_compat\"\n    : providerName\n      ? findByName(providerName)?.backendType\n      : request.apiFormat === \"openai\"\n        ? \"openai_compat\"\n        : request.apiFormat === \"anthropic\"\n          ? \"anthropic\"\n          : undefined;\n  if (!backend) return false;\n\n  const provider = providerName ? readCatalogProvider(catalog, providerName) : undefined;\n  const model = Object.entries(provider?.models ?? {}).find(([id, value]) =>\n    (value.id ?? id) === request.model,\n  )?.[1];\n  const customModel = customProvider?.models.find((item) => item.id === request.model);\n  const modelSupport: InputSupport = model\n    ? modelInputCapabilities(model).i",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 80.50"
+      },
+      {
+        "path": "packages/api/src/providers/registry.ts",
+        "line": 28,
+        "startLine": 28,
+        "endLine": 32,
+        "text": "export function providerInputCapabilities(\n  _backendType: BackendType,\n): ProviderInputCapabilities {\n  return { image: \"native\", imageMediaTypes: [...NATIVE_IMAGE_MEDIA_TYPES] };\n}",
+        "truncated": false,
+        "evidence": "native_passage_verified_current",
+        "notice": "score 74.64"
+      }
+    ],
+    "evidence": [
+      {
+        "path": "apps/desktop/src/renderer/src/components/desktop/settings-page/providers/__test__/provider-defaults-control.test.tsx",
+        "startLine": 64,
+        "endLine": 88,
+        "text": "      value: { providerDefaults: { snapshot, updateEffort }, sessions: { setDefaultModel } },\n    })\n    container = document.createElement(\"div\")\n    document.body.append(container)\n    root = createRoot(container)\n  })\n  afterEach(() => {\n    if (root) act(() => root!.unmount())\n    container.remove()\n    vi.useRealTimers()\n    vi.unstubAllGlobals()\n  })\n  const render = () =>\n    act(async () => root!.render(<ProviderDefaultsControl onChanged={onChanged} />))\n  const button = (label: string) =>\n    [...container.querySelectorAll(\"button\")].find((item) => item.textContent === label)\n  const choose = (label: string) => act(async () => button(label)!.click())\n  const advance = (ms = 400) =>\n    act(async () => {\n      await vi.advanceTimersByTimeAsync(ms)\n    })\n\n  it(\"shows capability icons without save labels or the explanatory paragraph\", async () => {\n    await render()\n    expect(container.textContent).toContain(\"Model A\")",
+        "bytes": 941,
+        "truncated": false
+      },
+      {
+        "path": "apps/desktop/src/renderer/src/components/desktop/settings-page/providers/provider-defaults-control.tsx",
+        "startLine": 177,
+        "endLine": 201,
+        "text": "      const next = await window.desktop.providerDefaults.snapshot()\n      if (mounted.current) {\n        accept(next)\n        setError(null)\n      }\n    } catch (failure) {\n      if (mounted.current) setError(errorMessage(failure))\n    } finally {\n      saving.current = false\n      if (mounted.current) setBusy(false)\n    }\n  }\n  async function save(nextDraft: Draft) {\n    if (\n      !snapshot ||\n      saving.current ||\n      !snapshot.models.some(\n        (item) => item.providerName === nextDraft.provider && item.id === nextDraft.model\n      )\n    )\n      return\n    saving.current = true\n    if (mounted.current) setBusy(true)\n    let modelSaved = false\n    try {",
+        "bytes": 670,
+        "truncated": false
+      },
+      {
+        "path": "packages/server/src/application/session/execution/__test__/session-run-executor.test.ts",
+        "startLine": 918,
+        "endLine": 942,
+        "text": "        pluginIds: new Set([\"office\", \"knowledge\"]),\n        pluginPreparationErrors: new Map([...preparationFailures].map(pluginId => [pluginId, [`prepare failed: ${pluginId}`]])),\n      }, id),\n      submitMessage: (_content: unknown, options: any) => { observed.push([[...options.preparation.fixtureView.pluginIds], ...options.preparation.fixtureView.tools.keys()]); return completedHandle(); },\n    }), close: async () => {}, closeIfStale: async () => {} } as any,\n    events: { checkpoint: () => 1, publishSince: () => {} },\n    transcriptProjection: { finalizeRunParts: () => {} } as any, traceIdForRun: () => \"trace-1\", log: () => {},\n  });\n  return { store, controller, observed, preparationFailures, get requests() { return requests; },\n    execute: () => executor.execute({ sessionId: \"s1\", inputId: \"input-1\", runId: \"run-1\" }, { signal: controller.signal, registerHandle: async () => {} }) };\n}\n\nfunction createStore(options: {\n  attachments?: ReturnType<typeof attachment>[];\n  metadata?: Record<string, unknown>;\n  items?: Array<{ type: \"text\"; text: string } | { type: \"skill\"; name: string; path: string }>;\n} = {}) {\n  const run = { id: \"run-1\", sessionId: \"s1\", inputId: \"input-1\", status: \"pending\" };\n  const getSession = vi.fn(() => ({\n    id: \"s1\",\n    cwd: \"/repo\",\n    model: \"gpt-test\",\n    metadata: { runtime: { model: \"gpt-test\" } },\n  }));\n  const getInput = vi.fn(() => ({",
+        "bytes": 1402,
+        "truncated": false
+      },
+      {
+        "path": "packages/server/src/application/attachments/routing/attachment-capabilities.ts",
+        "startLine": 3,
+        "endLine": 27,
+        "text": "  ModelsDevModel,\n  ProviderInputCapabilities,\n} from \"@vykor/api\";\nimport {\n  findByName,\n  providerInputCapabilities,\n} from \"@vykor/api\";\nimport type { Settings, InputSupport, ModelInputCapabilities } from \"@vykor/host-config\";\nimport type { SessionRuntimeConfig } from \"@vykor/domain-contracts/sessions\";\nimport type { ModelProviderInfo } from \"../../settings-api.js\";\nimport { readCatalogProvider } from \"../../default-services/models/catalog-provider-mapping.js\";\n\nexport function supportsNativeImageInput(\n  context: {\n    requestConfiguration?: { model: string; provider?: string; apiFormat?: Settings[\"apiFormat\"] };\n    settings?: Settings;\n  },\n  catalog: ModelsDevCatalog,\n): boolean {\n  const request = context.requestConfiguration;\n  if (!request) return false;\n\n  const providerName = request.provider ?? context.settings?.provider;\n  const customProvider = context.settings?.customProviders?.find((item) => item.id === providerName);\n  const backend = customProvider",
+        "bytes": 982,
+        "truncated": false
+      },
+      {
+        "path": "packages/api/src/providers/registry.ts",
+        "startLine": 16,
+        "endLine": 40,
+        "text": "\nexport type NativeImageMediaType = (typeof NATIVE_IMAGE_MEDIA_TYPES)[number];\n\nexport function assertNativeImageMediaType(\n  mediaType: string,\n): asserts mediaType is NativeImageMediaType {\n  if (!(NATIVE_IMAGE_MEDIA_TYPES as readonly string[]).includes(mediaType)) {\n    throw new Error(`Unsupported image media type: ${mediaType}`);\n  }\n}\n\n/** Capabilities of the request adapter, independent from any concrete model. */\nexport function providerInputCapabilities(\n  _backendType: BackendType,\n): ProviderInputCapabilities {\n  return { image: \"native\", imageMediaTypes: [...NATIVE_IMAGE_MEDIA_TYPES] };\n}\n\nexport interface ProviderConfig {\n  apiKey: string;\n  baseURL?: string;\n  model?: string;\n  headers?: Record<string, string>;\n}\n",
+        "bytes": 737,
+        "truncated": false
+      }
+    ],
+    "passageEvidence": []
+  }
+]
