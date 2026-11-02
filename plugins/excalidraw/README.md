@@ -2,7 +2,7 @@
 
 权威源码位于 `rzx007/vykor-plugins` 的 `plugins/excalidraw`；源码、测试和市场打包在同一仓库维护。
 
-正式插件 `dev.vykor.excalidraw`，版本 `1.0.3`。在会话右侧绘图，连续编辑自动保存。可创建、导入、打开、重命名和切换画板，引用选中元素到聊天，并导出 `.excalidraw`、PNG、SVG。
+正式插件 `dev.vykor.excalidraw`，版本 `1.0.4`。在会话右侧绘图，连续编辑自动保存。可创建、导入、打开、重命名和切换画板，引用选中元素到聊天，并导出 `.excalidraw`、PNG、SVG。
 
 ## 构建与安装
 

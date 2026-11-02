@@ -30,7 +30,7 @@ export function createExcalidrawServer({
   workspaceRoot: string;
   assetRoot: string;
 }) {
-  const server = new McpServer({ name: "excalidraw", version: "1.0.0" });
+  const server = new McpServer({ name: "excalidraw", version: "1.0.4" });
   server.server.registerCapabilities({ resources: { subscribe: true, listChanged: true } });
   const subscriptions = new Set<string>();
   server.server.setRequestHandler(SubscribeRequestSchema, async request => {
