@@ -80,7 +80,8 @@ body,
 #save-status[data-state="saved"] {
   color: var(--color-saved);
 }
-#save-status[data-state="saving"] {
+#save-status[data-state="saving"],
+#save-status[data-state="waiting"] {
   color: var(--color-saving);
 }
 #save-status[data-state="error"] {

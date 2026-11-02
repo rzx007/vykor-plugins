@@ -39,6 +39,7 @@ function App() {
     document: null,
     dirty: false,
     saving: false,
+    waiting: false,
     error: null,
   });
   const [ready, setReady] = useState(false);
@@ -106,20 +107,26 @@ function App() {
           // 同一文档的工具修改必须入普通历史；resetScene 会清空用户已有撤销记录。
           if (reset) canvas.resetScene();
           canvas.addFiles(Object.values(restored.files));
+          const appState = {
+            ...(reset ? restored.appState : scene.appState),
+            ...(reset
+              ? { zoom: { value: 1 as AppState["zoom"]["value"] }, scrollX: 0, scrollY: 0 }
+              : {}),
+            theme: getClient().theme === "dark" ? "dark" : "light",
+          };
           canvas.updateScene({
             elements: restored.elements,
-            appState: {
-              ...(reset ? restored.appState : scene.appState),
-              ...(reset
-                ? { zoom: { value: 1 as AppState["zoom"]["value"] }, scrollX: 0, scrollY: 0 }
-                : {}),
-              theme: getClient().theme === "dark" ? "dark" : "light",
-            },
+            appState,
             captureUpdate: reset ? CaptureUpdateAction.NEVER : CaptureUpdateAction.IMMEDIATELY,
           });
           // Fitting an empty bounding box produces Excalidraw's maximum zoom (3000%).
           if (reset && restored.elements.some((element: ExcalidrawElement) => !element.isDeleted))
             canvas.scrollToContent(undefined, { fitToViewport: true, viewportZoomFactor: 0.75 });
+          return {
+            elements: canvas.getSceneElementsIncludingDeleted(),
+            appState: { ...canvas.getAppState(), ...appState },
+            files: canvas.getFiles(),
+          } as unknown as Scene;
         } finally {
           applying.current = false;
         }
@@ -205,7 +212,8 @@ function App() {
       if (ref && `${ref.id}:${ref.revision}` !== lastToolRef.current) {
         lastToolRef.current = `${ref.id}:${ref.revision}`;
         const current = editor.state().document;
-        if (current?.id === ref.id && current.revision >= ref.revision) return;
+        // refresh() already handles this document without trying to flush a waiting draft.
+        if (current?.id === ref.id) return;
         void editor.open(ref.id).catch((e) => setOperation(String(e)));
       }
     };
@@ -346,13 +354,16 @@ function App() {
   }, [showDocumentTabs]);
   const saveState = state.error
     ? "error"
-    : state.saving || state.dirty
-      ? "saving"
-      : state.document
-        ? "saved"
-        : "empty";
+    : state.waiting
+      ? "waiting"
+      : state.saving || state.dirty
+        ? "saving"
+        : state.document
+          ? "saved"
+          : "empty";
   const saveLabel = {
     error: t("保存失败", "Save failed"),
+    waiting: t("等待保存，草稿已保留", "Waiting to save; draft retained"),
     saving: t("保存中…", "Saving…"),
     saved: t("已保存", "Saved"),
     empty: t("未打开画板", "No diagram"),

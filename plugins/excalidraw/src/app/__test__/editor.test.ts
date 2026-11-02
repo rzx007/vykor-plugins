@@ -32,7 +32,7 @@ describe("editor history boundaries", () => {
     expect(editor.state().document?.id).toBe("one");
     finishCommit();
     await closing;
-    expect(editor.state()).toEqual({ document: null, dirty: false, saving: false, error: null });
+    expect(editor.state()).toEqual({ document: null, dirty: false, saving: false, waiting: false, error: null });
     await editor.open("one");
     expect(editor.state().document).toMatchObject({ revision: 2, scene: doc("one", 2).scene });
   });
